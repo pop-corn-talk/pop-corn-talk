@@ -1,4 +1,4 @@
-package com.popcorntalk.global.dto;
+package com.popcorntalk.global.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -28,5 +28,4 @@ public class RefreshToken {
 
     @Column(nullable = false)
     private Long userId;
-
 }

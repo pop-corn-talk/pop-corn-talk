@@ -1,6 +1,6 @@
 package com.popcorntalk.global.repository;
 
-import com.popcorntalk.global.dto.RefreshToken;
+import com.popcorntalk.global.entity.RefreshToken;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 

@@ -1,7 +1,8 @@
 package com.popcorntalk.global.util;
 
 import com.popcorntalk.domain.user.entity.UserRoleEnum;
-import com.popcorntalk.global.dto.RefreshToken;
+
+import com.popcorntalk.global.entity.RefreshToken;
 import com.popcorntalk.global.repository.RefreshTokenRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -81,7 +82,6 @@ public class JwtUtil {
     public void deleteRefreshToken(Long userId) {
         Optional<RefreshToken> checkToken = refreshTokenRepository.findByUserId(userId);
         checkToken.ifPresent(refreshTokenRepository::delete);
-        //만약 로그아웃이 없다면 업데이트가 맞다 로그아웃은 사실 프론트꺼다
     }
 
     // header 에서 JWT 가져오기
@@ -96,16 +96,12 @@ public class JwtUtil {
 
     // 토큰에서 사용자 정보 가져오기
     public Claims getUserInfoFromToken(String token) {
-        //validateToken에서 검증을 한 토큰의 body를 가져옴 claims라는 데이터의 집합으로 반환함
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
     }
 
     public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
-            if (redisUtil.hasKeyBlackList(token)) {
-                return false;
-            }
             return true;
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
             log.error("토큰검증오류");
@@ -126,12 +122,12 @@ public class JwtUtil {
 
     public String recreationAccessToken(Long userId, String email) {
         Date date = new Date();
-        String accessToken = BEARER_PREFIX + // bearer 을 앞에 붙어줌
+        String accessToken = BEARER_PREFIX +
             Jwts.builder()
                 .claim("userId", userId)
                 .claim("email", email)
-                .setExpiration(new Date(date.getTime() + TOKEN_TIME)) // 만료 시간
-                .signWith(key, signatureAlgorithm) // 암호화 알고리즘
+                .setExpiration(new Date(date.getTime() + TOKEN_TIME))
+                .signWith(key, signatureAlgorithm)
                 .compact();
 
         return accessToken;
