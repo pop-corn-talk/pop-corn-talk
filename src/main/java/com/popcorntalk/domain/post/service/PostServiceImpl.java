@@ -22,16 +22,26 @@ public class PostServiceImpl implements PostService {
     @Transactional
     public void createPost(User user, PostCreateRequestDto requestDto) {
         Post newPost = Post.toEntity(requestDto, user.getId());
+
         postRepository.save(newPost);
     }
 
     @Override
+    @Transactional
     public void updatePost(User user, PostUpdateRequestDto requestDto, Long postId) {
         Post updatePost = findPost(postId);
         validatePostOwner(updatePost.getUserId(), user.getId());
 
         updatePost.update(requestDto);
-        postRepository.save(updatePost);
+    }
+
+    @Override
+    @Transactional
+    public void deletePost(User user, Long postId) {
+        Post deletePost = findPost(postId);
+        validatePostOwner(deletePost.getUserId(), user.getId());
+
+        deletePost.softDelete();
     }
 
     private Post findPost(Long postId) {

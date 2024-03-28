@@ -27,7 +27,13 @@ public interface PostService {
      */
     void updatePost(User user, PostUpdateRequestDto requestDto, Long postId);
 
+    /**
+     * 게시물 삭제
+     *
+     * @param user   로그인 유저
+     * @param postId 삭제할 게시물의 번호
+     */
+    void deletePost(User user, Long postId);
 
-    //게시판삭제
     //게시글 이미지 업로드
 }

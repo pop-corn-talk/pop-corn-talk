@@ -76,4 +76,8 @@ public class Post extends TimeStamped {
         this.postContent = requestDto.getPostContent();
         this.postImage = postContent;
     }
+
+    public void softDelete() {
+        this.deletionStatus = DeletionStatus.Y;
+    }
 }

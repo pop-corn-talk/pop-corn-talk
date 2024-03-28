@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -41,6 +42,13 @@ public class PostController {
         postService.updatePost(userDetails.getUser(), requestDto, postId);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
+
     //게시판삭제
+    @DeleteMapping("/{postId}")
+    public ResponseEntity<Void> deletePost(@AuthenticationPrincipal UserDetailsImpl userDetails,
+        @PathVariable Long postId) {
+        postService.deletePost(userDetails.getUser(), postId);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
     //게시글 이미지 업로드
 }
