@@ -15,7 +15,7 @@ public interface PostService {
      * @param user       게시물생성자
      * @param requestDto 생성될 게시물의 내용
      */
-    void create(User user, PostCreateRequestDto requestDto);
+    void createPost(User user, PostCreateRequestDto requestDto);
     //게시판수정
     //게시판삭제
     //게시글 이미지 업로드

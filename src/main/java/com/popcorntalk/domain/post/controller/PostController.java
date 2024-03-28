@@ -4,6 +4,8 @@ import com.popcorntalk.domain.post.dto.PostCreateRequestDto;
 import com.popcorntalk.domain.post.service.PostService;
 import com.popcorntalk.global.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,9 +23,10 @@ public class PostController {
     //게시판 전체조회
     //게시판등록
     @PostMapping
-    public void post(@AuthenticationPrincipal UserDetailsImpl userDetails,
+    public ResponseEntity<Void> createPost(@AuthenticationPrincipal UserDetailsImpl userDetails,
         @RequestBody PostCreateRequestDto requestDto) {
-        postService.create(userDetails.getUser(), requestDto);
+        postService.createPost(userDetails.getUser(), requestDto);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
     //게시판수정
     //게시판삭제
