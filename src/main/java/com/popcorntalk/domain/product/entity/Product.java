@@ -1,5 +1,6 @@
 package com.popcorntalk.domain.product.entity;
 
+import com.popcorntalk.domain.product.dto.ProductCreateRequestDto;
 import com.popcorntalk.global.entity.DeletionStatus;
 import com.popcorntalk.global.entity.TimeStamped;
 import jakarta.persistence.Column;
@@ -9,10 +10,12 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -37,4 +40,22 @@ public class Product extends TimeStamped {
 
     @Column(nullable = false)
     private DeletionStatus deletionStatus;
+
+    public Product(String productName, String productImage, String productDescription,
+        Long productPrice) {
+        this.productName = productName;
+        this.productImage = productImage;
+        this.productDescription = productDescription;
+        this.productPrice = productPrice;
+        this.deletionStatus = DeletionStatus.N;
+    }
+
+    public static Product createOf(ProductCreateRequestDto productCreateRequestDto) {
+        return new Product(
+            productCreateRequestDto.getProductName(),
+            productCreateRequestDto.getProductImage(),
+            productCreateRequestDto.getProductDescription(),
+            productCreateRequestDto.getProductPrice()
+        );
+    }
 }
