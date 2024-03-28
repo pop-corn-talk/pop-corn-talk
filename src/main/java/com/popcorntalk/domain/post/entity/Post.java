@@ -1,6 +1,7 @@
 package com.popcorntalk.domain.post.entity;
 
 import com.popcorntalk.domain.post.dto.PostCreateRequestDto;
+import com.popcorntalk.domain.post.dto.PostUpdateRequestDto;
 import com.popcorntalk.global.entity.DeletionStatus;
 import com.popcorntalk.global.entity.TimeStamped;
 import jakarta.persistence.Column;
@@ -68,5 +69,11 @@ public class Post extends TimeStamped {
             .postType(PostEnum.NOTICED)
             .deletionStatus(DeletionStatus.N)
             .build();
+    }
+
+    public void update(PostUpdateRequestDto requestDto) {
+        this.postName = requestDto.getPostName();
+        this.postContent = requestDto.getPostContent();
+        this.postImage = postContent;
     }
 }
