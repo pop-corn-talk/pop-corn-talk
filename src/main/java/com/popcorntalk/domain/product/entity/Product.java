@@ -1,6 +1,7 @@
 package com.popcorntalk.domain.product.entity;
 
 import com.popcorntalk.domain.product.dto.ProductCreateRequestDto;
+import com.popcorntalk.domain.product.dto.ProductUpdateRequestDto;
 import com.popcorntalk.global.entity.DeletionStatus;
 import com.popcorntalk.global.entity.TimeStamped;
 import jakarta.persistence.Column;
@@ -61,5 +62,12 @@ public class Product extends TimeStamped {
 
     public void softDelete() {
         this.deletionStatus = DeletionStatus.Y;
+    }
+
+    public void softUpdate(ProductUpdateRequestDto productUpdateRequestDto) {
+        this.productName = productUpdateRequestDto.getProductName();
+        this.productImage = productUpdateRequestDto.getProductImage();
+        this.productDescription = productUpdateRequestDto.getProductDescription();
+        this.productPrice = productUpdateRequestDto.getProductPrice();
     }
 }
