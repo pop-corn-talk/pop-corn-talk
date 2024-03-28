@@ -1,5 +1,6 @@
 package com.popcorntalk.domain.comment.entity;
 
+import com.popcorntalk.domain.comment.dto.CommentCreateRequestDto;
 import com.popcorntalk.global.entity.DeletionStatus;
 import com.popcorntalk.global.entity.TimeStamped;
 import jakarta.persistence.Column;
@@ -10,12 +11,11 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "comments")
@@ -36,4 +36,21 @@ public class Comment extends TimeStamped {
 
     @Enumerated(value = EnumType.STRING)
     private DeletionStatus deletionStatus;
+    @Builder
+    public Comment(Long id,String commentContent, Long userId,Long postId,DeletionStatus deletionStatus){
+        this.id = id;
+        this.commentContent = commentContent;
+        this.userId = userId;
+        this.postId = 1L;
+        this.deletionStatus = DeletionStatus.N;
+    }
+    public static Comment of(CommentCreateRequestDto requestDto, Long userId, Long postId) {
+        return Comment.builder()
+            .commentContent(requestDto.getCommentContent())
+            .userId(userId)
+            .postId(postId)
+            .build();
+    }
+
+
 }
