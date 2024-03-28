@@ -1,8 +1,10 @@
 package com.popcorntalk.global.exception;
 
 import com.popcorntalk.global.dto.CommonResponseDto;
+import com.popcorntalk.global.exception.customException.PermissionDeniedException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -22,5 +24,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity handleIllegalArgumentExceptions(IllegalArgumentException ex, HttpServletRequest request) {
         log.error("url: {}, 메세지: {} \n stacktrace: {}",request.getRequestURI(),ex.getMessage(), ex.fillInStackTrace());
         return ResponseEntity.badRequest().body(CommonResponseDto.fail(400, ex.getMessage()));
+    }
+
+    @ExceptionHandler(PermissionDeniedException.class)
+    public ResponseEntity handlePermissionDeniedException(PermissionDeniedException ex, HttpServletRequest request){
+        log.error("url: {}, 메세지: {}", request.getRequestURI(), ex.getErrorCode().getMsg());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).
+            body(CommonResponseDto.fail(ex.getErrorCode().getHttpStatus(), ex.getErrorCode().getMsg()));
     }
 }

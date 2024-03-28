@@ -1,10 +1,13 @@
 package com.popcorntalk.domain.post.service;
 
+import static com.popcorntalk.global.exception.ErrorCode.PERMISSION_DENIED;
+
 import com.popcorntalk.domain.post.dto.PostCreateRequestDto;
 import com.popcorntalk.domain.post.dto.PostUpdateRequestDto;
 import com.popcorntalk.domain.post.entity.Post;
 import com.popcorntalk.domain.post.repository.PostRepository;
 import com.popcorntalk.domain.user.entity.User;
+import com.popcorntalk.global.exception.customException.PermissionDeniedException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,7 +41,7 @@ public class PostServiceImpl implements PostService {
 
     private void validatePostOwner(Long postUserId, Long loginUserId) {
         if (!postUserId.equals(loginUserId)) {
-            throw new IllegalArgumentException("권한이 없습니다.");
+            throw new PermissionDeniedException(PERMISSION_DENIED);
         }
     }
 }
