@@ -41,7 +41,7 @@ public class Product extends TimeStamped {
     @Column(nullable = false)
     private DeletionStatus deletionStatus;
 
-    public Product(String productName, String productImage, String productDescription,
+    private Product(String productName, String productImage, String productDescription,
         Long productPrice) {
         this.productName = productName;
         this.productImage = productImage;
@@ -57,5 +57,9 @@ public class Product extends TimeStamped {
             productCreateRequestDto.getProductDescription(),
             productCreateRequestDto.getProductPrice()
         );
+    }
+
+    public void softDelete() {
+        this.deletionStatus = DeletionStatus.Y;
     }
 }
