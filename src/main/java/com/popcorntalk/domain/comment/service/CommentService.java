@@ -49,4 +49,19 @@ public class CommentService {
     }
 
 
+    public void deleteComment(UserDetailsImpl userDetails, Long postId, Long commentId) {
+
+        if (!postRepository.existsById(postId)) {
+            throw new IllegalArgumentException("게시글이 존재하지 않습니다");
+        }
+        if (!userRepository.existsById(userDetails.getUser().getId())) {
+            throw new IllegalArgumentException("해당 유저가 존재하지 않습니다");
+        }
+        if (!commentRepository.existsById(commentId)) {
+            throw new IllegalArgumentException("해당 게시글에 작성한 댓글이 존재하지 않습니다");
+        } else {
+            commentRepository.deleteById(commentId);
+        }
+
+    }
 }
