@@ -22,6 +22,9 @@ import lombok.NoArgsConstructor;
 @Table(name = "users")
 public class User {
 
+    private static final long SIGNUP_REWARD = 1000L;
+    private static final long MAX_DAILY_POSTS_LIMIT = 3L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -46,5 +49,16 @@ public class User {
     public User(Long userId, String email) {
         this.id = userId;
         this.email = email;
+    }
+
+    public static User SignupOf(String email, String password) {
+        return User.builder()
+            .email(email)
+            .password(password)
+            .point(SIGNUP_REWARD)
+            .maxDailyPostsLimit(MAX_DAILY_POSTS_LIMIT)
+            .role(UserRoleEnum.USER)
+            .deletionStatus(DeletionStatus.N)
+            .build();
     }
 }

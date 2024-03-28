@@ -67,7 +67,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String token = jwtUtil.createToken(user.getId(), user.getEmail());
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, token);
         ObjectNode json = new ObjectMapper().createObjectNode();
-        json.put("message", "상태코드:200 로그인성공");
+        json.put("message", "상태코드:200 로그인성공                                  ");
         String newResponse = new ObjectMapper().writeValueAsString(json);
         response.setContentType("application/json");
         response.setContentLength(newResponse.length());

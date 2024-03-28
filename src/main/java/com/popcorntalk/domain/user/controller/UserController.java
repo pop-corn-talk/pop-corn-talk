@@ -18,11 +18,10 @@ public class UserController {
 
     @PostMapping("/users/signup")
     public ResponseEntity<Void> signup(
-        @Valid @RequestBody SignupRequestDto requestDto
+        @Valid @RequestBody SignupRequestDto signupRequestDto
     ) {
-        userService.signup(requestDto);
+        userService.signup(signupRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
-
     }
 }
 

@@ -1,9 +1,11 @@
 package com.popcorntalk.domain.user.service;
 
+import static com.popcorntalk.global.exception.ErrorCode.DUPLICATE_USER;
+
 import com.popcorntalk.domain.user.dto.SignupRequestDto;
 import com.popcorntalk.domain.user.entity.User;
-import com.popcorntalk.domain.user.entity.UserRoleEnum;
 import com.popcorntalk.domain.user.repository.UserRepository;
+import com.popcorntalk.global.exception.customException.DuplicateUserInfoException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -15,22 +17,17 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
 
     private final UserRepository userRepository;
-
     private final PasswordEncoder passwordEncoder;
 
-    public void signup(SignupRequestDto requestDto) {
+    public void signup(SignupRequestDto signupRequestDto) {
 
-        if (userRepository.findByEmail(requestDto.getEmail()).isPresent()) {
-            throw new IllegalArgumentException("error");
+        if (userRepository.existsByEmail(signupRequestDto.getEmail())) {
+            throw new DuplicateUserInfoException(DUPLICATE_USER);
         }
 
-        String password = passwordEncoder.encode(requestDto.getPassword());
-
-        User user = User.builder()
-            .email(requestDto.getEmail())
-            .password(password)
-            .role(UserRoleEnum.USER)
-            .build();
+        User user = User.SignupOf(
+            signupRequestDto.getEmail(),
+            passwordEncoder.encode(signupRequestDto.getPassword()));
 
         userRepository.save(user);
     }
