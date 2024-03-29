@@ -44,7 +44,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                             Long.class));
                     res.addHeader(JwtUtil.AUTHORIZATION_HEADER, token);
                     ObjectNode json = new ObjectMapper().createObjectNode();
-                    json.put("message", "새로운 토큰이 발급되었습니다.");
+                    json.put("message", "새로운 토큰이 발급되었습니다.                       ");
                     String newResponse = new ObjectMapper().writeValueAsString(json);
                     res.setContentType("application/json");
                     res.setContentLength(newResponse.length());
