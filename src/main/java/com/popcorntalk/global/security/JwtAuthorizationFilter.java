@@ -35,7 +35,13 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res,
         FilterChain filterChain) throws ServletException, IOException {
         String tokenValue = jwtUtil.getJwtFromHeader(req);
-        if (StringUtils.hasText(tokenValue)) {
+
+
+        // 리프레시 토큰이 유효하면 -> DB
+        // 아래 이프문 실행하고
+        // 아니면 리프레시 토큰을 제발급
+
+        if (StringUtils.hasText(tokenValue)) { // 액세스
             try {
                 Date date = new Date();
                 if(jwtUtil.getMemberInfoFromExpiredToken(tokenValue).getExpiration().compareTo(date)<0) {

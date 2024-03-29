@@ -1,16 +1,23 @@
 package com.popcorntalk.domain.user.controller;
 
 import com.popcorntalk.domain.user.dto.UserInfoResponseDto;
+import com.popcorntalk.domain.user.dto.UserPublicInfoResponseDto;
 import com.popcorntalk.domain.user.dto.UserSignupRequestDto;
+import com.popcorntalk.domain.user.entity.User;
 import com.popcorntalk.domain.user.service.UserService;
 import com.popcorntalk.global.dto.CommonResponseDto;
 import com.popcorntalk.global.security.UserDetailsImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,6 +44,22 @@ public class UserController {
     ) {
         return ResponseEntity.ok().body(
             CommonResponseDto.success(userService.getUserInfo(userDetailsImpl.getUser().getId())));
+    }
+    @GetMapping("/{userId}")
+    public ResponseEntity<CommonResponseDto<UserPublicInfoResponseDto>> getUserInf(
+        @PathVariable Long userId
+    ) {
+        return ResponseEntity.ok().body(
+            CommonResponseDto.success(userService.getOtherUserInfo(userId)));
+    }
+
+    // todo 현제 존재하는 api 두개가 같습니다. 그리서 일단 임시 로 /all 을 추가 했습니다.
+    @GetMapping("/all")
+    public ResponseEntity<CommonResponseDto<Page<UserPublicInfoResponseDto>>> getAllUserInfo(
+        @PageableDefault(sort = "createdAt", direction = Direction.DESC)Pageable pageable
+    ) {
+        return ResponseEntity.ok().body(
+            CommonResponseDto.success(userService.getAllOtherUserInfo(pageable)));
     }
 }
 

@@ -1,11 +1,22 @@
 package com.popcorntalk.domain.user.repository;
 
+import com.popcorntalk.domain.user.dto.UserInfoResponseDto;
+import com.popcorntalk.domain.user.dto.UserPublicInfoResponseDto;
 import com.popcorntalk.domain.user.entity.User;
+import com.querydsl.core.types.Predicate;
 import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-public interface UserRepository extends JpaRepository<User, Long> {
-    //todo 쿼리 dsl 마춰서 복원 작업 해야 합니다
-    //boolean existsByEmail(String email);
+public interface UserRepository extends JpaRepository<User, Long> ,UserRepositoryCustom{
+
+    boolean existsByEmail(String email);
+
+    @Override
+    User getUser(Long userId);
+
+    @Override
+    Page<UserPublicInfoResponseDto> getPageUsers(Pageable pageable);
 
     Optional<User> findByEmail(String email);
 }
