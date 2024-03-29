@@ -7,10 +7,9 @@ import com.popcorntalk.domain.user.dto.UserPublicInfoResponseDto;
 import com.popcorntalk.domain.user.dto.UserSignupRequestDto;
 import com.popcorntalk.domain.user.entity.User;
 import com.popcorntalk.domain.user.repository.UserRepository;
-//import com.popcorntalk.global.exception.customException.DuplicateUserInfoException;
+import com.popcorntalk.global.exception.customException.DuplicateUserInfoException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -28,9 +27,9 @@ public class UserServiceImpl implements UserService {
   @Transactional
   public void signup(UserSignupRequestDto userSignupRequestDto) {
 
-//    if (userRepository.existsByEmail(userSignupRequestDto.getEmail())) {
-//      //throw new DuplicateUserInfoException(DUPLICATE_USER);
-//    }
+    if (userRepository.existsByEmail(userSignupRequestDto.getEmail())) {
+      throw new DuplicateUserInfoException(DUPLICATE_USER);
+    }
     User user = User.SignupOf(
         userSignupRequestDto.getEmail(),
         passwordEncoder.encode(userSignupRequestDto.getPassword()));
@@ -61,7 +60,6 @@ public class UserServiceImpl implements UserService {
         .build();
   }
 
-  // todo 유저가 페이지 넘버를 넘길수 있겠끔 합시다. 수정중 -
   @Override
   public Page<UserPublicInfoResponseDto> getAllOtherUserInfo(Pageable pageable) {
 

@@ -3,7 +3,6 @@ package com.popcorntalk.domain.user.controller;
 import com.popcorntalk.domain.user.dto.UserInfoResponseDto;
 import com.popcorntalk.domain.user.dto.UserPublicInfoResponseDto;
 import com.popcorntalk.domain.user.dto.UserSignupRequestDto;
-import com.popcorntalk.domain.user.entity.User;
 import com.popcorntalk.domain.user.service.UserService;
 import com.popcorntalk.global.dto.CommonResponseDto;
 import com.popcorntalk.global.security.UserDetailsImpl;
@@ -53,7 +52,7 @@ public class UserController {
             CommonResponseDto.success(userService.getOtherUserInfo(userId)));
     }
 
-    // todo 현제 존재하는 api 두개가 같습니다. 그리서 일단 임시 로 /all 을 추가 했습니다.
+    // todo 현제 존재하는 api 두개가 같습니다.  그래서 일단 임시 로 /all 을 추가 했습니다.
     @GetMapping("/all")
     public ResponseEntity<CommonResponseDto<Page<UserPublicInfoResponseDto>>> getAllUserInfo(
         @PageableDefault(sort = "createdAt", direction = Direction.DESC)Pageable pageable
