@@ -10,7 +10,7 @@ public class CommonResponseDto<T> {
     /**
      * status 응답 상태코드 msg 응답메시지 data 응답 데이터
      */
-    private int status;
+    private String status;
     private String msg;
     private T data;
 
@@ -18,7 +18,7 @@ public class CommonResponseDto<T> {
         this.data = data;
     }
 
-    public CommonResponseDto(int status, String msg, T data) {
+    public CommonResponseDto(String status, String msg, T data) {
         this.status = status;
         this.msg = msg;
         this.data = data;
@@ -42,7 +42,7 @@ public class CommonResponseDto<T> {
      * @param msg    메세지
      * @return CommonResponseDto
      */
-    public static CommonResponseDto fail(int status, String msg) {
+    public static CommonResponseDto fail(String status, String msg) {
         return new CommonResponseDto<>(status, msg, null);
     }
 

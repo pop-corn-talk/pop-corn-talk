@@ -15,12 +15,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity handleValidationExceptions(MethodArgumentNotValidException ex, HttpServletRequest request) {
         log.error("url: {}, 메세지: {}, 에러코드: {}, \n StachTrace: {}",request.getRequestURI(),ex.getMessage(),ex.fillInStackTrace());
-        return ResponseEntity.badRequest().body(CommonResponseDto.fail(400, ex.getMessage()));
+        return ResponseEntity.badRequest().body(CommonResponseDto.fail("400", ex.getMessage()));
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity handleIllegalArgumentExceptions(IllegalArgumentException ex, HttpServletRequest request) {
         log.error("url: {}, 메세지: {} \n stacktrace: {}",request.getRequestURI(),ex.getMessage(), ex.fillInStackTrace());
-        return ResponseEntity.badRequest().body(CommonResponseDto.fail(400, ex.getMessage()));
+        return ResponseEntity.badRequest().body(CommonResponseDto.fail("400", ex.getMessage()));
     }
 }
