@@ -1,14 +1,18 @@
 package com.popcorntalk.domain.product.controller;
 
 import com.popcorntalk.domain.product.dto.ProductCreateRequestDto;
+import com.popcorntalk.domain.product.dto.ProductReadResponseDto;
 import com.popcorntalk.domain.product.dto.ProductUpdateRequestDto;
 import com.popcorntalk.domain.product.service.ProductService;
+import com.popcorntalk.global.dto.CommonResponseDto;
 import com.popcorntalk.global.security.UserDetailsImpl;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -28,7 +32,7 @@ public class ProductController {
     public ResponseEntity<Void> createProduct(
         @RequestBody ProductCreateRequestDto productCreateRequestDto,
         @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        productService.createProduct(productCreateRequestDto, userDetails.getUser());
+        productService.createProduct(productCreateRequestDto, userDetails.getUser().getRole());
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -38,7 +42,7 @@ public class ProductController {
     public ResponseEntity<Void> deleteProduct(
         @PathVariable Long productId,
         @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        productService.deleteProduct(productId, userDetails.getUser());
+        productService.deleteProduct(productId, userDetails.getUser().getRole());
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -49,8 +53,18 @@ public class ProductController {
         @PathVariable Long productId,
         @RequestBody ProductUpdateRequestDto productUpdateRequestDto,
         @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        productService.updateProduct(productId, productUpdateRequestDto, userDetails.getUser());
+        productService.updateProduct(productId, productUpdateRequestDto,
+            userDetails.getUser().getRole());
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    //상품 전체조회
+    @GetMapping()
+    public ResponseEntity<CommonResponseDto<List<ProductReadResponseDto>>> getProduct() {
+        List<ProductReadResponseDto> productReadResponseDtoLists = productService.getProduct();
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+            CommonResponseDto.success(productReadResponseDtoLists));
     }
 }
