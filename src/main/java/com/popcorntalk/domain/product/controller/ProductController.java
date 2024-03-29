@@ -28,7 +28,7 @@ public class ProductController {
     private final ProductService productService;
 
     //삼품 등록
-    @PostMapping()
+    @PostMapping
     public ResponseEntity<Void> createProduct(
         @RequestBody ProductCreateRequestDto productCreateRequestDto,
         @AuthenticationPrincipal UserDetailsImpl userDetails) {
@@ -60,7 +60,7 @@ public class ProductController {
     }
 
     //상품 전체조회
-    @GetMapping()
+    @GetMapping
     public ResponseEntity<CommonResponseDto<List<ProductReadResponseDto>>> getProduct() {
         List<ProductReadResponseDto> productReadResponseDtoLists = productService.getProduct();
 
