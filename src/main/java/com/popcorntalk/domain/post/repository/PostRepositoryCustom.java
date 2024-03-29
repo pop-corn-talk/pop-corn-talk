@@ -1,8 +1,8 @@
 package com.popcorntalk.domain.post.repository;
 
 import com.popcorntalk.domain.post.dto.PostGetResponseDto;
-import java.util.List;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 
 public interface PostRepositoryCustom {
 
@@ -20,5 +20,5 @@ public interface PostRepositoryCustom {
      * @param pageable 페이징처리(기본값: size 10, page 0, order createdAt::DESC)
      * @return List<PostGetResponseDto>
      */
-    List<PostGetResponseDto> findPosts(Pageable pageable);
+    Slice<PostGetResponseDto> findPosts(Pageable pageable);
 }

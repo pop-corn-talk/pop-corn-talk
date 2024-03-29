@@ -7,9 +7,9 @@ import com.popcorntalk.domain.post.service.PostService;
 import com.popcorntalk.global.dto.CommonResponseDto;
 import com.popcorntalk.global.security.UserDetailsImpl;
 import jakarta.validation.Valid;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
@@ -42,9 +42,8 @@ public class PostController {
 
     //게시물 전체조회
     @GetMapping
-    public ResponseEntity<CommonResponseDto<List<PostGetResponseDto>>> getPosts(
-        @PageableDefault(sort = "createdAt", direction = Direction.DESC) Pageable pageable
-    ) {
+    public ResponseEntity<CommonResponseDto<Slice<PostGetResponseDto>>> getPosts(
+        @PageableDefault(sort = "createdAt", direction = Direction.DESC) Pageable pageable) {
         return ResponseEntity.status(HttpStatus.OK)
             .body(CommonResponseDto.success(postService.getPosts(pageable)));
     }

@@ -10,9 +10,9 @@ import com.popcorntalk.domain.post.repository.PostRepository;
 import com.popcorntalk.domain.user.entity.User;
 import com.popcorntalk.global.entity.DeletionStatus;
 import com.popcorntalk.global.exception.customException.PermissionDeniedException;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,7 +30,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<PostGetResponseDto> getPosts(Pageable pageable) {
+    public Slice<PostGetResponseDto> getPosts(Pageable pageable) {
         return postRepository.findPosts(pageable);
     }
 

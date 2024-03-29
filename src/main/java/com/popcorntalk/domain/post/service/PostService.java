@@ -4,8 +4,8 @@ import com.popcorntalk.domain.post.dto.PostCreateRequestDto;
 import com.popcorntalk.domain.post.dto.PostGetResponseDto;
 import com.popcorntalk.domain.post.dto.PostUpdateRequestDto;
 import com.popcorntalk.domain.user.entity.User;
-import java.util.List;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 
 public interface PostService {
 
@@ -23,7 +23,7 @@ public interface PostService {
      * @param pageable 페이징처리(기본값: size 10, page 0, order createdAt::DESC)
      * @return List<PostGetResponseDto>
      */
-    List<PostGetResponseDto> getPosts(Pageable pageable);
+    Slice<PostGetResponseDto> getPosts(Pageable pageable);
 
     /**
      * 게시물 생성
