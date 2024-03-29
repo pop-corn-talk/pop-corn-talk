@@ -59,9 +59,10 @@ public class JwtUtil {
     public String createToken(Long userId, String email) {
         Date date = new Date();
 
+//        deleteRefreshToken(userId);
+
         String accessToken = recreationAccessToken(userId, email);
 
-        deleteRefreshToken(userId);
         String refreshToken = BEARER_PREFIX +
             Jwts.builder()
                 .claim("userId", userId)
