@@ -64,8 +64,9 @@ public class User {
     }
 
     public void SpendDailyPostChanceAndEarnPoints(){
-        if(maxDailyPostsLimit <= 0)
+        if (maxDailyPostsLimit <= 0) {
             throw new OutOfDailyPostLimitException();
+        }
 
         maxDailyPostsLimit--;
         point += 1000;
