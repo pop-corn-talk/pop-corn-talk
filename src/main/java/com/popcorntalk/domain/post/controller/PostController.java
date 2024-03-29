@@ -7,7 +7,11 @@ import com.popcorntalk.domain.post.service.PostService;
 import com.popcorntalk.global.dto.CommonResponseDto;
 import com.popcorntalk.global.security.UserDetailsImpl;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -37,6 +41,14 @@ public class PostController {
     }
 
     //게시판 전체조회
+    @GetMapping
+    public ResponseEntity<CommonResponseDto<List<PostGetResponseDto>>> getPosts(
+        @PageableDefault(sort = "createdAt", direction = Direction.DESC) Pageable pageable
+    ) {
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(CommonResponseDto.success(postService.getPosts(pageable)));
+    }
+
     //게시판등록
     @PostMapping
     public ResponseEntity<Void> createPost(@AuthenticationPrincipal UserDetailsImpl userDetails,

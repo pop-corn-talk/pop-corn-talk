@@ -4,6 +4,8 @@ import com.popcorntalk.domain.post.dto.PostCreateRequestDto;
 import com.popcorntalk.domain.post.dto.PostGetResponseDto;
 import com.popcorntalk.domain.post.dto.PostUpdateRequestDto;
 import com.popcorntalk.domain.user.entity.User;
+import java.util.List;
+import org.springframework.data.domain.Pageable;
 
 public interface PostService {
 
@@ -15,8 +17,13 @@ public interface PostService {
      */
     PostGetResponseDto getPost(Long postId);
 
-    //게시판 전체조회
-    //게시판등록
+    /**
+     * 모든 게시물 조회
+     *
+     * @param pageable 페이징처리(기본값: size 10, page 0, order createdAt::DESC)
+     * @return List<PostGetResponseDto>
+     */
+    List<PostGetResponseDto> getPosts(Pageable pageable);
 
     /**
      * 게시물 생성
@@ -42,8 +49,4 @@ public interface PostService {
      * @param postId 삭제할 게시물의 번호
      */
     void deletePost(User user, Long postId);
-
-
-
-    //게시글 이미지 업로드
 }

@@ -6,8 +6,10 @@ import com.popcorntalk.domain.user.entity.QUser;
 import com.popcorntalk.global.config.QuerydslConfig;
 import com.popcorntalk.global.entity.DeletionStatus;
 import com.querydsl.core.types.Projections;
+import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 
 
 @RequiredArgsConstructor
@@ -37,5 +39,26 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
             throw new IllegalArgumentException("해당하는 게시물이 없습니다.");
         }
         return response;
+    }
+
+    @Override
+    public List<PostGetResponseDto> findPosts(Pageable pageable) {
+        List<PostGetResponseDto> responses = querydslConfig.jpaQueryFactory()
+            .select(Projections.fields(PostGetResponseDto.class,
+                qPost.postName,
+                qPost.postContent,
+                qPost.postImage,
+                qUser.email,
+                qPost.createdAt,
+                qPost.modifiedAt))
+            .from(qPost)
+            .leftJoin(qUser).on(qPost.userId.eq(qUser.id))
+            .where(qPost.deletionStatus.eq(DeletionStatus.valueOf("N")))
+            .fetch();
+
+        if (Objects.isNull(responses)) {
+            throw new IllegalArgumentException("게시물이 없습니다.");
+        }
+        return responses;
     }
 }
