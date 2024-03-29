@@ -12,16 +12,20 @@ import com.popcorntalk.domain.user.entity.UserRoleEnum;
 import com.popcorntalk.domain.user.repository.UserRepository;
 import com.popcorntalk.global.entity.DeletionStatus;
 import com.popcorntalk.global.exception.customException.PermissionDeniedException;
+import com.popcorntalk.global.util.StorageService;
+import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @RequiredArgsConstructor
 @Service
 public class PostServiceImpl implements PostService {
 
+    private final StorageService storageService;
     private final PostRepository postRepository;
     private final UserRepository userRepository;
 
@@ -78,6 +82,11 @@ public class PostServiceImpl implements PostService {
         deletePost.softDelete();
     }
 
+    @Override
+    public String createImage(MultipartFile file) throws IOException {
+        return getImageUrl(file);
+    }
+
     private Post findPost(Long postId) {
         Post post = postRepository.findById(postId).orElseThrow(
             () -> new IllegalArgumentException("해당하는 게시물이 없습니다."));
@@ -97,5 +106,12 @@ public class PostServiceImpl implements PostService {
         if (!role.equals(UserRoleEnum.ADMIN)) {
             throw new PermissionDeniedException(PERMISSION_DENIED);
         }
+    }
+
+    private String getImageUrl(MultipartFile file) throws IOException {
+        if (file.isEmpty()) {
+            throw new IllegalArgumentException("이미지가 없습니다.");
+        }
+        return storageService.uploadFile(file);
     }
 }
