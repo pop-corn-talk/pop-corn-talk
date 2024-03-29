@@ -20,6 +20,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table(name = "comments")
+
 public class Comment extends TimeStamped {
 
     @Id
@@ -56,16 +57,12 @@ public class Comment extends TimeStamped {
             .build();
     }
 
-    public static Comment updateOf(CommentUpdateRequestDto requestDto, Long userId, Long postId,
-        Long commentId) {
-        return Comment.builder().commentContent(requestDto.getCommentContent())
-            .userId(userId)
-            .postId(postId).id(commentId).build();
+    public void softUpdate(CommentUpdateRequestDto requestDto) {
+        this.commentContent = requestDto.getCommentContent();
     }
 
-    public void update(Comment comment) {
-        this.commentContent = comment.getCommentContent();
+    public void softDelete() {
+        this.deletionStatus = DeletionStatus.Y;
     }
-
 
 }
