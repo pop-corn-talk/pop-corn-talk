@@ -31,7 +31,7 @@ public class PostController {
 
     private final PostService postService;
 
-    //게시판단일조회
+    //게시물 단일조회
     @GetMapping("/{postId}")
     public ResponseEntity<CommonResponseDto<PostGetResponseDto>> getPost(
         @PathVariable Long postId) {
@@ -40,7 +40,7 @@ public class PostController {
             body(CommonResponseDto.success(postService.getPost(postId)));
     }
 
-    //게시판 전체조회
+    //게시물 전체조회
     @GetMapping
     public ResponseEntity<CommonResponseDto<List<PostGetResponseDto>>> getPosts(
         @PageableDefault(sort = "createdAt", direction = Direction.DESC) Pageable pageable
@@ -49,7 +49,7 @@ public class PostController {
             .body(CommonResponseDto.success(postService.getPosts(pageable)));
     }
 
-    //게시판등록
+    //게시물 등록
     @PostMapping
     public ResponseEntity<Void> createPost(@AuthenticationPrincipal UserDetailsImpl userDetails,
         @Valid @RequestBody PostCreateRequestDto requestDto) {
@@ -57,7 +57,7 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    //게시판수정
+    //게시물 수정
     @PutMapping("/{postId}")
     public ResponseEntity<Void> updatePost(@AuthenticationPrincipal UserDetailsImpl userDetails,
         @PathVariable Long postId,
@@ -66,12 +66,12 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    //게시판삭제
+    //게시물 삭제
     @DeleteMapping("/{postId}")
     public ResponseEntity<Void> deletePost(@AuthenticationPrincipal UserDetailsImpl userDetails,
         @PathVariable Long postId) {
         postService.deletePost(userDetails.getUser(), postId);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
-    //게시글 이미지 업로드
+    //게시물 이미지 업로드
 }
