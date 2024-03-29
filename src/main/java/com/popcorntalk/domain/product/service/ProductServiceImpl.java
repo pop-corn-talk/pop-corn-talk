@@ -24,7 +24,7 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public void createProduct(ProductCreateRequestDto productCreateRequestDto,
         UserRoleEnum userRoleEnum) {
-        validateAdmin(userRoleEnum);
+        //  validateAdmin(userRoleEnum);
         Product product = Product.createOf(productCreateRequestDto);
 
         productRepository.save(product);
@@ -34,8 +34,9 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public void deleteProduct(Long productId, UserRoleEnum userRoleEnum) {
-        validateAdmin(userRoleEnum);
+        //  validateAdmin(userRoleEnum);
         Product productDelete = validateDelete(productId);
+        validateDeleteProduct(productDelete);
 
         productDelete.softDelete();
     }
@@ -45,8 +46,9 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public void updateProduct(Long productId, ProductUpdateRequestDto productUpdateRequestDto,
         UserRoleEnum userRoleEnum) {
-        validateAdmin(userRoleEnum);
+        //  validateAdmin(userRoleEnum);
         Product productUpdate = validateUpdate(productId);
+        validateDeleteProduct(productUpdate);
 
         productUpdate.softUpdate(productUpdateRequestDto);
     }
@@ -55,21 +57,31 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional(readOnly = true)
     public List<ProductReadResponseDto> getProduct() {
-        List<Product> allReadProduct = productRepository.findAllByDeletionStatus(DeletionStatus.N);
+        List<Product> productLists = getProductDeleteStatus();
 
-        return allReadProduct.stream()
+        return productLists.stream()
             .map(ProductReadResponseDto::new)
             .collect(Collectors.toList());
     }
 
+    private void validateDeleteProduct(Product product) {
+        if (product.getDeletionStatus() == DeletionStatus.Y) {
+            throw new IllegalArgumentException("삭제된 상품입니다.");
+        }
+    }
+
+    private List<Product> getProductDeleteStatus() {
+        return productRepository.findAllByDeletionStatus(DeletionStatus.N);
+    }
+
     private Product validateUpdate(Long productId) {
         return productRepository.findById(productId)
-            .orElseThrow(() -> new IllegalArgumentException("수정할 삼품이 없습니다."));
+            .orElseThrow(() -> new IllegalArgumentException("수정할 상품이 없습니다."));
     }
 
     private Product validateDelete(Long productId) {
         return productRepository.findById(productId)
-            .orElseThrow(() -> new IllegalArgumentException("삭제할 삼품이 없습니다."));
+            .orElseThrow(() -> new IllegalArgumentException("삭제할 상품이 없습니다."));
     }
 
     private void validateAdmin(UserRoleEnum userRoleEnum) {
