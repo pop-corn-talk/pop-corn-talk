@@ -64,7 +64,7 @@ public class Product extends TimeStamped {
         this.deletionStatus = DeletionStatus.Y;
     }
 
-    public void softUpdate(ProductUpdateRequestDto productUpdateRequestDto) {
+    public void Update(ProductUpdateRequestDto productUpdateRequestDto) {
         this.productName = productUpdateRequestDto.getProductName();
         this.productImage = productUpdateRequestDto.getProductImage();
         this.productDescription = productUpdateRequestDto.getProductDescription();
