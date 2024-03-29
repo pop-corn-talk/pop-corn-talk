@@ -40,7 +40,8 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional
     public void createPost(User user, PostCreateRequestDto requestDto) {
-        Post newPost = Post.toEntity(requestDto, user.getId());
+        Post newPost = Post.createOf(requestDto.getPostName(), requestDto.getPostContent(),
+            requestDto.getPostImage(), user.getId());
         postRepository.save(newPost);
     }
 
@@ -54,7 +55,8 @@ public class PostServiceImpl implements PostService {
         //2.userService주입
 //        user adminUser = userService.findUser(user.getId());
         validateAdminUser(adminUser.getRole());
-        Post noticePost = Post.toNoticeEntity(requestDto, user.getId());
+        Post noticePost = Post.noticeOf(requestDto.getPostName(), requestDto.getPostContent(),
+            requestDto.getPostImage(), adminUser.getId());
         postRepository.save(noticePost);
     }
 

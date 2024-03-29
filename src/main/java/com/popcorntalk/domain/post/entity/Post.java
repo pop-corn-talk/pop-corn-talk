@@ -1,6 +1,5 @@
 package com.popcorntalk.domain.post.entity;
 
-import com.popcorntalk.domain.post.dto.PostCreateRequestDto;
 import com.popcorntalk.domain.post.dto.PostUpdateRequestDto;
 import com.popcorntalk.global.entity.DeletionStatus;
 import com.popcorntalk.global.entity.TimeStamped;
@@ -47,28 +46,27 @@ public class Post extends TimeStamped {
     private PostEnum postType;
 
     @Enumerated(EnumType.STRING)
-    private DeletionStatus deletionStatus;
+    private DeletionStatus deletionStatus = DeletionStatus.N;
 
-    public static Post toEntity(PostCreateRequestDto requestDto, Long userId) {
-        return Post.builder()
-            .postName(requestDto.getPostName())
-            .userId(userId)
-            .postContent(requestDto.getPostContent())
-            .postImage(requestDto.getPostImage())
-            .postType(PostEnum.POSTED)
-            .deletionStatus(DeletionStatus.N)
-            .build();
+    private Post(String postName, String postContent, String postImage, Long userId,
+        PostEnum postType) {
+        this.postName = postName;
+        this.postContent = postContent;
+        this.postImage = postImage;
+        this.userId = userId;
+        this.postType = postType;
     }
 
-    public static Post toNoticeEntity(PostCreateRequestDto requestDto, Long userId) {
-        return Post.builder()
-            .postName(requestDto.getPostName())
-            .userId(userId)
-            .postContent(requestDto.getPostContent())
-            .postImage(requestDto.getPostImage())
-            .postType(PostEnum.NOTICED)
-            .deletionStatus(DeletionStatus.N)
-            .build();
+    public static Post createOf(String postName, String postContent, String postImage,
+        Long userId) {
+        PostEnum postEnum = PostEnum.POSTED;
+        return new Post(postName, postContent, postImage, userId, postEnum);
+    }
+
+    public static Post noticeOf(String postName, String postContent, String postImage,
+        Long userId) {
+        PostEnum postEnum = PostEnum.NOTICED;
+        return new Post(postName, postContent, postImage, userId, postEnum);
     }
 
     public void update(PostUpdateRequestDto requestDto) {
