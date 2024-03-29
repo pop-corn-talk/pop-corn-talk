@@ -51,6 +51,16 @@ public class PostController {
             .body(CommonResponseDto.success(postService.getPosts(pageable)));
     }
 
+    //삭제된 게시물 조회
+    @GetMapping("/delete")
+    public ResponseEntity<CommonResponseDto<Slice<PostGetResponseDto>>> getDeletePosts(
+        @AuthenticationPrincipal UserDetailsImpl userDetails,
+        @PageableDefault(sort = "modifiedAt", direction = Direction.DESC) Pageable pageable) {
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(CommonResponseDto.success(
+                postService.getDeletePosts(userDetails.getUser(), pageable)));
+    }
+
     //게시글 등록
     @PostMapping
     public ResponseEntity<Void> createPost(@AuthenticationPrincipal UserDetailsImpl userDetails,

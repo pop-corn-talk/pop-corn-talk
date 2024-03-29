@@ -8,6 +8,7 @@ import com.popcorntalk.global.config.QuerydslConfig;
 import com.popcorntalk.global.entity.DeletionStatus;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.DateTimePath;
 import com.querydsl.core.types.dsl.PathBuilder;
@@ -51,7 +52,8 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
     }
 
     @Override
-    public Slice<PostGetResponseDto> findPosts(Pageable pageable) {
+    public Slice<PostGetResponseDto> findPosts(Pageable pageable, DeletionStatus deletionStatus) {
+        Predicate predicate = qPost.deletionStatus.eq(deletionStatus);
         List<PostGetResponseDto> responses = querydslConfig.jpaQueryFactory()
             .select(Projections.fields(PostGetResponseDto.class,
                 qPost.postName,
@@ -62,7 +64,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                 qPost.modifiedAt))
             .from(qPost)
             .leftJoin(qUser).on(qPost.userId.eq(qUser.id))
-            .where(qPost.deletionStatus.eq(DeletionStatus.valueOf("N")))
+            .where(predicate)
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize() + 1)
             .orderBy(postOrderSpecifier(pageable))

@@ -38,7 +38,22 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional(readOnly = true)
     public Slice<PostGetResponseDto> getPosts(Pageable pageable) {
-        return postRepository.findPosts(pageable);
+        DeletionStatus deletionStatus = DeletionStatus.N;
+        return postRepository.findPosts(pageable, deletionStatus);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Slice<PostGetResponseDto> getDeletePosts(User user, Pageable pageable) {
+        //1.userRepository 주입
+        User adminUser = userRepository.findById(user.getId()).orElseThrow(
+            () -> new PermissionDeniedException(PERMISSION_DENIED)
+        );
+        //2.userService주입
+//        user adminUser = userService.findUser(user.getId());
+        validateAdminUser(adminUser.getRole());
+        DeletionStatus deletionStatus = DeletionStatus.Y;
+        return postRepository.findPosts(pageable, deletionStatus);
     }
 
     @Override

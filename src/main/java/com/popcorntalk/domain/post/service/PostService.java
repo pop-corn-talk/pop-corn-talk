@@ -28,6 +28,13 @@ public interface PostService {
     Slice<PostGetResponseDto> getPosts(Pageable pageable);
 
     /**
+     * @param user     로그인유저
+     * @param pageable 페이징처리(기본값: size 10, page 0, order modifiedAt::DESC)
+     * @return Slice<PostGetResponseDto>
+     */
+    Slice<PostGetResponseDto> getDeletePosts(User user, Pageable pageable);
+
+    /**
      * 게시물 생성
      *
      * @param user       로그인유저(게시물생성자)
