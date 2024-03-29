@@ -61,4 +61,12 @@ public class User {
             .deletionStatus(DeletionStatus.N)
             .build();
     }
+
+    public void SpendDailyPostChangeAndEarnPoints(){
+        if(maxDailyPostsLimit == 0)
+            // todo Custom Exception 만들기 전까지 임시
+            throw new IllegalArgumentException();
+        maxDailyPostsLimit--;
+        point += 1000;
+    }
 }
