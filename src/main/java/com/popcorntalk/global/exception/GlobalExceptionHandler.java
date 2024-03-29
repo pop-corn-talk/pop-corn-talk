@@ -15,21 +15,27 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity handleValidationExceptions(MethodArgumentNotValidException ex, HttpServletRequest request) {
-        log.error("url: {}, 메세지: {}, 에러코드: {}, \n StachTrace: {}",request.getRequestURI(),ex.getMessage(),ex.fillInStackTrace());
-        return ResponseEntity.badRequest().body(CommonResponseDto.fail(400, ex.getMessage()));
+    public ResponseEntity handleValidationExceptions(MethodArgumentNotValidException ex,
+        HttpServletRequest request) {
+        log.error("url: {}, 메세지: {}, \n StackTrace", request.getRequestURI(), ex.getMessage(),
+            ex.fillInStackTrace());
+        return ResponseEntity.badRequest().body(CommonResponseDto.fail("400", ex.getMessage()));
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity handleIllegalArgumentExceptions(IllegalArgumentException ex, HttpServletRequest request) {
-        log.error("url: {}, 메세지: {} \n stacktrace: {}",request.getRequestURI(),ex.getMessage(), ex.fillInStackTrace());
-        return ResponseEntity.badRequest().body(CommonResponseDto.fail(400, ex.getMessage()));
+    public ResponseEntity handleIllegalArgumentExceptions(IllegalArgumentException ex,
+        HttpServletRequest request) {
+        log.error("url: {}, 메세지: {}, \n StackTrace", request.getRequestURI(), ex.getMessage(),
+            ex.fillInStackTrace());
+        return ResponseEntity.badRequest().body(CommonResponseDto.fail("400", ex.getMessage()));
     }
 
     @ExceptionHandler(PermissionDeniedException.class)
-    public ResponseEntity handlePermissionDeniedException(PermissionDeniedException ex, HttpServletRequest request){
+    public ResponseEntity handlePermissionDeniedException(PermissionDeniedException ex,
+        HttpServletRequest request) {
         log.error("url: {}, 메세지: {}", request.getRequestURI(), ex.getErrorCode().getMsg());
         return ResponseEntity.status(HttpStatus.FORBIDDEN).
-            body(CommonResponseDto.fail(ex.getErrorCode().getHttpStatus(), ex.getErrorCode().getMsg()));
+            body(CommonResponseDto.fail(ex.getErrorCode().getHttpStatus(),
+                ex.getErrorCode().getMsg()));
     }
 }
