@@ -1,12 +1,20 @@
 package com.popcorntalk.domain.post.service;
 
 import com.popcorntalk.domain.post.dto.PostCreateRequestDto;
+import com.popcorntalk.domain.post.dto.PostGetResponseDto;
 import com.popcorntalk.domain.post.dto.PostUpdateRequestDto;
 import com.popcorntalk.domain.user.entity.User;
 
 public interface PostService {
 
-    //게시판단일조회
+    /**
+     * 게시물 단일 조회
+     *
+     * @param postId 조회할 게시물의 번호
+     * @return PostGetResponseDto
+     */
+    PostGetResponseDto getPost(Long postId);
+
     //게시판 전체조회
     //게시판등록
 
@@ -34,6 +42,8 @@ public interface PostService {
      * @param postId 삭제할 게시물의 번호
      */
     void deletePost(User user, Long postId);
+
+
 
     //게시글 이미지 업로드
 }

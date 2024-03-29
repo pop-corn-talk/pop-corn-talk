@@ -1,8 +1,10 @@
 package com.popcorntalk.domain.post.controller;
 
 import com.popcorntalk.domain.post.dto.PostCreateRequestDto;
+import com.popcorntalk.domain.post.dto.PostGetResponseDto;
 import com.popcorntalk.domain.post.dto.PostUpdateRequestDto;
 import com.popcorntalk.domain.post.service.PostService;
+import com.popcorntalk.global.dto.CommonResponseDto;
 import com.popcorntalk.global.security.UserDetailsImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -25,6 +28,14 @@ public class PostController {
     private final PostService postService;
 
     //게시판단일조회
+    @GetMapping("/{postId}")
+    public ResponseEntity<CommonResponseDto<PostGetResponseDto>> getPost(
+        @PathVariable Long postId) {
+
+        return ResponseEntity.status(HttpStatus.OK).
+            body(CommonResponseDto.success(postService.getPost(postId)));
+    }
+
     //게시판 전체조회
     //게시판등록
     @PostMapping

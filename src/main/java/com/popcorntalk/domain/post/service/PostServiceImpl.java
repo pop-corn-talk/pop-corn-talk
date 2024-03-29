@@ -3,15 +3,13 @@ package com.popcorntalk.domain.post.service;
 import static com.popcorntalk.global.exception.ErrorCode.PERMISSION_DENIED;
 
 import com.popcorntalk.domain.post.dto.PostCreateRequestDto;
+import com.popcorntalk.domain.post.dto.PostGetResponseDto;
 import com.popcorntalk.domain.post.dto.PostUpdateRequestDto;
 import com.popcorntalk.domain.post.entity.Post;
 import com.popcorntalk.domain.post.repository.PostRepository;
 import com.popcorntalk.domain.user.entity.User;
 import com.popcorntalk.global.entity.DeletionStatus;
 import com.popcorntalk.global.exception.customException.PermissionDeniedException;
-import java.util.Optional;
-import javax.crypto.spec.OAEPParameterSpec;
-import javax.swing.text.html.Option;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,12 +21,18 @@ public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
 
     @Override
+    @Transactional(readOnly = true)
+    public PostGetResponseDto getPost(Long postId) {
+        return postRepository.findPost(postId);
+    }
+
+    @Override
     @Transactional
     public void createPost(User user, PostCreateRequestDto requestDto) {
         Post newPost = Post.toEntity(requestDto, user.getId());
-
         postRepository.save(newPost);
     }
+
 
     @Override
     @Transactional
@@ -50,8 +54,8 @@ public class PostServiceImpl implements PostService {
 
     private Post findPost(Long postId) {
         Post post = postRepository.findById(postId).orElseThrow(
-            () ->  new IllegalArgumentException("해당하는 게시물이 없습니다."));
-        if(post.getDeletionStatus().equals(DeletionStatus.Y)) {
+            () -> new IllegalArgumentException("해당하는 게시물이 없습니다."));
+        if (post.getDeletionStatus().equals(DeletionStatus.Y)) {
             throw new IllegalArgumentException("삭제된 게시물 입니다.");
         }
         return post;
