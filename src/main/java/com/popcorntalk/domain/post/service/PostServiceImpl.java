@@ -8,6 +8,8 @@ import com.popcorntalk.domain.post.dto.PostUpdateRequestDto;
 import com.popcorntalk.domain.post.entity.Post;
 import com.popcorntalk.domain.post.repository.PostRepository;
 import com.popcorntalk.domain.user.entity.User;
+import com.popcorntalk.domain.user.entity.UserRoleEnum;
+import com.popcorntalk.domain.user.repository.UserRepository;
 import com.popcorntalk.global.entity.DeletionStatus;
 import com.popcorntalk.global.exception.customException.PermissionDeniedException;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class PostServiceImpl implements PostService {
 
     private final PostRepository postRepository;
+    private final UserRepository userRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -41,6 +44,19 @@ public class PostServiceImpl implements PostService {
         postRepository.save(newPost);
     }
 
+    @Override
+    @Transactional
+    public void createNoticePost(User user, PostCreateRequestDto requestDto) {
+        //1.userRepository 주입
+        User adminUser = userRepository.findById(user.getId()).orElseThrow(
+            () -> new PermissionDeniedException(PERMISSION_DENIED)
+        );
+        //2.userService주입
+//        user adminUser = userService.findUser(user.getId());
+        validateAdminUser(adminUser.getRole());
+        Post noticePost = Post.toNoticeEntity(requestDto, user.getId());
+        postRepository.save(noticePost);
+    }
 
     @Override
     @Transactional
@@ -71,6 +87,12 @@ public class PostServiceImpl implements PostService {
 
     private void validatePostOwner(Long postUserId, Long loginUserId) {
         if (!postUserId.equals(loginUserId)) {
+            throw new PermissionDeniedException(PERMISSION_DENIED);
+        }
+    }
+
+    private void validateAdminUser(UserRoleEnum role) {
+        if (!role.equals(UserRoleEnum.ADMIN)) {
             throw new PermissionDeniedException(PERMISSION_DENIED);
         }
     }

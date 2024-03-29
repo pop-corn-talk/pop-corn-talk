@@ -34,6 +34,14 @@ public interface PostService {
     void createPost(User user, PostCreateRequestDto requestDto);
 
     /**
+     * 공지 게시물 작성
+     *
+     * @param user       로그인 유저(게시물생성자)
+     * @param requestDto 생성될 게시물의 내용
+     */
+    void createNoticePost(User user, PostCreateRequestDto requestDto);
+
+    /**
      * 게시물 수정
      *
      * @param user       로그인 유저

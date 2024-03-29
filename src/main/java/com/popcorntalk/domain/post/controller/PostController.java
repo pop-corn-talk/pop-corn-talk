@@ -31,7 +31,7 @@ public class PostController {
 
     private final PostService postService;
 
-    //게시물 단일조회
+    //게시글 단일 조회
     @GetMapping("/{postId}")
     public ResponseEntity<CommonResponseDto<PostGetResponseDto>> getPost(
         @PathVariable Long postId) {
@@ -40,7 +40,7 @@ public class PostController {
             body(CommonResponseDto.success(postService.getPost(postId)));
     }
 
-    //게시물 전체조회
+    //게시글 전체조회
     @GetMapping
     public ResponseEntity<CommonResponseDto<Slice<PostGetResponseDto>>> getPosts(
         @PageableDefault(sort = "createdAt", direction = Direction.DESC) Pageable pageable) {
@@ -48,11 +48,20 @@ public class PostController {
             .body(CommonResponseDto.success(postService.getPosts(pageable)));
     }
 
-    //게시물 등록
+    //게시글 등록
     @PostMapping
     public ResponseEntity<Void> createPost(@AuthenticationPrincipal UserDetailsImpl userDetails,
         @Valid @RequestBody PostCreateRequestDto requestDto) {
         postService.createPost(userDetails.getUser(), requestDto);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    //관리자 게시물 등록
+    @PostMapping("/notice")
+    public ResponseEntity<Void> createNoticePost(
+        @AuthenticationPrincipal UserDetailsImpl userDetails,
+        @Valid @RequestBody PostCreateRequestDto requestDto) {
+        postService.createNoticePost(userDetails.getUser(), requestDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
