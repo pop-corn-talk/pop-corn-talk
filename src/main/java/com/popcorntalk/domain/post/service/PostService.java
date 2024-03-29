@@ -1,6 +1,7 @@
 package com.popcorntalk.domain.post.service;
 
 import com.popcorntalk.domain.post.dto.PostCreateRequestDto;
+import com.popcorntalk.domain.post.dto.PostGetImageResponseDto;
 import com.popcorntalk.domain.post.dto.PostGetResponseDto;
 import com.popcorntalk.domain.post.dto.PostUpdateRequestDto;
 import com.popcorntalk.domain.user.entity.User;
@@ -71,8 +72,8 @@ public interface PostService {
      * 이미지 업로드
      *
      * @param file 업로드할 파일
-     * @return String
+     * @return PostGetImageResponseDto
      * @throws IOException
      */
-    String createImage(MultipartFile file) throws IOException;
+    PostGetImageResponseDto createImage(MultipartFile file) throws IOException;
 }

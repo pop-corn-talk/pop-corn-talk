@@ -3,6 +3,7 @@ package com.popcorntalk.domain.post.service;
 import static com.popcorntalk.global.exception.ErrorCode.PERMISSION_DENIED;
 
 import com.popcorntalk.domain.post.dto.PostCreateRequestDto;
+import com.popcorntalk.domain.post.dto.PostGetImageResponseDto;
 import com.popcorntalk.domain.post.dto.PostGetResponseDto;
 import com.popcorntalk.domain.post.dto.PostUpdateRequestDto;
 import com.popcorntalk.domain.post.entity.Post;
@@ -98,8 +99,8 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public String createImage(MultipartFile file) throws IOException {
-        return getImageUrl(file);
+    public PostGetImageResponseDto createImage(MultipartFile file) throws IOException {
+        return new PostGetImageResponseDto(getImageUrl(file));
     }
 
     private Post findPost(Long postId) {

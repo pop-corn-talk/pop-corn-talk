@@ -1,6 +1,7 @@
 package com.popcorntalk.domain.post.controller;
 
 import com.popcorntalk.domain.post.dto.PostCreateRequestDto;
+import com.popcorntalk.domain.post.dto.PostGetImageResponseDto;
 import com.popcorntalk.domain.post.dto.PostGetResponseDto;
 import com.popcorntalk.domain.post.dto.PostUpdateRequestDto;
 import com.popcorntalk.domain.post.service.PostService;
@@ -97,8 +98,9 @@ public class PostController {
 
     //게시물 이미지 업로드
     @PostMapping("/image")
-    public ResponseEntity<CommonResponseDto<String>> createImage(@RequestPart(value = "postImage")
-    MultipartFile file) throws IOException {
+    public ResponseEntity<CommonResponseDto<PostGetImageResponseDto>> createImage(
+        @RequestPart(value = "postImage")
+        MultipartFile file) throws IOException {
         return ResponseEntity.status(HttpStatus.CREATED)
             .body(CommonResponseDto.success(postService.createImage(file)));
     }
