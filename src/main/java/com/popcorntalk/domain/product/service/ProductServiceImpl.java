@@ -24,7 +24,7 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public void createProduct(ProductCreateRequestDto productCreateRequestDto,
         UserRoleEnum userRoleEnum) {
-        //  validateAdmin(userRoleEnum);
+        validateAdmin(userRoleEnum);
         Product product = Product.createOf(productCreateRequestDto);
 
         productRepository.save(product);
@@ -34,7 +34,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public void deleteProduct(Long productId, UserRoleEnum userRoleEnum) {
-        //  validateAdmin(userRoleEnum);
+        validateAdmin(userRoleEnum);
         Product productDelete = validateDelete(productId);
         validateDeleteProduct(productDelete);
 
@@ -46,7 +46,7 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public void updateProduct(Long productId, ProductUpdateRequestDto productUpdateRequestDto,
         UserRoleEnum userRoleEnum) {
-        //  validateAdmin(userRoleEnum);
+        validateAdmin(userRoleEnum);
         Product productUpdate = validateUpdate(productId);
         validateDeleteProduct(productUpdate);
 
