@@ -1,6 +1,7 @@
 package com.popcorntalk.domain.user.entity;
 
 import com.popcorntalk.global.entity.DeletionStatus;
+import com.popcorntalk.global.exception.customException.OutOfDailyPostLimitException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -64,8 +65,7 @@ public class User {
 
     public void SpendDailyPostChanceAndEarnPoints(){
         if(maxDailyPostsLimit == 0)
-            // todo Custom Exception 만들기 전까지 임시
-            throw new IllegalArgumentException();
+            throw new OutOfDailyPostLimitException();
 
         maxDailyPostsLimit--;
         point += 1000;
