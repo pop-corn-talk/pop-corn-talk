@@ -74,7 +74,7 @@ public class Post extends TimeStamped {
     public void update(PostUpdateRequestDto requestDto) {
         this.postName = requestDto.getPostName();
         this.postContent = requestDto.getPostContent();
-        this.postImage = postContent;
+        this.postImage = requestDto.getPostImage();
     }
 
     public void softDelete() {
