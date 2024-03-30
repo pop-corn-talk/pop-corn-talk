@@ -53,7 +53,7 @@ public class PostServiceImpl implements PostService {
     public Slice<PostGetResponseDto> getDeletePosts(User user, Pageable pageable) {
         //1.userRepository 주입
         User adminUser = userRepository.findById(user.getId()).orElseThrow(
-            () -> new PermissionDeniedException(PERMISSION_DENIED)
+            () -> new IllegalArgumentException("해당하는 유저가 없습니다.")
         );
         //2.userService주입
 //        user adminUser = userService.findUser(user.getId());
