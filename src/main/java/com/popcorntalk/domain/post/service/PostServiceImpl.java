@@ -16,6 +16,9 @@ import com.popcorntalk.global.exception.customException.PermissionDeniedExceptio
 import com.popcorntalk.global.util.StorageService;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -23,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 @RequiredArgsConstructor
+@CacheConfig(cacheManager = "postCacheManager")
 @Service
 public class PostServiceImpl implements PostService {
 
@@ -31,6 +35,7 @@ public class PostServiceImpl implements PostService {
     private final UserRepository userRepository;
 
     @Override
+    @Cacheable(value = "Post", key = "#postId", unless = "#result == null")
     @Transactional(readOnly = true)
     public PostGetResponseDto getPost(Long postId) {
         return postRepository.findPost(postId);
@@ -81,6 +86,9 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+//    @CachePut(value = "Post", key = "#postId", unless = "#result == null")
+//    일단은 업데이트시 캐시를 지우는 방향으로 선회, @CachePut 어노테이션이 정상적으로 작동안됨
+    @CacheEvict(value = "Post", key = "#postId")
     @Transactional
     public void updatePost(User user, PostUpdateRequestDto requestDto, Long postId) {
         Post updatePost = findPost(postId);
@@ -90,6 +98,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @CacheEvict(value = "Post", key = "#postId")
     @Transactional
     public void deletePost(User user, Long postId) {
         Post deletePost = findPost(postId);
