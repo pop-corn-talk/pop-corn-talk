@@ -21,6 +21,7 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -115,6 +116,7 @@ public class JwtUtil {
             return false;
         }
     }
+
     @Transactional
     public String validateRefreshToken(Long userId,String previousJwt) {
 
