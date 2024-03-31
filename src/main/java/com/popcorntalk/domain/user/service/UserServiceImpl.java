@@ -53,11 +53,7 @@ public class UserServiceImpl implements UserService {
   @Override
   public UserPublicInfoResponseDto getOtherUserInfo(Long userId) {
 
-    User user = userRepository.getUser(userId);
-
-    return UserPublicInfoResponseDto.builder()
-        .email(user.getEmail())
-        .build();
+    return userRepository.getUserEmail(userId);
   }
 
   @Override

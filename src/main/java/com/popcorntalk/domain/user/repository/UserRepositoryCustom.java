@@ -9,5 +9,7 @@ public interface UserRepositoryCustom {
 
   User getUser(Long userId);
 
+  UserPublicInfoResponseDto getUserEmail(Long userId);
+
   Page<UserPublicInfoResponseDto> getPageUsers(Pageable pageable);
 }

@@ -26,6 +26,19 @@ public class UserRepositoryCustomImpl implements UserRepositoryCustom {
 
     return jpaQueryFactory.selectFrom(user).where(predicate).fetchOne();
   }
+
+  @Override
+  public UserPublicInfoResponseDto getUserEmail(Long userId) {
+    BooleanExpression predicate = user.id.eq(userId)
+        .and(user.deletionStatus.eq(DeletionStatus.N));
+
+    return jpaQueryFactory
+        .select(Projections.fields(UserPublicInfoResponseDto.class, user.email))
+        .from(user)
+        .where(predicate)
+        .fetchOne();
+  }
+
   @Override
   public Page<UserPublicInfoResponseDto> getPageUsers(Pageable pageable) {
 
