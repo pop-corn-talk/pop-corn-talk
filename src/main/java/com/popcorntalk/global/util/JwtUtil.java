@@ -12,9 +12,11 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,7 +40,7 @@ public class JwtUtil {
     // Token 식별자 꼭 붙일 필요는 없지만 규칙
     public static final String BEARER_PREFIX = "Bearer ";
     //토큰 만료시간
-    private final long TOKEN_TIME = 60 * 60 * 1000L;
+    private final long TOKEN_TIME =  60 * 1000L;
 
     private final long REFRESHTOKENTIME = 60 * 60 * 1000 * 24 * 7L;
 
@@ -73,7 +75,11 @@ public class JwtUtil {
                 .signWith(key, signatureAlgorithm)  // 사용할 암호화 알고리즘과
                 // signature 에 들어갈 secret값 세팅
                 .compact();
-        RefreshToken token = RefreshToken.builder().refreshToken(refreshToken).userId(userId)
+        RefreshToken token = RefreshToken
+            .builder()
+            .refreshToken(refreshToken)
+            .previousAccessToken(accessToken.substring(7))
+            .userId(userId)
             .build();
         refreshTokenRepository.save(token);
 
@@ -109,10 +115,11 @@ public class JwtUtil {
             return false;
         }
     }
+    @Transactional
+    public String validateRefreshToken(Long userId,String previousJwt) {
 
-    public String validateRefreshToken(Long userId) {
-        RefreshToken token = refreshTokenRepository.findByUserId(userId).orElseThrow(
-            () -> new IllegalArgumentException("RefreshToken 이 유효하지 않습니다.")
+        RefreshToken token = refreshTokenRepository.findByUserIdAndAndPreviousAccessToken(userId,previousJwt).orElseThrow(
+            () -> new IllegalArgumentException("최신 발급한 AccessToken 이 아니거나 RefreshToken 이 유효하지 않습니다.")
         );
         String refreshToken = token.getRefreshToken().substring(7);
         Claims info = Jwts.parserBuilder().setSigningKey(key).build()
@@ -130,7 +137,14 @@ public class JwtUtil {
                 .setExpiration(new Date(date.getTime() + TOKEN_TIME))
                 .signWith(key, signatureAlgorithm)
                 .compact();
-
+        try{
+            RefreshToken token = refreshTokenRepository.findByUserId(userId).orElseThrow(
+                () -> new IllegalArgumentException("RefreshToken 이 유효하지 않습니다.")
+            );
+            token.update(accessToken);
+        }catch (Exception e){
+            log.error("현제 refresh 토큰이 없습니다, refresh 토큰을 발급 합니다.");
+        }
         return accessToken;
     }
 

@@ -46,8 +46,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 Date date = new Date();
                 if(jwtUtil.getMemberInfoFromExpiredToken(tokenValue).getExpiration().compareTo(date)<0) {
                     String token = jwtUtil.validateRefreshToken(
-                        jwtUtil.getMemberInfoFromExpiredToken(tokenValue).get("userId",
-                            Long.class));
+                        jwtUtil.getMemberInfoFromExpiredToken(tokenValue)
+                            .get("userId", Long.class),tokenValue);
                     res.addHeader(JwtUtil.AUTHORIZATION_HEADER, token);
                     ObjectNode json = new ObjectMapper().createObjectNode();
                     json.put("message", "새로운 토큰이 발급되었습니다.                       ");
