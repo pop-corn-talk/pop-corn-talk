@@ -10,12 +10,11 @@ import lombok.NoArgsConstructor;
 public class ProductCreateRequestDto {
 
     @NotEmpty
-    private String productName;
+    private String name;
     @NotEmpty
-    private String productImage;
+    private String image;
     @NotEmpty
-    private String productDescription;
+    private String description;
     @NotNull
-    private Long productPrice;
-
+    private Long price;
 }

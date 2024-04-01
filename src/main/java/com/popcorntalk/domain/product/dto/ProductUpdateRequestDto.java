@@ -1,6 +1,5 @@
 package com.popcorntalk.domain.product.dto;
 
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -11,11 +10,11 @@ import lombok.NoArgsConstructor;
 public class ProductUpdateRequestDto {
 
     @NotEmpty
-    private String productName;
+    private String name;
     @NotEmpty
-    private String productImage;
+    private String image;
     @NotEmpty
-    private String productDescription;
+    private String description;
     @NotNull
-    private Long productPrice;
+    private Long price;
 }
