@@ -1,7 +1,9 @@
 package com.popcorntalk.global.exception;
 
 import com.popcorntalk.global.dto.CommonResponseDto;
+import com.popcorntalk.global.exception.customException.NotFoundException;
 import com.popcorntalk.global.exception.customException.PermissionDeniedException;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -35,6 +37,15 @@ public class GlobalExceptionHandler {
         HttpServletRequest request) {
         log.error("url: {}, 메세지: {}", request.getRequestURI(), ex.getErrorCode().getMsg());
         return ResponseEntity.status(HttpStatus.FORBIDDEN).
+            body(CommonResponseDto.fail(ex.getErrorCode().getHttpStatus(),
+                ex.getErrorCode().getMsg()));
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity handleEntityNotFoundException(NotFoundException ex,
+        HttpServletRequest request) {
+        log.error("url: {}, 메세지: {}", request.getRequestURI(), ex.getErrorCode().getMsg());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).
             body(CommonResponseDto.fail(ex.getErrorCode().getHttpStatus(),
                 ex.getErrorCode().getMsg()));
     }
