@@ -28,26 +28,26 @@ public class Product extends TimeStamped {
     private Long id;
 
     @Column(nullable = false, length = 50)
-    private String Name;
+    private String name;
 
     @Column(nullable = false)
-    private String Image;
+    private String image;
 
     @Column(nullable = true, length = 50)
-    private String Description;
+    private String description;
 
     @Column(nullable = false)
-    private Long Price;
+    private Long price;
 
     @Column(nullable = false)
     private DeletionStatus deletionStatus;
 
-    private Product(String Name, String Image, String Description,
-        Long Price) {
-        this.Name = Name;
-        this.Image = Image;
-        this.Description = Description;
-        this.Price = Price;
+    private Product(String name, String image, String description,
+        Long price) {
+        this.name = name;
+        this.image = image;
+        this.description = description;
+        this.price = price;
         this.deletionStatus = DeletionStatus.N;
     }
 
@@ -65,9 +65,9 @@ public class Product extends TimeStamped {
     }
 
     public void update(ProductUpdateRequestDto productUpdateRequestDto) {
-        this.Name = productUpdateRequestDto.getName();
-        this.Image = productUpdateRequestDto.getImage();
-        this.Description = productUpdateRequestDto.getDescription();
-        this.Price = productUpdateRequestDto.getPrice();
+        this.name = productUpdateRequestDto.getName();
+        this.image = productUpdateRequestDto.getImage();
+        this.description = productUpdateRequestDto.getDescription();
+        this.price = productUpdateRequestDto.getPrice();
     }
 }
