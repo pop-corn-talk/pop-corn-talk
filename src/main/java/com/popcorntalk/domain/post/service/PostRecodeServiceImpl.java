@@ -5,6 +5,7 @@ import com.popcorntalk.domain.post.repository.PostRecodeRepository;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -13,6 +14,7 @@ public class PostRecodeServiceImpl implements PostRecodeService {
     private final PostRecodeRepository postRecodeRepository;
 
     @Override
+    @Transactional
     public void createPostRecode(Long userId, Long postId) {
         PostRecode postRecode = PostRecode.createOf(userId, postId);
 
