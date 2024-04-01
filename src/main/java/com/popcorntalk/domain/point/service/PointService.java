@@ -37,13 +37,19 @@ public class PointService {
         }
     }
 
+    public void rewardPointForSignUp(Long userId) {
+        Point signupPoints = Point.createPoint(userId, SIGNUP_REWARD);
+        pointRepository.save(signupPoints);
+    }
+
+    public void earnPoint(Long userId, int point) {
+        Point userPoint = getPoint(userId);
+        int newPointBalance = userPoint.getPoint() + point;
+        userPoint.updatePoint(newPointBalance);
+    }
+
     public Point getPoint(Long userId) {
         return pointRepository.findByUserId(userId)
             .orElseThrow(() -> new IllegalArgumentException("Point not found"));
-    }
-
-    public void rewardPointsForSignUp(Long userId) {
-        Point signupPoints = Point.createPoint(userId, SIGNUP_REWARD);
-        pointRepository.save(signupPoints);
     }
 }
