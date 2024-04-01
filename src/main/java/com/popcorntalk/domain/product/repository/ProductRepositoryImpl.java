@@ -11,7 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 
 @RequiredArgsConstructor
-public class ProductRepositoryImpl implements ProductQueryRepository {
+public class ProductRepositoryImpl implements ProductRepositoryCustom {
 
     private final QuerydslConfig querydslConfig;
     QProduct qProduct = QProduct.product;
@@ -21,14 +21,16 @@ public class ProductRepositoryImpl implements ProductQueryRepository {
         List<ProductReadResponseDto> ProductResponseDtoList = querydslConfig.jpaQueryFactory()
             .select(Projections.fields(ProductReadResponseDto.class,
                 qProduct.id,
-                qProduct.Name,
-                qProduct.Image,
-                qProduct.deletionStatus,
-                qProduct.Price,
+                qProduct.name,
+                qProduct.image,
+                qProduct.description,
+                qProduct.price,
                 qProduct.createdAt,
                 qProduct.modifiedAt))
             .from(qProduct)
             .where(qProduct.deletionStatus.eq(DeletionStatus.valueOf("N")))
+            .limit(pageable.getPageSize())
+            .offset(pageable.getOffset())
             .fetch();
 
         if (Objects.isNull(ProductResponseDtoList)) {
