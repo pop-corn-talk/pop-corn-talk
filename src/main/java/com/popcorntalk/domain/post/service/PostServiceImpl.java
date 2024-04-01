@@ -2,6 +2,7 @@ package com.popcorntalk.domain.post.service;
 
 import static com.popcorntalk.global.exception.ErrorCode.PERMISSION_DENIED;
 
+import com.popcorntalk.domain.point.service.PointService;
 import com.popcorntalk.domain.post.dto.PostCreateRequestDto;
 import com.popcorntalk.domain.post.dto.PostGetImageResponseDto;
 import com.popcorntalk.domain.post.dto.PostGetResponseDto;
@@ -31,8 +32,13 @@ import org.springframework.web.multipart.MultipartFile;
 public class PostServiceImpl implements PostService {
 
     private final StorageService storageService;
+    private final PostRecodeService postRecodeService;
+    private final PointService pointService;
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+
+    private final int POST_CREATE_REWORD = 100;
+
 
     @Override
     @Cacheable(value = "Post", key = "#postId", unless = "#result == null")
@@ -67,7 +73,13 @@ public class PostServiceImpl implements PostService {
     public void createPost(User user, PostCreateRequestDto requestDto) {
         Post newPost = Post.createOf(requestDto.getPostName(), requestDto.getPostContent(),
             requestDto.getPostImage(), user.getId());
-        postRepository.save(newPost);
+
+        Post savedPost = postRepository.save(newPost);
+
+        postRecodeService.createPostRecode(user.getId(), savedPost.getId());
+        if (postRecodeService.isExistsReachedPostLimit(user.getId())) {
+            pointService.earnPoint(user.getId(), POST_CREATE_REWORD);
+        }
     }
 
     @Override
