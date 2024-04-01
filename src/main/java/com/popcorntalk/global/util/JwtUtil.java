@@ -16,6 +16,7 @@ import jakarta.transaction.Transactional;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -56,14 +57,23 @@ public class JwtUtil {
         key = Keys.hmacShaKeyFor(bytes); //key에다가 디코딩한 secretKey를 넣습니다.
     }
 
-    // 토큰 생성
+    // 로그인시 토큰 생성
+    @Transactional
     public String createToken(Long userId, String email) {
         Date date = new Date();
-
-//        deleteRefreshToken(userId);
-
         String accessToken = recreationAccessToken(userId, email);
 
+        try {
+            CheckAndUpdateRefreshToken(date,accessToken,userId,email);
+        }catch (NoSuchElementException e){
+            SaveNewRefreshToken(date,accessToken,userId,email);
+        }
+        finally {
+            return accessToken;
+        }
+    }
+
+    private void SaveNewRefreshToken(Date date,String accessToken, Long userId, String email) {
         String refreshToken = BEARER_PREFIX +
             Jwts.builder()
                 .claim("userId", userId)
@@ -72,17 +82,38 @@ public class JwtUtil {
                 .setIssuedAt(new Date(date.getTime())) // 토큰 발행 시간 정보
                 .setExpiration(new Date(date.getTime() + REFRESHTOKENTIME)) // set Expire Time
                 .signWith(key, signatureAlgorithm)  // 사용할 암호화 알고리즘과
-                // signature 에 들어갈 secret값 세팅
+                // signature 에 들어갈 secret 값 세팅
                 .compact();
+
         RefreshToken token = RefreshToken
             .builder()
             .refreshToken(refreshToken)
             .previousAccessToken(accessToken.substring(7))
             .userId(userId)
             .build();
-        refreshTokenRepository.save(token);
 
-        return accessToken;
+        // todo : 팀원과 상의후 결정: REFRESH TOKEN 을 redis 에 넣을 가요 DB 에 넣을가요? 일단 둘다 적용 해봄.
+        String key = "ID : " + userId;
+        redisUtil.set(key,token,(int) REFRESHTOKENTIME);
+
+        refreshTokenRepository.save(token);
+    }
+
+    private void CheckAndUpdateRefreshToken(Date date,String accessToken,Long userId,String email) {
+
+        Optional<RefreshToken> checkToken = refreshTokenRepository.findByUserId(userId);
+        RefreshToken CheckrefreshToken = checkToken.get();
+
+        String bearerPrefixExcludedJwt = CheckrefreshToken.getRefreshToken().substring(7);
+        // 만약에 DB 안에 있는 refresh token 이 만료 죄었다면 지우고 다시 생성 합니다.
+        if(getMemberInfoFromExpiredToken(bearerPrefixExcludedJwt).getExpiration().compareTo(date)<0) {
+            checkToken.ifPresent(refreshTokenRepository::delete);
+
+            SaveNewRefreshToken(date,accessToken,userId,email);
+        }
+        else {
+            CheckrefreshToken.update(accessToken);
+        }
     }
 
     public void deleteRefreshToken(Long userId) {
