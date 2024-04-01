@@ -11,11 +11,11 @@ public interface UserService {
     void signup(UserSignupRequestDto userSignupRequestDto);
 
     // 유저가 자신 개인의 정보를 조회. email 포인트 포스트 횟수
-    UserInfoResponseDto getUserInfo(Long userId);
+    UserInfoResponseDto getMyInfo(Long userId);
 
     // 유저가 다른 이의 정보를 확인. email 만
-    UserPublicInfoResponseDto getOtherUserInfo(Long userId);
+    UserPublicInfoResponseDto getUserInfo(Long userId);
 
     // 유저가 다른 이들의 정보를 확인. email 만
-    Page<UserPublicInfoResponseDto> getAllOtherUserInfo(Pageable pageable);
+    Page<UserPublicInfoResponseDto> getAllUserInfo(Pageable pageable);
 }

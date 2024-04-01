@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService {
 
   @Override
   @Transactional(readOnly = true)
-  public UserInfoResponseDto getUserInfo(Long userId) {
+  public UserInfoResponseDto getMyInfo(Long userId) {
 
     User user = userRepository.getUser(userId);
 
@@ -52,13 +52,13 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public UserPublicInfoResponseDto getOtherUserInfo(Long userId) {
+  public UserPublicInfoResponseDto getUserInfo(Long userId) {
 
     return userRepository.getUserEmail(userId);
   }
 
   @Override
-  public Page<UserPublicInfoResponseDto> getAllOtherUserInfo(Pageable pageable) {
+  public Page<UserPublicInfoResponseDto> getAllUserInfo(Pageable pageable) {
 
     return userRepository.getPageUsers(pageable);
   }

@@ -42,14 +42,14 @@ public class UserController {
         @AuthenticationPrincipal UserDetailsImpl userDetailsImpl
     ) {
         return ResponseEntity.ok().body(
-            CommonResponseDto.success(userService.getUserInfo(userDetailsImpl.getUser().getId())));
+            CommonResponseDto.success(userService.getMyInfo(userDetailsImpl.getUser().getId())));
     }
     @GetMapping("/{userId}/info")
     public ResponseEntity<CommonResponseDto<UserPublicInfoResponseDto>> getUserInfo(
         @PathVariable Long userId
     ) {
         return ResponseEntity.ok().body(
-            CommonResponseDto.success(userService.getOtherUserInfo(userId)));
+            CommonResponseDto.success(userService.getUserInfo(userId)));
     }
 
     @GetMapping
@@ -57,7 +57,7 @@ public class UserController {
         @PageableDefault(sort = "createdAt", direction = Direction.DESC)Pageable pageable
     ) {
         return ResponseEntity.ok().body(
-            CommonResponseDto.success(userService.getAllOtherUserInfo(pageable)));
+            CommonResponseDto.success(userService.getAllUserInfo(pageable)));
     }
 }
 
