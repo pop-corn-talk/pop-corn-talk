@@ -1,9 +1,11 @@
 package com.popcorntalk.domain.comment.dto;
 
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 
 @Getter
 public class CommentCreateRequestDto {
 
-    private String commentContent;
+    @NotEmpty
+    private String content;
 }
