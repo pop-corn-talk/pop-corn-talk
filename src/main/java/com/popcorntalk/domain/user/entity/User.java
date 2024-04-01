@@ -9,14 +9,11 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Builder
+
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "users")
@@ -44,12 +41,8 @@ public class User {
         this.email = email;
     }
 
-    public static User SignupOf(String email, String password) {
-        return User.builder()
-            .email(email)
-            .password(password)
-            .role(UserRoleEnum.USER)
-            .deletionStatus(DeletionStatus.N)
-            .build();
+    public void SignUp(String email,String password){
+        this.email = email;
+        this.password = password;
     }
 }
