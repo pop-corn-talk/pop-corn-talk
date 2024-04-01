@@ -118,31 +118,31 @@ public class PostTestData {
     //Post
     Post TEST_POST = Post.builder()
         .id(TEST_POST_ID)
-        .postName(POST_NAME)
-        .postContent(POST_CONTENT)
-        .postImage(POST_IMAGE)
+        .name(POST_NAME)
+        .content(POST_CONTENT)
+        .image(POST_IMAGE)
         .userId(TEST_USER_ID)
-        .postType(PostEnum.POSTED)
+        .type(PostEnum.POSTED)
         .deletionStatus(DeletionStatus.N)
         .build();
 
     Post TEST_NOTICE_POST = Post.builder()
         .id(TEST_NOTICE_POST_ID)
-        .postName(ADMIN_PREFIX + POST_NAME)
-        .postContent(ADMIN_PREFIX + POST_CONTENT)
-        .postImage(ADMIN_PREFIX + POST_IMAGE)
+        .name(ADMIN_PREFIX + POST_NAME)
+        .content(ADMIN_PREFIX + POST_CONTENT)
+        .image(ADMIN_PREFIX + POST_IMAGE)
         .userId(TEST_ADMIN_USER_ID)
-        .postType(PostEnum.NOTICED)
+        .type(PostEnum.NOTICED)
         .deletionStatus(DeletionStatus.N)
         .build();
 
     Post TEST_DELETE_POST = Post.builder()
         .id(TEST_DELETE_POST_ID)
-        .postName(POST_NAME)
-        .postContent(POST_CONTENT)
-        .postImage(POST_IMAGE)
+        .name(POST_NAME)
+        .content(POST_CONTENT)
+        .image(POST_IMAGE)
         .userId(TEST_USER_ID)
-        .postType(PostEnum.POSTED)
+        .type(PostEnum.POSTED)
         .deletionStatus(DeletionStatus.Y)
         .build();
 }

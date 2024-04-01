@@ -227,9 +227,9 @@ class PostServiceImplTest extends PostTestData {
         postService.updatePost(TEST_USER, TEST_UPDATE_REQUEST_DTO, TEST_POST_ID);
 
         //then
-        assertEquals(TEST_UPDATE_REQUEST_DTO.getPostName(), TEST_POST.getPostName());
-        assertEquals(TEST_UPDATE_REQUEST_DTO.getPostContent(), TEST_POST.getPostContent());
-        assertEquals(TEST_UPDATE_REQUEST_DTO.getPostImage(), TEST_POST.getPostImage());
+        assertEquals(TEST_UPDATE_REQUEST_DTO.getPostName(), TEST_POST.getName());
+        assertEquals(TEST_UPDATE_REQUEST_DTO.getPostContent(), TEST_POST.getContent());
+        assertEquals(TEST_UPDATE_REQUEST_DTO.getPostImage(), TEST_POST.getImage());
     }
 
     @Test

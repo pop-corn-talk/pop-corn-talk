@@ -30,31 +30,31 @@ public class Post extends TimeStamped {
     private Long id;
 
     @Column(nullable = false, length = 50)
-    private String postName;
+    private String name;
 
     @Column(nullable = false, length = 1000)
-    private String postContent;
+    private String content;
 
     @Column(nullable = false)
-    private String postImage;
+    private String image;
 
     @Column(nullable = false)
     private Long userId;
 
     @Enumerated(value = EnumType.STRING)
     @Column(nullable = false, length = 50)
-    private PostEnum postType;
+    private PostEnum type;
 
     @Enumerated(EnumType.STRING)
-    private DeletionStatus deletionStatus = DeletionStatus.N;
+    private DeletionStatus deletionStatus;
 
-    private Post(String postName, String postContent, String postImage, Long userId,
-        PostEnum postType) {
-        this.postName = postName;
-        this.postContent = postContent;
-        this.postImage = postImage;
+    private Post(String name, String content, String image, Long userId, PostEnum type) {
+        this.name = name;
+        this.content = content;
+        this.image = image;
         this.userId = userId;
-        this.postType = postType;
+        this.type = type;
+        this.deletionStatus = DeletionStatus.N;
     }
 
     public static Post createOf(String postName, String postContent, String postImage,
@@ -70,9 +70,9 @@ public class Post extends TimeStamped {
     }
 
     public void update(PostUpdateRequestDto requestDto) {
-        this.postName = requestDto.getPostName();
-        this.postContent = requestDto.getPostContent();
-        this.postImage = requestDto.getPostImage();
+        this.name = requestDto.getPostName();
+        this.content = requestDto.getPostContent();
+        this.image = requestDto.getPostImage();
     }
 
     public void softDelete() {

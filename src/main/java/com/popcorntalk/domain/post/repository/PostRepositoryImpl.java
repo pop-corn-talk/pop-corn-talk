@@ -33,9 +33,9 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
     public PostGetResponseDto findPost(Long postId) {
         PostGetResponseDto response = querydslConfig.jpaQueryFactory()
             .select(Projections.fields(PostGetResponseDto.class,
-                qPost.postName,
-                qPost.postContent,
-                qPost.postImage,
+                qPost.name,
+                qPost.content,
+                qPost.image,
                 qUser.email,
                 qPost.createdAt,
                 qPost.modifiedAt))
@@ -56,9 +56,9 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
         Predicate predicate = qPost.deletionStatus.eq(deletionStatus);
         List<PostGetResponseDto> responses = querydslConfig.jpaQueryFactory()
             .select(Projections.fields(PostGetResponseDto.class,
-                qPost.postName,
-                qPost.postContent,
-                qPost.postImage,
+                qPost.name,
+                qPost.content,
+                qPost.image,
                 qUser.email,
                 qPost.createdAt,
                 qPost.modifiedAt))
