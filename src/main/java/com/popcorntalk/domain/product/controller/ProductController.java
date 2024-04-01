@@ -6,8 +6,8 @@ import com.popcorntalk.domain.product.dto.ProductUpdateRequestDto;
 import com.popcorntalk.domain.product.service.ProductService;
 import com.popcorntalk.global.dto.CommonResponseDto;
 import com.popcorntalk.global.security.UserDetailsImpl;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
@@ -29,7 +29,6 @@ public class ProductController {
 
     private final ProductService productService;
 
-    //삼품 등록
     @PostMapping
     public ResponseEntity<Void> createProduct(
         @RequestBody ProductCreateRequestDto productCreateRequestDto,
@@ -38,11 +37,9 @@ public class ProductController {
         productService.createProduct(
             productCreateRequestDto,
             userDetails.getUser().getId());
-
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    //상품 삭제
     @DeleteMapping("/{productId}")
     public ResponseEntity<Void> deleteProduct(
         @PathVariable Long productId,
@@ -54,7 +51,6 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    //상품 수정
     @PutMapping("/{productId}")
     public ResponseEntity<Void> updateProduct(
         @PathVariable Long productId,
@@ -68,12 +64,10 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    //상품 전체조회
     @GetMapping
-    public ResponseEntity<CommonResponseDto<List<ProductReadResponseDto>>> getProduct(
+    public ResponseEntity<CommonResponseDto<Page<ProductReadResponseDto>>> getProduct(
         @PageableDefault Pageable pageable
     ) {
-
         return ResponseEntity.status(HttpStatus.CREATED).body(
             CommonResponseDto.success(productService.getProduct(pageable)));
     }

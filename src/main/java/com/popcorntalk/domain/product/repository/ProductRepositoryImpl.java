@@ -8,6 +8,8 @@ import com.querydsl.core.types.Projections;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
 @RequiredArgsConstructor
@@ -17,8 +19,8 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
     QProduct qProduct = QProduct.product;
 
     @Override
-    public List<ProductReadResponseDto> findProduct(Pageable pageable) {
-        List<ProductReadResponseDto> ProductResponseDtoList = querydslConfig.jpaQueryFactory()
+    public Page<ProductReadResponseDto> findProduct(Pageable pageable) {
+        List<ProductReadResponseDto> productResponseDtoList = querydslConfig.jpaQueryFactory()
             .select(Projections.fields(ProductReadResponseDto.class,
                 qProduct.id,
                 qProduct.name,
@@ -33,10 +35,17 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
             .offset(pageable.getOffset())
             .fetch();
 
-        if (Objects.isNull(ProductResponseDtoList)) {
-            throw new IllegalArgumentException("삼품이 없습니다.");
+        if (Objects.isNull(productResponseDtoList)) {
+            throw new IllegalArgumentException("상품이 없습니다.");
         }
-        return ProductResponseDtoList;
+
+        long productCount = querydslConfig.jpaQueryFactory()
+            .select(qProduct)
+            .from(qProduct)
+            .where(qProduct.deletionStatus.eq(DeletionStatus.N))
+            .fetch().size();
+
+        return new PageImpl<>(productResponseDtoList, pageable, productCount);
     }
 
 }
