@@ -30,10 +30,8 @@ public class UserServiceImpl implements UserService {
     if (userRepository.existsByEmail(userSignupRequestDto.getEmail())) {
       throw new DuplicateUserInfoException(DUPLICATE_USER);
     }
-    User user = User.SignupOf(
-        userSignupRequestDto.getEmail(),
-        passwordEncoder.encode(userSignupRequestDto.getPassword()));
-
+    User user = new User();
+    user.SignUp(userSignupRequestDto.getEmail(),passwordEncoder.encode(userSignupRequestDto.getPassword()));
     userRepository.save(user);
   }
 
@@ -42,13 +40,8 @@ public class UserServiceImpl implements UserService {
   public UserInfoResponseDto getMyInfo(Long userId) {
 
     User user = userRepository.getUser(userId);
-
-    return UserInfoResponseDto.builder()
-        .email(user.getEmail())
-        // todo point 랑 maxDailyPostsLimit 랑 저장 하는법 다시 필요합니다. Point 테이플 이 생기면 업데이트 하겠습니다.
-//        .point(user.getPoint())
-//        .maxDailyPostsLimit(user.getMaxDailyPostsLimit())
-        .build();
+    // todo 유저 가 포인트 가져오는거 구현이 필요
+    return new UserInfoResponseDto(user.getEmail(),0L,0L);
   }
 
   @Override
