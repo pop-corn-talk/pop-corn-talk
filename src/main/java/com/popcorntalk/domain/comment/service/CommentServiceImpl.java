@@ -23,12 +23,9 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public void createComment(Long userId, Long postId,
-
         CommentCreateRequestDto requestDto) {
-
-        validateUser(userId);
+        isExistsUser(userId);
         postServiceImpl.findPost(postId);
-
         Comment comment = Comment.createOf(requestDto, userId, postId);
         commentRepository.save(comment);
     }
@@ -36,7 +33,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional(readOnly = true)
     public Page<CommentGetResponseDto> getComments(Long userId, Long postId, Pageable pageable) {
-        validateUser(userId);
+        isExistsUser(userId);
         postServiceImpl.findPost(postId);
         return commentRepository.findComments(postId, pageable);
     }
@@ -45,7 +42,7 @@ public class CommentServiceImpl implements CommentService {
     public void updateComment(Long userId, Long postId, Long commentId,
         CommentUpdateRequestDto requestDto) {
 
-        validateUser(userId);
+        isExistsUser(userId);
         postServiceImpl.findPost(postId);
 
         Comment comment = findComment(commentId);
@@ -55,14 +52,14 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public void deleteComment(Long userId, Long postId, Long commentId) {
 
-        validateUser(userId);
+        isExistsUser(userId);
         postServiceImpl.findPost(postId);
         Comment comment = findComment(commentId);
         comment.softDelete();
         // 영속성 컨테이너 : 처음에 준 정보(1차캐시)와 나중에 준 정보의 내용이 다르면 update시켜줌.
     }
 
-    private void validateUser(Long userId) {
+    private void isExistsUser(Long userId) {
         if (!userRepository.existsById(userId)) {
             throw new IllegalArgumentException("해당 유저가 존재하지 않습니다");
         }
