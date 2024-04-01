@@ -1,7 +1,6 @@
 package com.popcorntalk.domain.user.entity;
 
 import com.popcorntalk.global.entity.DeletionStatus;
-import com.popcorntalk.global.exception.customException.OutOfDailyPostLimitException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -30,7 +29,7 @@ public class User {
     @Column(nullable = false, unique = true, length = 50)
     private String email;
 
-    @Column(nullable = false, length = 255)
+    @Column(nullable = false)
     private String password;
 
     @Column(nullable = false)
