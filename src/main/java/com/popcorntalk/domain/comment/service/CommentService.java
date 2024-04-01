@@ -3,6 +3,7 @@ package com.popcorntalk.domain.comment.service;
 import com.popcorntalk.domain.comment.dto.CommentCreateRequestDto;
 import com.popcorntalk.domain.comment.dto.CommentGetResponseDto;
 import com.popcorntalk.domain.comment.dto.CommentUpdateRequestDto;
+import com.popcorntalk.domain.comment.entity.Comment;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -48,4 +49,12 @@ public interface CommentService {
      * @param commentId 삭제할 댓글의 번호
      */
     void deleteComment(Long userId, Long postId, Long commentId);
+
+    /**
+     * 알림 기능에 사용될 댓글
+     *
+     * @param postId 댓글을 찾을 postId
+     * @return 가장 최근에 생성된 댓글 객체 반환
+     */
+    Comment findLatestComment(Long postId);
 }
