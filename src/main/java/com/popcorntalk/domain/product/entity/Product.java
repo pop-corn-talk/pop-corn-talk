@@ -33,7 +33,7 @@ public class Product extends TimeStamped {
     @Column(nullable = false)
     private String Image;
 
-    @Column(nullable = false, length = 50)
+    @Column(nullable = true, length = 50)
     private String Description;
 
     @Column(nullable = false)
@@ -42,21 +42,21 @@ public class Product extends TimeStamped {
     @Column(nullable = false)
     private DeletionStatus deletionStatus;
 
-    private Product(String productName, String productImage, String productDescription,
-        Long productPrice) {
-        this.Name = productName;
-        this.Image = productImage;
-        this.Description = productDescription;
-        this.Price = productPrice;
+    private Product(String Name, String Image, String Description,
+        Long Price) {
+        this.Name = Name;
+        this.Image = Image;
+        this.Description = Description;
+        this.Price = Price;
         this.deletionStatus = DeletionStatus.N;
     }
 
     public static Product createOf(ProductCreateRequestDto productCreateRequestDto) {
         return new Product(
-            productCreateRequestDto.getProductName(),
-            productCreateRequestDto.getProductImage(),
-            productCreateRequestDto.getProductDescription(),
-            productCreateRequestDto.getProductPrice()
+            productCreateRequestDto.getName(),
+            productCreateRequestDto.getImage(),
+            productCreateRequestDto.getDescription(),
+            productCreateRequestDto.getPrice()
         );
     }
 
@@ -65,9 +65,9 @@ public class Product extends TimeStamped {
     }
 
     public void update(ProductUpdateRequestDto productUpdateRequestDto) {
-        this.Name = productUpdateRequestDto.getProductName();
-        this.Image = productUpdateRequestDto.getProductImage();
-        this.Description = productUpdateRequestDto.getProductDescription();
-        this.Price = productUpdateRequestDto.getProductPrice();
+        this.Name = productUpdateRequestDto.getName();
+        this.Image = productUpdateRequestDto.getImage();
+        this.Description = productUpdateRequestDto.getDescription();
+        this.Price = productUpdateRequestDto.getPrice();
     }
 }
