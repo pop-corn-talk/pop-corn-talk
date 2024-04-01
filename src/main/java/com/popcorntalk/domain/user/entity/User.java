@@ -23,9 +23,6 @@ import lombok.NoArgsConstructor;
 @Table(name = "users")
 public class User {
 
-    private static final long SIGNUP_REWARD = 1000L;
-    private static final long MAX_DAILY_POSTS_LIMIT = 3L;
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -35,10 +32,6 @@ public class User {
 
     @Column(nullable = false, length = 255)
     private String password;
-
-    private Long point;
-
-    private Long maxDailyPostsLimit;
 
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
@@ -56,19 +49,8 @@ public class User {
         return User.builder()
             .email(email)
             .password(password)
-            .point(SIGNUP_REWARD)
-            .maxDailyPostsLimit(MAX_DAILY_POSTS_LIMIT)
             .role(UserRoleEnum.USER)
             .deletionStatus(DeletionStatus.N)
             .build();
-    }
-
-    public void SpendDailyPostChanceAndEarnPoints(){
-        if (maxDailyPostsLimit <= 0) {
-            throw new OutOfDailyPostLimitException();
-        }
-
-        maxDailyPostsLimit--;
-        point += 1000;
     }
 }
