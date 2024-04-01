@@ -44,5 +44,7 @@ public class User {
     public void SignUp(String email,String password){
         this.email = email;
         this.password = password;
+        this.deletionStatus = DeletionStatus.N;
+        this.role = UserRoleEnum.USER;
     }
 }
