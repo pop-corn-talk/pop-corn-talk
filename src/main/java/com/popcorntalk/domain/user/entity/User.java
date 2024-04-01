@@ -9,14 +9,11 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Builder
+
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "users")
@@ -29,12 +26,8 @@ public class User {
     @Column(nullable = false, unique = true, length = 50)
     private String email;
 
-    @Column(nullable = false, length = 255)
+    @Column(nullable = false)
     private String password;
-
-    private Long point;
-
-    private Long maxDailyPostsLimit;
 
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
@@ -46,5 +39,14 @@ public class User {
     public User(Long userId, String email) {
         this.id = userId;
         this.email = email;
+    }
+    private User(String email,String password,DeletionStatus deletionStatus,UserRoleEnum userRoleEnum){
+        this.email = email;
+        this.password = password;
+        this.deletionStatus = deletionStatus;
+        this.role = userRoleEnum;
+    }
+    public static User createOf(String email,String password,DeletionStatus deletionStatus,UserRoleEnum userRoleEnum){
+        return new User(email,password,deletionStatus,userRoleEnum);
     }
 }
