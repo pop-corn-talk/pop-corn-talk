@@ -60,7 +60,7 @@ public class PostServiceImpl implements PostService {
         deletePost.softDelete();
     }
 
-    private Post findPost(Long postId) {
+    public Post findPost(Long postId) {
         Post post = postRepository.findById(postId).orElseThrow(
             () -> new IllegalArgumentException("해당하는 게시물이 없습니다."));
         if (post.getDeletionStatus().equals(DeletionStatus.Y)) {
