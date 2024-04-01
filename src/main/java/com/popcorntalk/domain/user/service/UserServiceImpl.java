@@ -6,7 +6,9 @@ import com.popcorntalk.domain.user.dto.UserInfoResponseDto;
 import com.popcorntalk.domain.user.dto.UserPublicInfoResponseDto;
 import com.popcorntalk.domain.user.dto.UserSignupRequestDto;
 import com.popcorntalk.domain.user.entity.User;
+import com.popcorntalk.domain.user.entity.UserRoleEnum;
 import com.popcorntalk.domain.user.repository.UserRepository;
+import com.popcorntalk.global.entity.DeletionStatus;
 import com.popcorntalk.global.exception.customException.DuplicateUserInfoException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -30,8 +32,11 @@ public class UserServiceImpl implements UserService {
     if (userRepository.existsByEmail(userSignupRequestDto.getEmail())) {
       throw new DuplicateUserInfoException(DUPLICATE_USER);
     }
-    User user = new User();
-    user.SignUp(userSignupRequestDto.getEmail(),passwordEncoder.encode(userSignupRequestDto.getPassword()));
+    User user = User.createOf(
+        userSignupRequestDto.getEmail(),
+        passwordEncoder.encode(userSignupRequestDto.getPassword()),
+        DeletionStatus.N,
+        UserRoleEnum.USER);
     userRepository.save(user);
   }
 

@@ -40,11 +40,13 @@ public class User {
         this.id = userId;
         this.email = email;
     }
-
-    public void SignUp(String email,String password){
+    private User(String email,String password,DeletionStatus deletionStatus,UserRoleEnum userRoleEnum){
         this.email = email;
         this.password = password;
-        this.deletionStatus = DeletionStatus.N;
-        this.role = UserRoleEnum.USER;
+        this.deletionStatus = deletionStatus;
+        this.role = userRoleEnum;
+    }
+    public static User createOf(String email,String password,DeletionStatus deletionStatus,UserRoleEnum userRoleEnum){
+        return new User(email,password,deletionStatus,userRoleEnum);
     }
 }
