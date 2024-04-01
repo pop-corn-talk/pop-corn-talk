@@ -35,10 +35,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
   protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain filterChain) throws ServletException, IOException {
     String tokenValue = jwtUtil.getJwtFromHeader(req);
 
-    // 리프레시 토큰이 유효하면 하지 않으면 -> Redis 에서 refresh 토큰 검색
-    // 아래 이프문 실행하고
-    // 아니면 리프레시 토큰을 제발급
-
     if (StringUtils.hasText(tokenValue)) { // 액세스
       try {
         Date date = new Date();
