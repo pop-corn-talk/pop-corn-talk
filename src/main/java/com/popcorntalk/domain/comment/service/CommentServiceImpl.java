@@ -27,7 +27,7 @@ public class CommentServiceImpl implements CommentService {
         CommentCreateRequestDto requestDto) {
         isExistsUser(userId);
         postServiceImpl.findPost(postId);
-        Comment comment = Comment.createOf(requestDto, userId, postId);
+        Comment comment = Comment.createOf(requestDto.getContent(), userId, postId);
         commentRepository.save(comment);
     }
 
@@ -56,7 +56,6 @@ public class CommentServiceImpl implements CommentService {
         postServiceImpl.findPost(postId);
         Comment comment = findComment(commentId);
         comment.softDelete();
-        // 영속성 컨테이너 : 처음에 준 정보(1차캐시)와 나중에 준 정보의 내용이 다르면 update시켜줌.
     }
 
     private void isExistsUser(Long userId) {
