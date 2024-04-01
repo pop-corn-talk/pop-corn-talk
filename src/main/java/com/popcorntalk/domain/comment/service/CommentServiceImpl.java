@@ -22,6 +22,7 @@ public class CommentServiceImpl implements CommentService {
     private final UserRepository userRepository;
 
     @Override
+    @Transactional
     public void createComment(Long userId, Long postId,
         CommentCreateRequestDto requestDto) {
         isExistsUser(userId);
@@ -39,19 +40,18 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional
     public void updateComment(Long userId, Long postId, Long commentId,
         CommentUpdateRequestDto requestDto) {
-
         isExistsUser(userId);
         postServiceImpl.findPost(postId);
-
         Comment comment = findComment(commentId);
         comment.update(requestDto);
     }
 
     @Override
+    @Transactional
     public void deleteComment(Long userId, Long postId, Long commentId) {
-
         isExistsUser(userId);
         postServiceImpl.findPost(postId);
         Comment comment = findComment(commentId);
