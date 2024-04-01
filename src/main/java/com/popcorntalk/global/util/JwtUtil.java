@@ -60,7 +60,7 @@ public class JwtUtil {
     try {
       UpdateValidRefreshToken(accessToken, userId);
     } catch (Exception e) {
-      log.error("새로운 refresh 토큰 생성");
+      log.info("새로운 refresh 토큰 생성");
       SaveNewRefreshToken(date, accessToken, userId, email);
     }
 
@@ -75,7 +75,7 @@ public class JwtUtil {
     refreshToken.update(accessToken);
 
     redisUtil.set(redisKeys, refreshToken, (int) REFRESH_TOKEN_TIME);
-    log.error("기존 refresh 토큰 으로 생성");
+    log.info("기존 refresh 토큰 으로 생성");
   }
 
   private void SaveNewRefreshToken(Date date, String accessToken, Long userId, String email) {
