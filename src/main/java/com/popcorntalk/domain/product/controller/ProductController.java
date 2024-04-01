@@ -32,7 +32,7 @@ public class ProductController {
     public ResponseEntity<Void> createProduct(
         @RequestBody ProductCreateRequestDto productCreateRequestDto,
         @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        productService.createProduct(productCreateRequestDto, userDetails.getUser().getRole());
+        productService.createProduct(productCreateRequestDto, userDetails.getUser().getId());
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -42,7 +42,7 @@ public class ProductController {
     public ResponseEntity<Void> deleteProduct(
         @PathVariable Long productId,
         @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        productService.deleteProduct(productId, userDetails.getUser().getRole());
+        productService.deleteProduct(productId, userDetails.getUser().getId());
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -54,7 +54,7 @@ public class ProductController {
         @RequestBody ProductUpdateRequestDto productUpdateRequestDto,
         @AuthenticationPrincipal UserDetailsImpl userDetails) {
         productService.updateProduct(productId, productUpdateRequestDto,
-            userDetails.getUser().getRole());
+            userDetails.getUser().getId());
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
