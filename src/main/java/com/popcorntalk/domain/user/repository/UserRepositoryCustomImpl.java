@@ -1,5 +1,8 @@
 package com.popcorntalk.domain.user.repository;
 
+import static com.popcorntalk.domain.comment.entity.QComment.comment;
+import static com.popcorntalk.domain.user.entity.QUser.user;
+
 import com.popcorntalk.domain.user.dto.UserPublicInfoResponseDto;
 import com.popcorntalk.domain.user.entity.QUser;
 import com.popcorntalk.domain.user.entity.User;
@@ -53,6 +56,10 @@ public class UserRepositoryCustomImpl implements UserRepositoryCustom {
         .limit(pageable.getPageSize())
         .fetch();
 
-    return new PageImpl<>(userPublicDto,pageable,userPublicDto.size());
+    long totalCount = jpaQueryFactory
+        .select(user)
+        .from(user)
+        .fetch().size();
+    return new PageImpl<>(userPublicDto,pageable,totalCount);
 }
 }
