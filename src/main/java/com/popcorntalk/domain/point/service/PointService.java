@@ -21,7 +21,7 @@ public class PointService {
     private final int INITIAL_POINT = 0;
 
     @Transactional
-    public void processPurchase(Long userId, int purchaseAmount) {
+    public void deductPointForPurchase(Long userId, int purchaseAmount) {
 
         Point userPoint = getPoint(userId);
 
