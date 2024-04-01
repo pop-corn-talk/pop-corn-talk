@@ -26,6 +26,13 @@ public class Point {
 
     private int point;
 
+    public static Point createPoint(Long userId, int point) {
+        return Point.builder()
+            .userId(userId)
+            .point(point)
+            .build();
+    }
+
     public void updatePoint(int point) {
         this.point = point;
     }

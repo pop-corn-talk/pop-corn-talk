@@ -14,6 +14,7 @@ public class PointService {
 
     private final PointRepository pointRepository;
     private PointRecordRepository pointRecordRepository;
+    private final int SIGNUP_REWARD = 1000;
 
     public void processPurchase(Long userId, int purchaseAmount) {
 
@@ -22,7 +23,6 @@ public class PointService {
         if (userPoint.getPoint() >= purchaseAmount) {
             int newPointBalance = userPoint.getPoint() - purchaseAmount;
             userPoint.updatePoint(newPointBalance);
-            pointRepository.save(userPoint);
 
             PointRecord pointRecord = PointRecord.builder()
                 .pointId(userPoint.getId())
@@ -40,5 +40,10 @@ public class PointService {
     public Point getPoint(Long userId) {
         return pointRepository.findByUserId(userId)
             .orElseThrow(() -> new IllegalArgumentException("Point not found"));
+    }
+
+    public void rewardPointsForSignUp(Long userId) {
+        Point signupPoints = Point.createPoint(userId, SIGNUP_REWARD);
+        pointRepository.save(signupPoints);
     }
 }
