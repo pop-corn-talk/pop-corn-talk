@@ -6,11 +6,12 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class NotFoundException extends RuntimeException{
+public class NotFoundException extends RuntimeException {
+
     private ErrorCode errorCode;
 
     @Override
-    public synchronized Throwable fillInStackTrace(){
+    public synchronized Throwable fillInStackTrace() {
         return this;
     }
 }

@@ -3,7 +3,6 @@ package com.popcorntalk.global.exception;
 import com.popcorntalk.global.dto.CommonResponseDto;
 import com.popcorntalk.global.exception.customException.NotFoundException;
 import com.popcorntalk.global.exception.customException.PermissionDeniedException;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

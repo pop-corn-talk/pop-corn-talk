@@ -6,11 +6,12 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class PermissionDeniedException extends RuntimeException{
+public class PermissionDeniedException extends RuntimeException {
+
     private ErrorCode errorCode;
 
     @Override
-    public synchronized Throwable fillInStackTrace(){
+    public synchronized Throwable fillInStackTrace() {
         return this;
     }
 }
