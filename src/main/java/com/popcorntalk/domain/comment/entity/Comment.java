@@ -1,6 +1,5 @@
 package com.popcorntalk.domain.comment.entity;
 
-import com.popcorntalk.domain.comment.dto.CommentCreateRequestDto;
 import com.popcorntalk.domain.comment.dto.CommentUpdateRequestDto;
 import com.popcorntalk.global.entity.DeletionStatus;
 import com.popcorntalk.global.entity.TimeStamped;
@@ -12,7 +11,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -20,7 +18,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table(name = "comments")
-
 public class Comment extends TimeStamped {
 
     @Id
@@ -39,22 +36,15 @@ public class Comment extends TimeStamped {
     @Enumerated(value = EnumType.STRING)
     private DeletionStatus deletionStatus;
 
-    @Builder
-    public Comment(Long id, String comment, Long userId, Long postId,
-        DeletionStatus deletionStatus) {
-        this.id = id;
+    private Comment(String comment, Long userId, Long postId) {
         this.content = comment;
         this.userId = userId;
         this.postId = postId;
         this.deletionStatus = DeletionStatus.N;
     }
 
-    public static Comment createOf(CommentCreateRequestDto requestDto, Long userId, Long postId) {
-        return Comment.builder()
-            .comment(requestDto.getContent())
-            .userId(userId)
-            .postId(postId)
-            .build();
+    public static Comment createOf(String content, Long userId, Long postId) {
+        return new Comment(content, userId, postId);
     }
 
     public void update(CommentUpdateRequestDto requestDto) {
@@ -64,5 +54,4 @@ public class Comment extends TimeStamped {
     public void softDelete() {
         this.deletionStatus = DeletionStatus.Y;
     }
-
 }
