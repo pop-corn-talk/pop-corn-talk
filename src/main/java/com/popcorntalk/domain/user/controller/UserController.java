@@ -37,16 +37,15 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    //todo 이름 정해야함.
-    @GetMapping("/personalinfo")
-    public ResponseEntity<CommonResponseDto<UserInfoResponseDto>> getUserInfo(
+    @GetMapping("/info")
+    public ResponseEntity<CommonResponseDto<UserInfoResponseDto>> getMyInfo(
         @AuthenticationPrincipal UserDetailsImpl userDetailsImpl
     ) {
         return ResponseEntity.ok().body(
             CommonResponseDto.success(userService.getUserInfo(userDetailsImpl.getUser().getId())));
     }
-    @GetMapping("/{userId}")
-    public ResponseEntity<CommonResponseDto<UserPublicInfoResponseDto>> getUserInf(
+    @GetMapping("/{userId}/info")
+    public ResponseEntity<CommonResponseDto<UserPublicInfoResponseDto>> getUserInfo(
         @PathVariable Long userId
     ) {
         return ResponseEntity.ok().body(
