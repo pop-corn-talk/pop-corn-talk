@@ -28,7 +28,7 @@ public class PointServiceImpl implements PointService {
 
         if (userPoint.getPoint() >= purchaseAmount) {
             int newPointBalance = userPoint.getPoint() - purchaseAmount;
-            userPoint.updatePoint(newPointBalance);
+            userPoint.update(newPointBalance);
 
             PointRecord pointRecord = PointRecord.createOf(
                 userPoint.getId(), userPoint.getPoint(), -purchaseAmount, newPointBalance
@@ -59,7 +59,7 @@ public class PointServiceImpl implements PointService {
 
         Point userPoint = getPoint(userId);
         int newPointBalance = userPoint.getPoint() + point;
-        userPoint.updatePoint(newPointBalance);
+        userPoint.update(newPointBalance);
 
         PointRecord pointRecord = PointRecord.createOf(
             userPoint.getId(), userPoint.getPoint(), +point, newPointBalance

@@ -10,7 +10,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "points")
@@ -33,7 +32,7 @@ public class Point {
         return new Point(userId, point);
     }
 
-    public void updatePoint(int point) {
+    public void update(int point) {
         this.point = point;
     }
 }
