@@ -57,9 +57,11 @@ public class UserRepositoryCustomImpl implements UserRepositoryCustom {
         .fetch();
 
     long totalCount = jpaQueryFactory
-        .select(user)
+        .select(Projections.fields(UserPublicInfoResponseDto.class, user.email))
         .from(user)
-        .fetch().size();
+        .where(predicate)
+        .fetch()
+        .size();
     return new PageImpl<>(userPublicDto,pageable,totalCount);
 }
 }
