@@ -32,13 +32,11 @@ public class JwtUtil {
     // Header KEY 값
     public static final String AUTHORIZATION_HEADER = "Authorization";
     // 사용자 권한 값의 KEY
-    public static final String AUTHORIZATION_KEY = "auth";
-    // Token 식별자 꼭 붙일 필요는 없지만 규칙
     public static final String BEARER_PREFIX = "Bearer ";
     //토큰 만료시간
-    private final long TOKEN_TIME =  40 * 1000L;
+    private final long TOKEN_TIME =  10 * 1000L;
 
-    private final long REFRESHTOKENTIME = 30 * 1000L;
+    private final long REFRESH_TOKEN_TIME = 24 * 60 * 60 * 1000L;
 
     private String redisKeys;
 
@@ -78,7 +76,7 @@ public class JwtUtil {
         //todo REFRESH TOKENTIME 검증 -> 근대 time to live 를 해놨는데... 의미가 있을가...
         refreshToken.update(accessToken);
 
-        redisUtil.set(redisKeys,refreshToken,(int) REFRESHTOKENTIME);
+        redisUtil.set(redisKeys,refreshToken,(int) REFRESH_TOKEN_TIME);
         log.error("기존 refresh 토큰 으로 생성");
     }
 
@@ -90,7 +88,7 @@ public class JwtUtil {
                 .claim("email", email)
                 .claim("role", UserRoleEnum.USER.toString())
                 .setIssuedAt(new Date(date.getTime())) // 토큰 발행 시간 정보
-                .setExpiration(new Date(date.getTime() + REFRESHTOKENTIME)) // set Expire Time
+                .setExpiration(new Date(date.getTime() + REFRESH_TOKEN_TIME)) // set Expire Time
                 .signWith(key, signatureAlgorithm)  // 사용할 암호화 알고리즘과
                 // signature 에 들어갈 secret 값 세팅
                 .compact();
@@ -104,7 +102,7 @@ public class JwtUtil {
 
 
         redisKeys = "ID : " + userId;
-        redisUtil.set(redisKeys,token,(int) REFRESHTOKENTIME);
+        redisUtil.set(redisKeys,token,(int) REFRESH_TOKEN_TIME);
     }
 
     // header 에서 JWT 가져오기
@@ -152,7 +150,7 @@ public class JwtUtil {
         String token = createAccessToken(refreshToken.getUserId(),
             info.get("email",String.class));
         refreshToken.update(token);
-        redisUtil.set(redisKeys,refreshToken,(int) REFRESHTOKENTIME);
+        redisUtil.set(redisKeys,refreshToken,(int) REFRESH_TOKEN_TIME);
         return token;
     }
 
@@ -181,7 +179,7 @@ public class JwtUtil {
             RefreshToken token = (RefreshToken) redisUtil.get(redisKeys);
             token.update(accessToken);
 
-            redisUtil.set(redisKeys,token,(int) REFRESHTOKENTIME);
+            redisUtil.set(redisKeys,token,(int) REFRESH_TOKEN_TIME);
         }catch (Exception e){
             log.error("현제 refresh 토큰이 없습니다, refresh 토큰을 발급 합니다..");
         }
