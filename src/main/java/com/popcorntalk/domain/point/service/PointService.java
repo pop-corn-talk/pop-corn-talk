@@ -1,71 +1,37 @@
 package com.popcorntalk.domain.point.service;
 
 import com.popcorntalk.domain.point.entity.Point;
-import com.popcorntalk.domain.point.entity.PointRecord;
-import com.popcorntalk.domain.point.repository.PointRecordRepository;
-import com.popcorntalk.domain.point.repository.PointRepository;
-import com.popcorntalk.global.exception.ErrorCode;
-import com.popcorntalk.global.exception.customException.InsufficientPointException;
-import com.popcorntalk.global.exception.customException.PointNotFoundException;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-@Service
-@RequiredArgsConstructor
-public class PointService {
+public interface PointService {
 
-    private final PointRepository pointRepository;
-    private PointRecordRepository pointRecordRepository;
-    private final int SIGNUP_REWARD = 1000;
-    private final int INITIAL_POINT = 0;
+    /**
+     * 상품 구매시 포인트 차감 메서드
+     *
+     * @param userId 포인트 차감할 유저 Id
+     * @param purchaseAmount 상품 금액
+     */
+    void deductPointForPurchase(Long userId, int purchaseAmount);
 
-    @Transactional
-    public void deductPointForPurchase(Long userId, int purchaseAmount) {
+    /**
+     * 회원가입 시 최초 포인트 지급 메서드
+     *
+     * @param userId 포인트 지급할 유저 Id
+     */
+    void rewardPointForSignUp(Long userId);
 
-        Point userPoint = getPoint(userId);
 
-        if (userPoint.getPoint() >= purchaseAmount) {
-            int newPointBalance = userPoint.getPoint() - purchaseAmount;
-            userPoint.updatePoint(newPointBalance);
+    /**
+     * 리워드 달성 시 포인트 적립 메서드
+     *
+     * @param userId 포인트 적립할 유저 Id
+     * @param point 적립 될 포인트
+     */
+    void earnPoint(Long userId, int point);
 
-            PointRecord pointRecord = PointRecord.createOf(
-                userPoint.getId(), userPoint.getPoint(), -purchaseAmount, newPointBalance
-            );
-            pointRecordRepository.save(pointRecord);
-
-        } else {
-            throw new InsufficientPointException(ErrorCode.INSUFFICIENT_POINT);
-        }
-    }
-
-    @Transactional
-    public void rewardPointForSignUp(Long userId) {
-
-        Point signupPoints = Point.createOf(userId, SIGNUP_REWARD);
-        pointRepository.save(signupPoints);
-
-        PointRecord pointRecord = PointRecord.createOf(
-            signupPoints.getId(), INITIAL_POINT, +SIGNUP_REWARD, SIGNUP_REWARD
-        );
-        pointRecordRepository.save(pointRecord);
-    }
-
-    @Transactional
-    public void earnPoint(Long userId, int point) {
-
-        Point userPoint = getPoint(userId);
-        int newPointBalance = userPoint.getPoint() + point;
-        userPoint.updatePoint(newPointBalance);
-
-        PointRecord pointRecord = PointRecord.createOf(
-            userPoint.getId(), userPoint.getPoint(), +point, newPointBalance
-        );
-        pointRecordRepository.save(pointRecord);
-    }
-
-    public Point getPoint(Long userId) {
-        return pointRepository.findByUserId(userId)
-            .orElseThrow(() -> new PointNotFoundException(ErrorCode.POINT_NOT_FOUND));
-    }
+    /**
+     * 포인트 조회 메서드
+     *
+     * @param userId 포인트를 조회할 유저 Id
+     */
+    Point getPoint(Long userId);
 }
