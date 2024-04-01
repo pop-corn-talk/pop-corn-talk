@@ -37,7 +37,8 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @GetMapping
+    //todo 이름 정해야함.
+    @GetMapping("/personalinfo")
     public ResponseEntity<CommonResponseDto<UserInfoResponseDto>> getUserInfo(
         @AuthenticationPrincipal UserDetailsImpl userDetailsImpl
     ) {
@@ -52,8 +53,7 @@ public class UserController {
             CommonResponseDto.success(userService.getOtherUserInfo(userId)));
     }
 
-    // todo 현제 존재하는 api 두개가 같습니다.  그래서 일단 임시 로 /all 을 추가 했습니다.
-    @GetMapping("/all")
+    @GetMapping
     public ResponseEntity<CommonResponseDto<Page<UserPublicInfoResponseDto>>> getAllUserInfo(
         @PageableDefault(sort = "createdAt", direction = Direction.DESC)Pageable pageable
     ) {

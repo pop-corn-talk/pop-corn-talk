@@ -42,11 +42,11 @@ public class JwtUtil {
     //토큰 만료시간
     private final long TOKEN_TIME =  60 * 1000L;
 
-    private final long REFRESHTOKENTIME = 60 * 60 * 1000 * 24 * 7L;
+    private final long REFRESHTOKENTIME = 60 * 1000L;
 
-    @Value("${jwt.secret.key}") //application.properties에 들어있던 값이 들어감
+    @Value("${jwt.secret.key}")
     private String secretKey;
-    //secretKey를 넣을 Key 객체
+    //secretKey 를 넣을 Key 객체
     private Key key;
     //알고리즘 선택
     private final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
@@ -61,12 +61,13 @@ public class JwtUtil {
     @Transactional
     public String createToken(Long userId, String email) {
         Date date = new Date();
-        String accessToken = recreationAccessToken(userId, email);
+        String accessToken = createAccessToken(userId, email);
 
         try {
             CheckAndUpdateRefreshToken(date,accessToken,userId,email);
         }catch (NoSuchElementException e){
             SaveNewRefreshToken(date,accessToken,userId,email);
+            log.error("현제 refresh 토큰이 없습니다, refresh 토큰을 발급 합니다.");
         }
         finally {
             return accessToken;
@@ -108,6 +109,7 @@ public class JwtUtil {
         // 만약에 DB 안에 있는 refresh token 이 만료 죄었다면 지우고 다시 생성 합니다.
         if(getMemberInfoFromExpiredToken(bearerPrefixExcludedJwt).getExpiration().compareTo(date)<0) {
             checkToken.ifPresent(refreshTokenRepository::delete);
+            log.error("현제 refresh 토큰 기한이 만료 되었습니다., refresh 토큰을 다시 발급 합니다.");
 
             SaveNewRefreshToken(date,accessToken,userId,email);
         }
@@ -155,11 +157,22 @@ public class JwtUtil {
         String refreshToken = token.getRefreshToken().substring(7);
         Claims info = Jwts.parserBuilder().setSigningKey(key).build()
             .parseClaimsJws(refreshToken).getBody();
-        return recreationAccessToken(info.get("userId", Long.class),
+        return reCreationAccessToken(info.get("userId", Long.class),
             info.get("email", String.class));
     }
 
-    public String recreationAccessToken(Long userId, String email) {
+    public String createAccessToken(Long userId, String email) {
+        Date date = new Date();
+        String accessToken = BEARER_PREFIX +
+            Jwts.builder()
+                .claim("userId", userId)
+                .claim("email", email)
+                .setExpiration(new Date(date.getTime() + TOKEN_TIME))
+                .signWith(key, signatureAlgorithm)
+                .compact();
+        return accessToken;
+    }
+    public String reCreationAccessToken(Long userId, String email) {
         Date date = new Date();
         String accessToken = BEARER_PREFIX +
             Jwts.builder()
