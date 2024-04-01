@@ -19,15 +19,17 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RestController
+@RequestMapping("posts")
 public class CommentController {
 
     private final CommentService commentService;
 
-    @PostMapping("/posts/{postId}/comments")
+    @PostMapping("/{postId}/comments")
     public ResponseEntity<CommonResponseDto<Void>> createComment(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
         @PathVariable Long postId,
@@ -43,7 +45,7 @@ public class CommentController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @GetMapping("/posts/{postId}/comments")
+    @GetMapping("/{postId}/comments")
     public ResponseEntity<CommonResponseDto<Page<CommentGetResponseDto>>> getComments(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
         @PathVariable Long postId,
@@ -57,7 +59,7 @@ public class CommentController {
         return ResponseEntity.ok(CommonResponseDto.success(responseDtoList));
     }
 
-    @PutMapping("/posts/{postId}/comments/{commentId}")
+    @PutMapping("/{postId}/comments/{commentId}")
     public ResponseEntity<CommonResponseDto<Void>> updateComment(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
         @PathVariable Long postId,
@@ -74,7 +76,7 @@ public class CommentController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    @DeleteMapping("/posts/{postId}/comments/{commentId}")
+    @DeleteMapping("/{postId}/comments/{commentId}")
     public ResponseEntity<CommonResponseDto<Void>> deleteComment(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
         @PathVariable Long postId,
