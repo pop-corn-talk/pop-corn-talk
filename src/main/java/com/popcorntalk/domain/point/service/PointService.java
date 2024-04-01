@@ -4,9 +4,9 @@ import com.popcorntalk.domain.point.entity.Point;
 import com.popcorntalk.domain.point.entity.PointRecord;
 import com.popcorntalk.domain.point.repository.PointRecordRepository;
 import com.popcorntalk.domain.point.repository.PointRepository;
-import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -15,7 +15,9 @@ public class PointService {
     private final PointRepository pointRepository;
     private PointRecordRepository pointRecordRepository;
     private final int SIGNUP_REWARD = 1000;
+    private final int INITIAL_POINT = 0;
 
+    @Transactional
     public void processPurchase(Long userId, int purchaseAmount) {
 
         Point userPoint = getPoint(userId);
@@ -24,12 +26,9 @@ public class PointService {
             int newPointBalance = userPoint.getPoint() - purchaseAmount;
             userPoint.updatePoint(newPointBalance);
 
-            PointRecord pointRecord = PointRecord.builder()
-                .pointId(userPoint.getId())
-                .amount(-purchaseAmount)
-                .createdAt(LocalDateTime.now())
-                .build();
-            // 추후 상품 정보도 기록할 예정 -> point 필드에 상품 카테코리 enum 사용 예정
+            PointRecord pointRecord = PointRecord.createOf(
+                userPoint.getId(), userPoint.getPoint(), -purchaseAmount, newPointBalance
+            );
             pointRecordRepository.save(pointRecord);
 
         } else {
@@ -37,15 +36,29 @@ public class PointService {
         }
     }
 
+    @Transactional
     public void rewardPointForSignUp(Long userId) {
-        Point signupPoints = Point.createPoint(userId, SIGNUP_REWARD);
+
+        Point signupPoints = Point.createOf(userId, SIGNUP_REWARD);
         pointRepository.save(signupPoints);
+
+        PointRecord pointRecord = PointRecord.createOf(
+            signupPoints.getId(), INITIAL_POINT, +SIGNUP_REWARD, SIGNUP_REWARD
+        );
+        pointRecordRepository.save(pointRecord);
     }
 
+    @Transactional
     public void earnPoint(Long userId, int point) {
+
         Point userPoint = getPoint(userId);
         int newPointBalance = userPoint.getPoint() + point;
         userPoint.updatePoint(newPointBalance);
+
+        PointRecord pointRecord = PointRecord.createOf(
+            userPoint.getId(), userPoint.getPoint(), +point, newPointBalance
+        );
+        pointRecordRepository.save(pointRecord);
     }
 
     public Point getPoint(Long userId) {
