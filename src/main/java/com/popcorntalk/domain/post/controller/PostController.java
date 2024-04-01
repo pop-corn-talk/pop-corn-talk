@@ -38,35 +38,43 @@ public class PostController {
     //게시글 단일 조회
     @GetMapping("/{postId}")
     public ResponseEntity<CommonResponseDto<PostGetResponseDto>> getPostById(
-        @PathVariable Long postId) {
-
-        return ResponseEntity.status(HttpStatus.OK).
-            body(CommonResponseDto.success(postService.getPostById(postId)));
+        @PathVariable Long postId
+    ) {
+        PostGetResponseDto post = postService.getPostById(postId);
+        return ResponseEntity.status(HttpStatus.OK).body(CommonResponseDto.success(post));
     }
 
     //게시글 전체조회
     @GetMapping
     public ResponseEntity<CommonResponseDto<Slice<PostGetResponseDto>>> getPosts(
-        @PageableDefault(sort = "createdAt", direction = Direction.DESC) Pageable pageable) {
-        return ResponseEntity.status(HttpStatus.OK)
-            .body(CommonResponseDto.success(postService.getPosts(pageable)));
+        @PageableDefault(sort = "createdAt", direction = Direction.DESC) Pageable pageable
+    ) {
+        Slice<PostGetResponseDto> posts = postService.getPosts(pageable);
+        return ResponseEntity.status(HttpStatus.OK).body(CommonResponseDto.success(posts));
     }
 
     //삭제된 게시물 조회
     @GetMapping("/delete")
     public ResponseEntity<CommonResponseDto<Slice<PostGetResponseDto>>> getDeletePosts(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
-        @PageableDefault(sort = "modifiedAt", direction = Direction.DESC) Pageable pageable) {
-        return ResponseEntity.status(HttpStatus.OK)
-            .body(CommonResponseDto.success(
-                postService.getDeletePosts(userDetails.getUser(), pageable)));
+        @PageableDefault(sort = "modifiedAt", direction = Direction.DESC) Pageable pageable
+    ) {
+        Slice<PostGetResponseDto> deletePosts = postService.getDeletePosts(
+            userDetails.getUser(),
+            pageable
+        );
+        return ResponseEntity.status(HttpStatus.OK).body(CommonResponseDto.success(deletePosts));
     }
 
     //게시글 등록
     @PostMapping
     public ResponseEntity<Void> createPost(@AuthenticationPrincipal UserDetailsImpl userDetails,
-        @Valid @RequestBody PostCreateRequestDto requestDto) {
-        postService.createPost(userDetails.getUser(), requestDto);
+        @Valid @RequestBody PostCreateRequestDto requestDto
+    ) {
+        postService.createPost(
+            userDetails.getUser(),
+            requestDto
+        );
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
@@ -74,8 +82,12 @@ public class PostController {
     @PostMapping("/notice")
     public ResponseEntity<Void> createNoticePost(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
-        @Valid @RequestBody PostCreateRequestDto requestDto) {
-        postService.createNoticePost(userDetails.getUser(), requestDto);
+        @Valid @RequestBody PostCreateRequestDto requestDto
+    ) {
+        postService.createNoticePost(
+            userDetails.getUser(),
+            requestDto
+        );
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
@@ -83,16 +95,25 @@ public class PostController {
     @PutMapping("/{postId}")
     public ResponseEntity<Void> updatePost(@AuthenticationPrincipal UserDetailsImpl userDetails,
         @PathVariable Long postId,
-        @Valid @RequestBody PostUpdateRequestDto requestDto) {
-        postService.updatePost(userDetails.getUser(), requestDto, postId);
+        @Valid @RequestBody PostUpdateRequestDto requestDto
+    ) {
+        postService.updatePost(userDetails.getUser(),
+            requestDto,
+            postId
+        );
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     //게시물 삭제
     @DeleteMapping("/{postId}")
-    public ResponseEntity<Void> deletePost(@AuthenticationPrincipal UserDetailsImpl userDetails,
-        @PathVariable Long postId) {
-        postService.deletePost(userDetails.getUser(), postId);
+    public ResponseEntity<Void> deletePost(
+        @AuthenticationPrincipal UserDetailsImpl userDetails,
+        @PathVariable Long postId
+    ) {
+        postService.deletePost(
+            userDetails.getUser(),
+            postId
+        );
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
@@ -100,8 +121,9 @@ public class PostController {
     @PostMapping("/image")
     public ResponseEntity<CommonResponseDto<PostGetImageResponseDto>> createImage(
         @RequestPart(value = "postImage")
-        MultipartFile file) throws IOException {
-        return ResponseEntity.status(HttpStatus.CREATED)
-            .body(CommonResponseDto.success(postService.createImage(file)));
+        MultipartFile file
+    ) throws IOException {
+        PostGetImageResponseDto imageUrl = postService.createImage(file);
+        return ResponseEntity.status(HttpStatus.CREATED).body(CommonResponseDto.success(imageUrl));
     }
 }
