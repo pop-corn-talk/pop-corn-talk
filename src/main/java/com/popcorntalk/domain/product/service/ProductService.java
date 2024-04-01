@@ -4,6 +4,7 @@ import com.popcorntalk.domain.product.dto.ProductCreateRequestDto;
 import com.popcorntalk.domain.product.dto.ProductReadResponseDto;
 import com.popcorntalk.domain.product.dto.ProductUpdateRequestDto;
 import java.util.List;
+import org.springframework.data.domain.Pageable;
 
 public interface ProductService {
 
@@ -15,5 +16,5 @@ public interface ProductService {
     void updateProduct(Long productId, ProductUpdateRequestDto productUpdateRequestDto,
         Long userId);
 
-    List<ProductReadResponseDto> getProduct();
+    List<ProductReadResponseDto> getProduct(Pageable pageable);
 }
