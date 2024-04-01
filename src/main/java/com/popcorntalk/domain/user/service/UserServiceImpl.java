@@ -45,7 +45,7 @@ public class UserServiceImpl implements UserService {
 
     return UserInfoResponseDto.builder()
         .email(user.getEmail())
-        // todo point 랑 maxDailyPostsLimit 랑 저장 하는법 다시 필요
+        // todo point 랑 maxDailyPostsLimit 랑 저장 하는법 다시 필요합니다. Point 테이플 이 생기면 업데이트 하겠습니다.
 //        .point(user.getPoint())
 //        .maxDailyPostsLimit(user.getMaxDailyPostsLimit())
         .build();
