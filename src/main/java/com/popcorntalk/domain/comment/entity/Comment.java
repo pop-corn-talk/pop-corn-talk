@@ -28,7 +28,7 @@ public class Comment extends TimeStamped {
     private Long id;
 
     @Column(nullable = false, length = 500)
-    private String commentContent;
+    private String content;
 
     @Column(nullable = false)
     private Long userId;
@@ -40,25 +40,25 @@ public class Comment extends TimeStamped {
     private DeletionStatus deletionStatus;
 
     @Builder
-    public Comment(Long id, String commentContent, Long userId, Long postId,
+    public Comment(Long id, String comment, Long userId, Long postId,
         DeletionStatus deletionStatus) {
         this.id = id;
-        this.commentContent = commentContent;
+        this.content = comment;
         this.userId = userId;
-        this.postId = 1L;
+        this.postId = postId;
         this.deletionStatus = DeletionStatus.N;
     }
 
     public static Comment createOf(CommentCreateRequestDto requestDto, Long userId, Long postId) {
         return Comment.builder()
-            .commentContent(requestDto.getCommentContent())
+            .comment(requestDto.getContent())
             .userId(userId)
             .postId(postId)
             .build();
     }
 
-    public void softUpdate(CommentUpdateRequestDto requestDto) {
-        this.commentContent = requestDto.getCommentContent();
+    public void update(CommentUpdateRequestDto requestDto) {
+        this.content = requestDto.getContent();
     }
 
     public void softDelete() {

@@ -1,8 +1,10 @@
 package com.popcorntalk.domain.comment.service;
 
 import com.popcorntalk.domain.comment.dto.CommentCreateRequestDto;
+import com.popcorntalk.domain.comment.dto.CommentGetResponseDto;
 import com.popcorntalk.domain.comment.dto.CommentUpdateRequestDto;
-import com.popcorntalk.global.security.UserDetailsImpl;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 
@@ -10,13 +12,13 @@ import org.springframework.transaction.annotation.Transactional;
 public interface CommentService {
 
 
-    void createComment(UserDetailsImpl userDetails, Long postId,
+    void createComment(Long userId, Long postId,
         CommentCreateRequestDto requestDto);
 
-    void updateComment(UserDetailsImpl userDetails, Long postId, Long commentId,
+    void updateComment(Long userId, Long postId, Long commentId,
         CommentUpdateRequestDto requestDto);
 
-    void deleteComment(UserDetailsImpl userDetails, Long postId, Long commentId);
+    void deleteComment(Long userId, Long postId, Long commentId);
 
-
+    Page<CommentGetResponseDto> getComments(Long userId, Long postId, Pageable pageable);
 }
