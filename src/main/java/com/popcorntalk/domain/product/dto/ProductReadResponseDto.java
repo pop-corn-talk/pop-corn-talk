@@ -1,6 +1,5 @@
 package com.popcorntalk.domain.product.dto;
 
-import com.popcorntalk.domain.product.entity.Product;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,7 +15,7 @@ public class ProductReadResponseDto {
     private String image;
     private String description;
     private Long price;
-    private LocalDateTime createAt;
+    private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
 
 }
