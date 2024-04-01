@@ -4,6 +4,9 @@ import com.popcorntalk.domain.point.entity.Point;
 import com.popcorntalk.domain.point.entity.PointRecord;
 import com.popcorntalk.domain.point.repository.PointRecordRepository;
 import com.popcorntalk.domain.point.repository.PointRepository;
+import com.popcorntalk.global.exception.ErrorCode;
+import com.popcorntalk.global.exception.customException.InsufficientPointException;
+import com.popcorntalk.global.exception.customException.PointNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,7 +35,7 @@ public class PointService {
             pointRecordRepository.save(pointRecord);
 
         } else {
-            throw new IllegalArgumentException("포인트가 부족합니다");
+            throw new InsufficientPointException(ErrorCode.INSUFFICIENT_POINT);
         }
     }
 
@@ -63,6 +66,6 @@ public class PointService {
 
     public Point getPoint(Long userId) {
         return pointRepository.findByUserId(userId)
-            .orElseThrow(() -> new IllegalArgumentException("Point not found"));
+            .orElseThrow(() -> new PointNotFoundException(ErrorCode.POINT_NOT_FOUND));
     }
 }
