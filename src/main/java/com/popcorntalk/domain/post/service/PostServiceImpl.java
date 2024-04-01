@@ -122,6 +122,11 @@ public class PostServiceImpl implements PostService {
         return post;
     }
 
+    @Override
+    public Boolean isExistsPost(Long postId) {
+        return postRepository.existsById(postId);
+    }
+
     private void validatePostOwner(Long postUserId, Long loginUserId) {
         if (!postUserId.equals(loginUserId)) {
             throw new PermissionDeniedException(PERMISSION_DENIED);

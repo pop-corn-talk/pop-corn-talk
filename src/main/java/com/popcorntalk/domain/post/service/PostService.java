@@ -85,4 +85,12 @@ public interface PostService {
      * @return Post
      */
     Post getPost(Long postId);
+
+    /**
+     * Post Entity 존재 확인
+     *
+     * @param postId 확인할 Post Entity od
+     * @return true/false
+     */
+    Boolean isExistsPost(Long postId);
 }
