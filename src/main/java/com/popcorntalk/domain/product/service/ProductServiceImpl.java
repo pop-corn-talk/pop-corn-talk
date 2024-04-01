@@ -13,8 +13,8 @@ import com.popcorntalk.domain.user.repository.UserRepository;
 import com.popcorntalk.global.entity.DeletionStatus;
 import com.popcorntalk.global.exception.customException.NotFoundException;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,8 +30,8 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public void createProduct(ProductCreateRequestDto productCreateRequestDto,
         Long userId) {
-        User user = FindUser(userId);
-        validateAdmin(user.getRole());
+        User user = findUser(userId);
+        //  validateAdmin(user.getRole());
         Product product = Product.createOf(productCreateRequestDto);
 
         productRepository.save(product);
@@ -41,9 +41,9 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public void deleteProduct(Long productId, Long userId) {
-        User user = FindUser(userId);
-        validateAdmin(user.getRole());
-        Product productDelete = existsProduct(productId);
+        User user = findUser(userId);
+        // validateAdmin(user.getRole());
+        Product productDelete = findProduct(productId);
         validateDeleteProduct(productDelete);
 
         productDelete.softDelete();
@@ -54,23 +54,20 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public void updateProduct(Long productId, ProductUpdateRequestDto productUpdateRequestDto,
         Long userId) {
-        User user = FindUser(userId);
-        validateAdmin(user.getRole());
-        Product productUpdate = existsProduct(productId);
+        User user = findUser(userId);
+        // validateAdmin(user.getRole());
+        Product productUpdate = findProduct(productId);
         validateDeleteProduct(productUpdate);
 
-        productUpdate.Update(productUpdateRequestDto);
+        productUpdate.update(productUpdateRequestDto);
     }
 
     //상품 전체조회
     @Override
     @Transactional(readOnly = true)
-    public List<ProductReadResponseDto> getProduct() {
-        List<Product> productLists = getProductDeleteStatus();
+    public List<ProductReadResponseDto> getProduct(Pageable pageable) {
 
-        return productLists.stream()
-            .map(ProductReadResponseDto::new)
-            .collect(Collectors.toList());
+        return productRepository.findProduct(pageable);
     }
 
     private void validateDeleteProduct(Product product) {
@@ -83,7 +80,7 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.findAllByDeletionStatus(DeletionStatus.N);
     }
 
-    private Product existsProduct(Long productId) {
+    private Product findProduct(Long productId) {
         return productRepository.findById(productId)
             .orElseThrow(() -> new NotFoundException(NOT_FOUND));
     }
@@ -94,8 +91,7 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
-    private User FindUser(Long userId) {
-
+    private User findUser(Long userId) {
         return userRepository.findById(userId)
             .orElseThrow(() -> new IllegalArgumentException("유저가 존재하지 않습니다."));
     }
