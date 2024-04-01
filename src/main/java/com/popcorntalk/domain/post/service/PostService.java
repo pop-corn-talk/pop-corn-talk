@@ -4,6 +4,7 @@ import com.popcorntalk.domain.post.dto.PostCreateRequestDto;
 import com.popcorntalk.domain.post.dto.PostGetImageResponseDto;
 import com.popcorntalk.domain.post.dto.PostGetResponseDto;
 import com.popcorntalk.domain.post.dto.PostUpdateRequestDto;
+import com.popcorntalk.domain.post.entity.Post;
 import com.popcorntalk.domain.user.entity.User;
 import java.io.IOException;
 import org.springframework.data.domain.Pageable;
@@ -76,4 +77,12 @@ public interface PostService {
      * @throws IOException
      */
     PostGetImageResponseDto createImage(MultipartFile file) throws IOException;
+
+    /**
+     * Post Entity 조회
+     *
+     * @param postId 조회할 Post Entity id
+     * @return Post
+     */
+    Post getPost(Long postId);
 }

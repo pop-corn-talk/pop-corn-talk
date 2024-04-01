@@ -91,7 +91,7 @@ public class PostServiceImpl implements PostService {
     @CacheEvict(value = "Post", key = "#postId")
     @Transactional
     public void updatePost(User user, PostUpdateRequestDto requestDto, Long postId) {
-        Post updatePost = findPost(postId);
+        Post updatePost = getPost(postId);
         validatePostOwner(updatePost.getUserId(), user.getId());
 
         updatePost.update(requestDto);
@@ -101,7 +101,7 @@ public class PostServiceImpl implements PostService {
     @CacheEvict(value = "Post", key = "#postId")
     @Transactional
     public void deletePost(User user, Long postId) {
-        Post deletePost = findPost(postId);
+        Post deletePost = getPost(postId);
         validatePostOwner(deletePost.getUserId(), user.getId());
 
         deletePost.softDelete();
@@ -112,7 +112,8 @@ public class PostServiceImpl implements PostService {
         return new PostGetImageResponseDto(getImageUrl(file));
     }
 
-    private Post findPost(Long postId) {
+    @Override
+    public Post getPost(Long postId) {
         Post post = postRepository.findById(postId).orElseThrow(
             () -> new IllegalArgumentException("해당하는 게시물이 없습니다."));
         if (post.getDeletionStatus().equals(DeletionStatus.Y)) {
