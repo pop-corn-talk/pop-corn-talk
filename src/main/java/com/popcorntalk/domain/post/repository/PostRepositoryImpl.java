@@ -52,8 +52,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
     }
 
     @Override
-    public Slice<PostGetResponseDto> findPosts(Pageable pageable, DeletionStatus deletionStatus) {
-        Predicate predicate = qPost.deletionStatus.eq(deletionStatus);
+    public Slice<PostGetResponseDto> findPosts(Pageable pageable, Predicate predicate) {
         List<PostGetResponseDto> responses = querydslConfig.jpaQueryFactory()
             .select(Projections.fields(PostGetResponseDto.class,
                 qPost.name,

@@ -8,6 +8,7 @@ import com.popcorntalk.domain.post.dto.PostGetImageResponseDto;
 import com.popcorntalk.domain.post.dto.PostGetResponseDto;
 import com.popcorntalk.domain.post.dto.PostUpdateRequestDto;
 import com.popcorntalk.domain.post.entity.Post;
+import com.popcorntalk.domain.post.entity.QPost;
 import com.popcorntalk.domain.post.repository.PostRepository;
 import com.popcorntalk.domain.user.entity.User;
 import com.popcorntalk.domain.user.entity.UserRoleEnum;
@@ -15,6 +16,7 @@ import com.popcorntalk.domain.user.repository.UserRepository;
 import com.popcorntalk.global.entity.DeletionStatus;
 import com.popcorntalk.global.exception.customException.PermissionDeniedException;
 import com.popcorntalk.global.util.StorageService;
+import com.querydsl.core.types.Predicate;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheConfig;
@@ -50,8 +52,8 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional(readOnly = true)
     public Slice<PostGetResponseDto> getPosts(Pageable pageable) {
-        DeletionStatus deletionStatus = DeletionStatus.N;
-        return postRepository.findPosts(pageable, deletionStatus);
+        Predicate predicate = QPost.post.deletionStatus.eq(DeletionStatus.N);
+        return postRepository.findPosts(pageable, predicate);
     }
 
     @Override
@@ -64,8 +66,8 @@ public class PostServiceImpl implements PostService {
         //2.userService주입
 //        user adminUser = userService.findUser(user.getId());
         validateAdminUser(adminUser.getRole());
-        DeletionStatus deletionStatus = DeletionStatus.Y;
-        return postRepository.findPosts(pageable, deletionStatus);
+        Predicate predicate = QPost.post.deletionStatus.eq(DeletionStatus.Y);
+        return postRepository.findPosts(pageable, predicate);
     }
 
     @Override
@@ -98,8 +100,6 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-//    @CachePut(value = "Post", key = "#postId", unless = "#result == null")
-//    일단은 업데이트시 캐시를 지우는 방향으로 선회, @CachePut 어노테이션이 정상적으로 작동안됨
     @CacheEvict(value = "Post", key = "#postId")
     @Transactional
     public void updatePost(User user, PostUpdateRequestDto requestDto, Long postId) {
