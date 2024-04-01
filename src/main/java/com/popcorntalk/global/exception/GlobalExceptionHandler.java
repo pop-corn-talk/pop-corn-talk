@@ -51,7 +51,7 @@ public class GlobalExceptionHandler {
                 ex.getErrorCode().getMsg()));
     }
 
-    @ExceptionHandler({PointNotFoundException.class})
+    @ExceptionHandler(PointNotFoundException.class)
     public ResponseEntity handleEntityNotFoundException(PointNotFoundException ex,
         HttpServletRequest request) {
         log.error("url: {}, 메세지: {}", request.getRequestURI(), ex.getErrorCode().getMsg());
@@ -60,7 +60,7 @@ public class GlobalExceptionHandler {
                 ex.getErrorCode().getMsg()));
     }
 
-    @ExceptionHandler({InsufficientPointException.class})
+    @ExceptionHandler(InsufficientPointException.class)
     public ResponseEntity handleEntityNotFoundException(InsufficientPointException ex,
         HttpServletRequest request) {
         log.error("url: {}, 메세지: {}", request.getRequestURI(), ex.getErrorCode().getMsg());
