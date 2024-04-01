@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class PermissionDeniedException extends RuntimeException {
+public class InsufficientPointException extends RuntimeException {
 
     private ErrorCode errorCode;
 
