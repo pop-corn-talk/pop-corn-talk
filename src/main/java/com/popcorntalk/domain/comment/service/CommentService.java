@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 public interface CommentService {
 
     /**
+     * 댓글 생성
      *
      * @param userId 유저의 존재여부를 확인하기위한 유저의 번호
      * @param postId 게시글의 존재여부를 확인하기 위한 게시글의 번호
@@ -19,6 +20,17 @@ public interface CommentService {
         CommentCreateRequestDto requestDto);
 
     /**
+     * 댓글 전체조회
+     *
+     * @param userId 유저의 존재여부를 확인하기위한 유저의 번호
+     * @param postId 게시글의 존재여부를 확인하기 위한 게시글의 번호
+     * @param pageable 페이징 처리(size=10,page=0)
+     * @return Page<CommentGetResponseDto>
+     */
+    Page<CommentGetResponseDto> getComments(Long userId, Long postId, Pageable pageable);
+
+    /**
+     * 댓글 수정
      *
      * @param userId 유저의 존재여부를 확인하기위한 유저의 번호
      * @param postId 게시글의 존재여부를 확인하기 위한 게시글의 번호
@@ -29,19 +41,11 @@ public interface CommentService {
         CommentUpdateRequestDto requestDto);
 
     /**
+     * 댓글 삭제
      *
      * @param userId 유저의 존재여부를 확인하기위한 유저의 번호
      * @param postId 게시글의 존재여부를 확인하기 위한 게시글의 번호
      * @param commentId 삭제할 댓글의 번호
      */
     void deleteComment(Long userId, Long postId, Long commentId);
-
-    /**
-     *
-     * @param userId 유저의 존재여부를 확인하기위한 유저의 번호
-     * @param postId 게시글의 존재여부를 확인하기 위한 게시글의 번호
-     * @param pageable 페이징 처리(size=10,page=0)
-     * @return Page<CommentGetResponseDto>
-     */
-    Page<CommentGetResponseDto> getComments(Long userId, Long postId, Pageable pageable);
 }
