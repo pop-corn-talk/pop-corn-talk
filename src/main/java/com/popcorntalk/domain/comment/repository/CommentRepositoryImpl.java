@@ -24,7 +24,7 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
         List<CommentGetResponseDto> commentList = jpaQueryFactory.
             select(
                 Projections.constructor(CommentGetResponseDto.class, comment.id,
-                    comment.commentContent, user.email, comment.createdAt, comment.modifiedAt))
+                    comment.content, user.email, comment.createdAt, comment.modifiedAt))
             .from(comment)
             .leftJoin(user).on(comment.userId.eq(user.id))
             .where(comment.deletionStatus.eq(DeletionStatus.valueOf("N")),

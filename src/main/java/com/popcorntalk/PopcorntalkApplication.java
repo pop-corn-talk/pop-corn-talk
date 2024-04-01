@@ -11,5 +11,4 @@ public class PopcorntalkApplication {
     public static void main(String[] args) {
         SpringApplication.run(PopcorntalkApplication.class, args);
     }
-
 }
