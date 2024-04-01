@@ -17,4 +17,9 @@ public interface PostRecodeService {
      * @return true/false
      */
     Boolean isExistsReachedPostLimit(Long userId);
+
+    /**
+     * Cron을 이용한 7일 전 작성기록 삭제 설정 PostRecode 도메인의 역할 : 게시글작성했을때 하루 3개 작성까지 포인트지급 체크
+     */
+    void deletePostRecode();
 }

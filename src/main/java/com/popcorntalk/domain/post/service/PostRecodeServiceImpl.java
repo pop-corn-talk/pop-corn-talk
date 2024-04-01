@@ -3,7 +3,9 @@ package com.popcorntalk.domain.post.service;
 import com.popcorntalk.domain.post.entity.PostRecode;
 import com.popcorntalk.domain.post.repository.PostRecodeRepository;
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,5 +34,17 @@ public class PostRecodeServiceImpl implements PostRecodeService {
             todayStart, todayEnd);
 
         return userCreatePostInToday <= 3;
+    }
+
+    @Override
+    @Scheduled(cron = "1 0 0 * * *")
+    @Transactional
+    public void deletePostRecode() {
+        LocalDateTime beforeSevenDays = LocalDateTime.now().minusDays(7);
+        List<PostRecode> deletePostRecodes = postRecodeRepository.findOlderThanSevenDaysPosts(
+            beforeSevenDays);
+        if (!deletePostRecodes.isEmpty()) {
+            postRecodeRepository.deleteAllInBatch(deletePostRecodes);
+        }
     }
 }
