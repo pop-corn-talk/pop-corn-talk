@@ -1,53 +1,43 @@
 package com.popcorntalk.domain.user.service;
 
-import com.popcorntalk.domain.user.dto.SignupRequestDto;
-import com.popcorntalk.domain.user.entity.User;
-import com.popcorntalk.domain.user.entity.UserRoleEnum;
-import com.popcorntalk.domain.user.repository.UserRepository;
-import com.popcorntalk.global.util.JwtUtil;
-import com.popcorntalk.global.util.RedisUtil;
-import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import com.popcorntalk.domain.user.dto.UserInfoResponseDto;
+import com.popcorntalk.domain.user.dto.UserPublicInfoResponseDto;
+import com.popcorntalk.domain.user.dto.UserSignupRequestDto;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-@Service
-@RequiredArgsConstructor
-@Transactional
-public class UserService {
+public interface UserService {
+    /**
+     * 회원가입
+     *
+     * @param userSignupRequestDto 생성될 유저의 내용
+     *
+     */
+    void signup(UserSignupRequestDto userSignupRequestDto);
 
-    private final UserRepository userRepository;
 
-    private final PasswordEncoder passwordEncoder;
+    /**
+     * 개인(본인) 정보 조회
+     *
+     * @param userId 조회할 유저의 내용
+     *
+     */
+    UserInfoResponseDto getMyInfo(Long userId);
 
-    private final JwtUtil jwtUtil;
+    /**
+     * 개인(타인) 정보 조회
+     *
+     * @param userId 조회할 유저의 내용
+     *
+     */
+    UserPublicInfoResponseDto getUserInfo(Long userId);
 
-    private final RedisUtil redisUtil;
-
-    public void signup(SignupRequestDto requestDto) {
-
-        if (userRepository.findByEmail(requestDto.getEmail()).isPresent()) {
-            throw new IllegalArgumentException("error");
-        }
-
-        String password = passwordEncoder.encode(requestDto.getPassword());
-
-        User user = User.builder()
-            .email(requestDto.getEmail())
-            .password(password)
-            .role(UserRoleEnum.USER)
-            .build();
-
-        userRepository.save(user);
-    }
-
-    public void logout(Long userId, String token) {
-        if (!jwtUtil.validateToken(token)) {
-            throw new IllegalArgumentException("error");
-        }
-        jwtUtil.deleteRefreshToken(userId);
-        Long expiration = jwtUtil.getExpiration(token);
-        redisUtil.setBlackList(token, userId, expiration);
-    }
+    /**
+     * 개인(타인) 정보 페이지 로 조회
+     *
+     * @param pageable 조회할 페이지 요청
+     *
+     */
+    Page<UserPublicInfoResponseDto> getAllUserInfo(Pageable pageable);
 }
-

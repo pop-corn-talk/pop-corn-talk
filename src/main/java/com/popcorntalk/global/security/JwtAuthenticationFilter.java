@@ -2,7 +2,7 @@ package com.popcorntalk.global.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.popcorntalk.domain.user.dto.LoginRequestDto;
+import com.popcorntalk.domain.user.dto.UserLoginRequestDto;
 import com.popcorntalk.domain.user.entity.User;
 import com.popcorntalk.domain.user.repository.UserRepository;
 import com.popcorntalk.global.util.JwtUtil;
@@ -39,8 +39,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     public Authentication attemptAuthentication(HttpServletRequest request,
         HttpServletResponse response) throws AuthenticationException {
         try {
-            LoginRequestDto requestDto = new ObjectMapper().readValue(request.getInputStream(),
-                LoginRequestDto.class);
+            UserLoginRequestDto requestDto = new ObjectMapper().readValue(request.getInputStream(),
+                UserLoginRequestDto.class);
 
             User user = userRepository.findByEmail(
                     requestDto.getEmail())
@@ -67,7 +67,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String token = jwtUtil.createToken(user.getId(), user.getEmail());
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, token);
         ObjectNode json = new ObjectMapper().createObjectNode();
-        json.put("message", "상태코드:200 로그인성공");
+        json.put("message", "상태코드:200 로그인성공                                  ");
         String newResponse = new ObjectMapper().writeValueAsString(json);
         response.setContentType("application/json");
         response.setContentLength(newResponse.length());
