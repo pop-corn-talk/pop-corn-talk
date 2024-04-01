@@ -18,7 +18,7 @@ public interface PostService {
      * @param postId 조회할 게시물의 번호
      * @return PostGetResponseDto
      */
-    PostGetResponseDto getPost(Long postId);
+    PostGetResponseDto getPostById(Long postId);
 
     /**
      * 모든 게시물 조회

@@ -37,11 +37,11 @@ public class PostController {
 
     //게시글 단일 조회
     @GetMapping("/{postId}")
-    public ResponseEntity<CommonResponseDto<PostGetResponseDto>> getPost(
+    public ResponseEntity<CommonResponseDto<PostGetResponseDto>> getPostById(
         @PathVariable Long postId) {
 
         return ResponseEntity.status(HttpStatus.OK).
-            body(CommonResponseDto.success(postService.getPost(postId)));
+            body(CommonResponseDto.success(postService.getPostById(postId)));
     }
 
     //게시글 전체조회

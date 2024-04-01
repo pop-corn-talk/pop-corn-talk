@@ -37,7 +37,7 @@ public class PostServiceImpl implements PostService {
     @Override
     @Cacheable(value = "Post", key = "#postId", unless = "#result == null")
     @Transactional(readOnly = true)
-    public PostGetResponseDto getPost(Long postId) {
+    public PostGetResponseDto getPostById(Long postId) {
         return postRepository.findPost(postId);
     }
 
