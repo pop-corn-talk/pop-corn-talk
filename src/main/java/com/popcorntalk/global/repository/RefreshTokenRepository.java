@@ -1,12 +1,12 @@
-package com.popcorntalk.global.repository;
-
-import com.popcorntalk.global.entity.RefreshToken;
-import java.util.Optional;
-import org.springframework.data.jpa.repository.JpaRepository;
-
-public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long> {
-
-    Optional<RefreshToken> findByUserId(Long userId);
-
-    Optional<RefreshToken> findByUserIdAndAndPreviousAccessToken(Long userId,String previousJwt);
-}
+//package com.popcorntalk.global.repository;
+//
+//import com.popcorntalk.global.entity.RefreshToken;
+//import java.util.Optional;
+//import org.springframework.data.jpa.repository.JpaRepository;
+//
+//public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long> {
+//
+//    Optional<RefreshToken> findByUserId(Long userId);
+//
+//    Optional<RefreshToken> findByUserIdAndAndPreviousAccessToken(Long userId,String previousJwt);
+//}

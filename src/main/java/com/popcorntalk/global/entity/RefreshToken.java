@@ -1,36 +1,26 @@
 package com.popcorntalk.global.entity;
 
 import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.redis.core.RedisHash;
 
 @Builder
-@Entity
 @Getter
-@Table(name = "refreshToken")
 @NoArgsConstructor
 @AllArgsConstructor
+@RedisHash
 public class RefreshToken {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(nullable = false)
+    @Column
     private String refreshToken;
 
     @Column
     private String previousAccessToken;
 
-    @Column(nullable = false)
+    @Column
     private Long userId;
 
     public void update(String accessToken) {

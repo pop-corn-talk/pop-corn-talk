@@ -36,7 +36,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         FilterChain filterChain) throws ServletException, IOException {
         String tokenValue = jwtUtil.getJwtFromHeader(req);
 
-
         // 리프레시 토큰이 유효하면 -> DB
         // 아래 이프문 실행하고
         // 아니면 리프레시 토큰을 제발급
@@ -45,12 +44,15 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             try {
                 Date date = new Date();
                 if(jwtUtil.getMemberInfoFromExpiredToken(tokenValue).getExpiration().compareTo(date)<0) {
+
                     String token = jwtUtil.validateRefreshToken(
                         jwtUtil.getMemberInfoFromExpiredToken(tokenValue)
-                            .get("userId", Long.class),tokenValue);
+                            .get("userId", Long.class)
+                        ,tokenValue);
+
                     res.addHeader(JwtUtil.AUTHORIZATION_HEADER, token);
                     ObjectNode json = new ObjectMapper().createObjectNode();
-                    json.put("message", "새로운 토큰이 발급되었습니다.                       ");
+                    json.put("message", "새로운 토큰이 발급되었습니다.");
                     String newResponse = new ObjectMapper().writeValueAsString(json);
                     res.setContentType("application/json");
                     res.setContentLength(newResponse.length());
@@ -66,7 +68,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 log.error("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.");
                 return;
             } catch (ExpiredJwtException e) {
-                log.error("Expired JWT token, 만료된 JWT token 입니다.");
+                log.error("Expired Refresh JWT token, 만료된 Refresh JWT token 입니다.");
                 //예외 안던지고 준다 굳이 던져줄 필요 없다. 사용성이 안좋아진다. 던져주면 프론트 해줘
                 return;
             } catch (UnsupportedJwtException e) {

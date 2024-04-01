@@ -3,7 +3,6 @@ package com.popcorntalk.global.util;
 import com.popcorntalk.domain.user.entity.UserRoleEnum;
 
 import com.popcorntalk.global.entity.RefreshToken;
-import com.popcorntalk.global.repository.RefreshTokenRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -12,12 +11,10 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.transaction.Transactional;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,7 +28,6 @@ public class JwtUtil {
 
     private final RedisUtil redisUtil;
 
-    private final RefreshTokenRepository refreshTokenRepository;
 
     // Header KEY 값
     public static final String AUTHORIZATION_HEADER = "Authorization";
@@ -40,9 +36,11 @@ public class JwtUtil {
     // Token 식별자 꼭 붙일 필요는 없지만 규칙
     public static final String BEARER_PREFIX = "Bearer ";
     //토큰 만료시간
-    private final long TOKEN_TIME =  60 * 1000L;
+    private final long TOKEN_TIME =  40 * 1000L;
 
-    private final long REFRESHTOKENTIME = 60 * 1000L;
+    private final long REFRESHTOKENTIME = 30 * 1000L;
+
+    private String redisKeys;
 
     @Value("${jwt.secret.key}")
     private String secretKey;
@@ -58,23 +56,34 @@ public class JwtUtil {
     }
 
     // 로그인시 토큰 생성
-    @Transactional
     public String createToken(Long userId, String email) {
         Date date = new Date();
         String accessToken = createAccessToken(userId, email);
 
         try {
-            CheckAndUpdateRefreshToken(date,accessToken,userId,email);
-        }catch (NoSuchElementException e){
+            UpdateValidRefreshToken(accessToken,userId);
+        }catch (Exception e){
+            log.error("새로운 refresh 토큰 생성");
             SaveNewRefreshToken(date,accessToken,userId,email);
-            log.error("현제 refresh 토큰이 없습니다, refresh 토큰을 발급 합니다.");
         }
-        finally {
-            return accessToken;
-        }
+
+        return accessToken;
+    }
+
+    private void UpdateValidRefreshToken(String accessToken, Long userId) {
+
+        redisKeys = "ID : " + userId;
+
+        RefreshToken refreshToken = (RefreshToken) redisUtil.get(redisKeys);
+        //todo REFRESH TOKENTIME 검증 -> 근대 time to live 를 해놨는데... 의미가 있을가...
+        refreshToken.update(accessToken);
+
+        redisUtil.set(redisKeys,refreshToken,(int) REFRESHTOKENTIME);
+        log.error("기존 refresh 토큰 으로 생성");
     }
 
     private void SaveNewRefreshToken(Date date,String accessToken, Long userId, String email) {
+
         String refreshToken = BEARER_PREFIX +
             Jwts.builder()
                 .claim("userId", userId)
@@ -93,34 +102,9 @@ public class JwtUtil {
             .userId(userId)
             .build();
 
-        // todo : 팀원과 상의후 결정: REFRESH TOKEN 을 redis 에 넣을 가요 DB 에 넣을가요? 일단 둘다 적용 해봄.
-        String key = "ID : " + userId;
-        redisUtil.set(key,token,(int) REFRESHTOKENTIME);
 
-        refreshTokenRepository.save(token);
-    }
-
-    private void CheckAndUpdateRefreshToken(Date date,String accessToken,Long userId,String email) {
-
-        Optional<RefreshToken> checkToken = refreshTokenRepository.findByUserId(userId);
-        RefreshToken CheckrefreshToken = checkToken.get();
-
-        String bearerPrefixExcludedJwt = CheckrefreshToken.getRefreshToken().substring(7);
-        // 만약에 DB 안에 있는 refresh token 이 만료 죄었다면 지우고 다시 생성 합니다.
-        if(getMemberInfoFromExpiredToken(bearerPrefixExcludedJwt).getExpiration().compareTo(date)<0) {
-            checkToken.ifPresent(refreshTokenRepository::delete);
-            log.error("현제 refresh 토큰 기한이 만료 되었습니다., refresh 토큰을 다시 발급 합니다.");
-
-            SaveNewRefreshToken(date,accessToken,userId,email);
-        }
-        else {
-            CheckrefreshToken.update(accessToken);
-        }
-    }
-
-    public void deleteRefreshToken(Long userId) {
-        Optional<RefreshToken> checkToken = refreshTokenRepository.findByUserId(userId);
-        checkToken.ifPresent(refreshTokenRepository::delete);
+        redisKeys = "ID : " + userId;
+        redisUtil.set(redisKeys,token,(int) REFRESHTOKENTIME);
     }
 
     // header 에서 JWT 가져오기
@@ -148,17 +132,28 @@ public class JwtUtil {
         }
     }
 
-    @Transactional
     public String validateRefreshToken(Long userId,String previousJwt) {
 
-        RefreshToken token = refreshTokenRepository.findByUserIdAndAndPreviousAccessToken(userId,previousJwt).orElseThrow(
-            () -> new IllegalArgumentException("최신 발급한 AccessToken 이 아니거나 RefreshToken 이 유효하지 않습니다.")
-        );
-        String refreshToken = token.getRefreshToken().substring(7);
+        redisKeys = "ID : " + userId;
+        RefreshToken refreshToken = new RefreshToken();
+        if(redisUtil.hasKey(redisKeys)){
+            refreshToken = (RefreshToken) redisUtil.get(redisKeys);
+        }
+
+        if(!refreshToken.getPreviousAccessToken().equals(previousJwt)){
+            System.out.println(refreshToken.getPreviousAccessToken());
+            redisUtil.delete(redisKeys);
+            throw new NoSuchElementException("JWT refresh 인증 문제!!! 강제 로그아웃 합니다");
+        }
+
         Claims info = Jwts.parserBuilder().setSigningKey(key).build()
-            .parseClaimsJws(refreshToken).getBody();
-        return reCreationAccessToken(info.get("userId", Long.class),
-            info.get("email", String.class));
+            .parseClaimsJws(refreshToken.getRefreshToken().substring(7)).getBody();
+
+        String token = createAccessToken(refreshToken.getUserId(),
+            info.get("email",String.class));
+        refreshToken.update(token);
+        redisUtil.set(redisKeys,refreshToken,(int) REFRESHTOKENTIME);
+        return token;
     }
 
     public String createAccessToken(Long userId, String email) {
@@ -182,12 +177,13 @@ public class JwtUtil {
                 .signWith(key, signatureAlgorithm)
                 .compact();
         try{
-            RefreshToken token = refreshTokenRepository.findByUserId(userId).orElseThrow(
-                () -> new IllegalArgumentException("RefreshToken 이 유효하지 않습니다.")
-            );
+            redisKeys = "ID : " + userId;
+            RefreshToken token = (RefreshToken) redisUtil.get(redisKeys);
             token.update(accessToken);
+
+            redisUtil.set(redisKeys,token,(int) REFRESHTOKENTIME);
         }catch (Exception e){
-            log.error("현제 refresh 토큰이 없습니다, refresh 토큰을 발급 합니다.");
+            log.error("현제 refresh 토큰이 없습니다, refresh 토큰을 발급 합니다..");
         }
         return accessToken;
     }
