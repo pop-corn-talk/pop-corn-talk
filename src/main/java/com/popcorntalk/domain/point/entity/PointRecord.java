@@ -1,6 +1,5 @@
 package com.popcorntalk.domain.point.entity;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -8,11 +7,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Builder
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
@@ -26,9 +23,23 @@ public class PointRecord {
 
     private Long pointId;
 
-    @Column(nullable = false)
+    private int previousPoint;
+
     private int amount;
 
-    @Column(name = "created_at", nullable = false)
+    private int finalPoint;
+
     private LocalDateTime createdAt;
+
+    private PointRecord(Long pointId, int previousPoint, int amount, int finalPoint) {
+        this.pointId = pointId;
+        this.previousPoint = previousPoint;
+        this.amount = amount;
+        this.finalPoint = finalPoint;
+        this.createdAt = LocalDateTime.now();
+    }
+
+    public static PointRecord createOf(Long pointId, int previousPoint, int amount, int finalPoint) {
+        return new PointRecord(pointId, previousPoint, amount, finalPoint);
+    }
 }

@@ -6,11 +6,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Builder
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
@@ -26,11 +24,13 @@ public class Point {
 
     private int point;
 
-    public static Point createPoint(Long userId, int point) {
-        return Point.builder()
-            .userId(userId)
-            .point(point)
-            .build();
+    private Point(Long userId, int point) {
+        this.userId = userId;
+        this.point = point;
+    }
+
+    public static Point createOf(Long userId, int point) {
+        return new Point(userId, point);
     }
 
     public void updatePoint(int point) {
