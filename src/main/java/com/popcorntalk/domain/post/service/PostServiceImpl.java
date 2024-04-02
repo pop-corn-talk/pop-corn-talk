@@ -72,7 +72,7 @@ public class PostServiceImpl implements PostService {
         Post savedPost = postRepository.save(newPost);
 
         postRecodeService.createPostRecode(user.getId(), savedPost.getId());
-        if (postRecodeService.isExistsReachedPostLimit(user.getId())) {
+        if (postRecodeService.getPostCountInToday(user.getId()) <= 3) {
             pointService.earnPoint(user.getId(), POST_CREATE_REWORD);
         }
     }
