@@ -20,7 +20,6 @@ public interface UserRepository extends JpaRepository<User, Long> ,UserRepositor
 
     Optional<User> findByEmail(String email);
 
-
-    @Query("SELECT COUNT(u) > 0 FROM User u " + "WHERE u.id = :userId AND u.role = 'ADMIN'")
+    @Query("SELECT COUNT(u) > 0 FROM User u " + "WHERE u.id = :userId AND u.role = 'ADMIN' AND u.deletionStatus = 'N'")
     boolean validateAdminUser(Long userId);
 }
