@@ -41,7 +41,6 @@ public class Product extends TimeStamped {
 
     @Column(nullable = false)
     private String ProductVoucherImage;
-
     @Column(nullable = false)
     private DeletionStatus deletionStatus;
 
