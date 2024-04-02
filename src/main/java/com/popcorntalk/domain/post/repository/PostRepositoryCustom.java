@@ -1,8 +1,9 @@
 package com.popcorntalk.domain.post.repository;
 
 import com.popcorntalk.domain.post.dto.PostGetResponseDto;
-import java.util.List;
+import com.querydsl.core.types.Predicate;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 
 public interface PostRepositoryCustom {
 
@@ -17,8 +18,9 @@ public interface PostRepositoryCustom {
     /**
      * 게시물 전체 조회
      *
-     * @param pageable 페이징처리(기본값: size 10, page 0, order createdAt::DESC)
-     * @return List<PostGetResponseDto>
+     * @param pageable  페이징처리
+     * @param predicate 쿼리 조회 조건
+     * @return Slice<PostGetResponseDto>
      */
-    List<PostGetResponseDto> findPosts(Pageable pageable);
+    Slice<PostGetResponseDto> findPosts(Pageable pageable, Predicate predicate);
 }

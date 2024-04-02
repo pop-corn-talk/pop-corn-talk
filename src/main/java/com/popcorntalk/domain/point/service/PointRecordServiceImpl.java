@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class PointRecordServicempl implements PointRecordService {
+public class PointRecordServiceImpl implements PointRecordService {
 
     private final PointRecordRepository pointRecordRepository;
 

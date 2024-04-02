@@ -5,6 +5,7 @@ import com.popcorntalk.domain.comment.dto.CommentGetResponseDto;
 import com.popcorntalk.domain.comment.dto.CommentUpdateRequestDto;
 import com.popcorntalk.domain.comment.entity.Comment;
 import com.popcorntalk.domain.comment.repository.CommentRepository;
+import com.popcorntalk.domain.post.service.PostService;
 import com.popcorntalk.domain.post.service.PostServiceImpl;
 import com.popcorntalk.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class CommentServiceImpl implements CommentService {
 
     private final CommentRepository commentRepository;
-    private final PostServiceImpl postServiceImpl;
+    private final PostService postService;
     private final UserRepository userRepository;
 
     @Override
@@ -26,7 +27,7 @@ public class CommentServiceImpl implements CommentService {
     public void createComment(Long userId, Long postId,
         CommentCreateRequestDto requestDto) {
         isExistsUser(userId);
-        postServiceImpl.findPost(postId);
+        postService.getPost(postId);
         Comment comment = Comment.createOf(requestDto.getContent(), userId, postId);
         commentRepository.save(comment);
     }
@@ -35,7 +36,7 @@ public class CommentServiceImpl implements CommentService {
     @Transactional(readOnly = true)
     public Page<CommentGetResponseDto> getComments(Long userId, Long postId, Pageable pageable) {
         isExistsUser(userId);
-        postServiceImpl.findPost(postId);
+        postService.getPost(postId);
         return commentRepository.findComments(postId, pageable);
     }
 
@@ -44,7 +45,7 @@ public class CommentServiceImpl implements CommentService {
     public void updateComment(Long userId, Long postId, Long commentId,
         CommentUpdateRequestDto requestDto) {
         isExistsUser(userId);
-        postServiceImpl.findPost(postId);
+        postService.getPost(postId);
         Comment comment = findComment(commentId);
         comment.update(requestDto);
     }
@@ -53,7 +54,7 @@ public class CommentServiceImpl implements CommentService {
     @Transactional
     public void deleteComment(Long userId, Long postId, Long commentId) {
         isExistsUser(userId);
-        postServiceImpl.findPost(postId);
+        postService.getPost(postId);
         Comment comment = findComment(commentId);
         comment.softDelete();
     }
