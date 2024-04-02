@@ -3,9 +3,11 @@ package com.popcorntalk.domain.user.repository;
 import static com.popcorntalk.domain.comment.entity.QComment.comment;
 import static com.popcorntalk.domain.user.entity.QUser.user;
 
+import com.popcorntalk.domain.user.dto.UserInfoResponseDto;
 import com.popcorntalk.domain.user.dto.UserPublicInfoResponseDto;
 import com.popcorntalk.domain.user.entity.QUser;
 import com.popcorntalk.domain.user.entity.User;
+import com.popcorntalk.domain.user.entity.UserRoleEnum;
 import com.popcorntalk.global.entity.DeletionStatus;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -28,6 +30,19 @@ public class UserRepositoryCustomImpl implements UserRepositoryCustom {
         .and(user.deletionStatus.eq(DeletionStatus.N));
 
     return jpaQueryFactory.selectFrom(user).where(predicate).fetchOne();
+  }
+
+  @Override
+  public boolean validateAdminUser(Long userId) {
+    BooleanExpression predicate = user.id.eq(userId)
+        .and(user.deletionStatus.eq(DeletionStatus.N))
+        .and(user.role.eq(UserRoleEnum.ADMIN));
+
+    return jpaQueryFactory
+        .select(user)
+        .from(user)
+        .where(predicate)
+        .fetchCount() > 0;
   }
 
   @Override
