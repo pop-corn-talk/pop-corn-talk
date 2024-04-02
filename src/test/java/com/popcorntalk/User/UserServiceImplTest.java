@@ -32,13 +32,12 @@ public class UserServiceImplTest {
   @Test
   @DisplayName("관리자 유저일 경우")
   void validateAdminSuccess(){
+
     //given
     long userId = 1;
     boolean flag = true;
     UserServiceImpl userService = new UserServiceImpl(mockRepo,passwordEncoder);
     given(mockRepo.validateAdminUser(userId)).willReturn(true);
-//    given(mockRepoCus.validateAdminUser(userId)).willReturn(true);
-//    given(mockRepoCusImpl.validateAdminUser(userId)).willReturn(true);
 
     //when
     try {
@@ -46,6 +45,7 @@ public class UserServiceImplTest {
     }catch (UserNotFoundException e){
       flag = false;
     }
+
     // then
     assertTrue("성공 해당 유저는 관리자가 맞아요",flag);
   }
@@ -53,13 +53,12 @@ public class UserServiceImplTest {
   @Test
   @DisplayName("관리자 유저가 아닐 경우")
   void validateAdminFail(){
+
     //given
     long userId = 1;
     boolean flag = true;
     UserServiceImpl userService = new UserServiceImpl(mockRepo,passwordEncoder);
     given(mockRepo.validateAdminUser(userId)).willReturn(false);
-//    given(mockRepoCus.validateAdminUser(userId)).willReturn(true);
-//    given(mockRepoCusImpl.validateAdminUser(userId)).willReturn(true);
 
     //when
     try {
@@ -67,6 +66,7 @@ public class UserServiceImplTest {
     }catch (UserNotFoundException e){
       flag = false;
     }
+
     // then
     assertFalse("해당 유저는 관리자가 아니에요",flag);
   }
