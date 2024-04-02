@@ -1,5 +1,6 @@
 package com.popcorntalk.point;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
@@ -65,6 +66,21 @@ public class PointServiceImplTest {
             assertThrows(InsufficientPointException.class, () -> {
                 pointService.deductPointForPurchase(TEST_USER_ID, TEST_PRICE);
             });
+        }
+
+        @Test
+        @DisplayName("상품 구매시 유저 포인트 차감 성공 테스트")
+        void insufficientPointsDeductionSuccess() {
+
+            int TEST_PRICE = 4000;
+            int expectedPoint = POINT - TEST_PRICE;
+
+            given(pointRepository.findByUserId(anyLong())).willReturn(Optional.of(TEST_POINT));
+
+            pointService.deductPointForPurchase(TEST_USER_ID, TEST_PRICE);
+            int resultPoint = TEST_POINT.getPoint();
+
+            assertEquals(expectedPoint, resultPoint);
         }
     }
 }
