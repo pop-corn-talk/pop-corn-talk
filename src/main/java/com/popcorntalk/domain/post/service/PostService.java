@@ -1,15 +1,12 @@
 package com.popcorntalk.domain.post.service;
 
 import com.popcorntalk.domain.post.dto.PostCreateRequestDto;
-import com.popcorntalk.domain.post.dto.PostGetImageResponseDto;
 import com.popcorntalk.domain.post.dto.PostGetResponseDto;
 import com.popcorntalk.domain.post.dto.PostUpdateRequestDto;
 import com.popcorntalk.domain.post.entity.Post;
 import com.popcorntalk.domain.user.entity.User;
-import java.io.IOException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
-import org.springframework.web.multipart.MultipartFile;
 
 public interface PostService {
 
@@ -68,15 +65,6 @@ public interface PostService {
      * @param postId 삭제할 게시물의 번호
      */
     void deletePost(User user, Long postId);
-
-    /**
-     * 이미지 업로드
-     *
-     * @param file 업로드할 파일
-     * @return PostGetImageResponseDto
-     * @throws IOException
-     */
-    PostGetImageResponseDto createImage(MultipartFile file) throws IOException;
 
     /**
      * Post Entity 조회
