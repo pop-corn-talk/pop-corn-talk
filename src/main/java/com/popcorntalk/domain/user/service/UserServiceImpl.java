@@ -43,7 +43,8 @@ public class UserServiceImpl implements UserService {
         passwordEncoder.encode(userSignupRequestDto.getPassword()),
         DeletionStatus.N,
         UserRoleEnum.USER);
-    userRepository.save(user);
+
+    pointService.rewardPointForSignUp(userRepository.save(user).getId());
   }
 
   @Override
