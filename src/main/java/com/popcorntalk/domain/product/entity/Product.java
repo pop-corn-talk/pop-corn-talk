@@ -40,6 +40,9 @@ public class Product extends TimeStamped {
     private Long price;
 
     @Column(nullable = false)
+    private String ProductVoucherImage;
+
+    @Column(nullable = false)
     private DeletionStatus deletionStatus;
 
     private Product(String name, String image, String description,
