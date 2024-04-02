@@ -23,8 +23,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RequiredArgsConstructor
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("posts/{postId}/comments")
 public class CommentController {
 
@@ -39,7 +39,7 @@ public class CommentController {
     ) {
 
         commentService.createComment(
-            userDetails.getUser().getId(),
+            userDetails.getUser(),
             postId,
             requestDto
         );
@@ -92,4 +92,6 @@ public class CommentController {
 
         return ResponseEntity.status(HttpStatus.OK).build();
     }
+
+
 }
