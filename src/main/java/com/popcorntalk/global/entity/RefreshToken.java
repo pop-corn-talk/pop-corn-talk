@@ -7,11 +7,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.redis.core.RedisHash;
 
-@Builder
 @Getter
+@Builder
+@RedisHash
 @NoArgsConstructor
 @AllArgsConstructor
-@RedisHash
 public class RefreshToken {
 
     @Column
