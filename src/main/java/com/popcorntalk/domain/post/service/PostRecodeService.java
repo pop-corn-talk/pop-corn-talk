@@ -14,9 +14,9 @@ public interface PostRecodeService {
      * 하루에 게시글작성으로 받을수있는 포인트를 다 받았는지 확인
      *
      * @param userId 확인할 user id
-     * @return true/false
+     * @return user가 오늘 작성한 게시글 수
      */
-    Boolean isExistsReachedPostLimit(Long userId);
+    int getPostCountInToday(Long userId);
 
     /**
      * Cron을 이용한 7일 전 작성기록 삭제 설정 PostRecode 도메인의 역할 : 게시글작성했을때 하루 3개 작성까지 포인트지급 체크
