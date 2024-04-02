@@ -33,19 +33,6 @@ public class UserRepositoryCustomImpl implements UserRepositoryCustom {
   }
 
   @Override
-  public boolean validateAdminUser(Long userId) {
-    BooleanExpression predicate = user.id.eq(userId)
-        .and(user.deletionStatus.eq(DeletionStatus.N))
-        .and(user.role.eq(UserRoleEnum.ADMIN));
-
-    return jpaQueryFactory
-        .select(user)
-        .from(user)
-        .where(predicate)
-        .fetchCount() > 0;
-  }
-
-  @Override
   public UserPublicInfoResponseDto getUserEmail(Long userId) {
     BooleanExpression predicate = user.id.eq(userId)
         .and(user.deletionStatus.eq(DeletionStatus.N));

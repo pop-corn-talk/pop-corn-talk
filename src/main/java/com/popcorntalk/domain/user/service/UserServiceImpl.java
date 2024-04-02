@@ -2,6 +2,7 @@ package com.popcorntalk.domain.user.service;
 
 import static com.popcorntalk.global.exception.ErrorCode.DUPLICATE_USER;
 
+import com.popcorntalk.domain.point.service.PointServiceImpl;
 import com.popcorntalk.domain.user.dto.UserInfoResponseDto;
 import com.popcorntalk.domain.user.dto.UserPublicInfoResponseDto;
 import com.popcorntalk.domain.user.dto.UserSignupRequestDto;
@@ -26,6 +27,7 @@ public class UserServiceImpl implements UserService {
 
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
+  private final PointServiceImpl pointService;
 
   @Override
   @Transactional
@@ -47,8 +49,8 @@ public class UserServiceImpl implements UserService {
   public UserInfoResponseDto getMyInfo(Long userId) {
 
     User user = userRepository.getUser(userId);
-    // todo 유저 가 포인트 가져오는거 구현이 필요
-    return new UserInfoResponseDto(user.getEmail(),0L,0L);
+    // todo 유저 가 포스트 횟수 가져오는거 구현이 필요
+    return new UserInfoResponseDto(user.getEmail(),pointService.getPoint(userId).getPoint(),3);
   }
 
   @Override
