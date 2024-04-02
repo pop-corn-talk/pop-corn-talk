@@ -7,9 +7,7 @@ import com.popcorntalk.domain.product.dto.ProductReadResponseDto;
 import com.popcorntalk.domain.product.dto.ProductUpdateRequestDto;
 import com.popcorntalk.domain.product.entity.Product;
 import com.popcorntalk.domain.product.repository.ProductRepository;
-import com.popcorntalk.domain.user.entity.User;
-import com.popcorntalk.domain.user.entity.UserRoleEnum;
-import com.popcorntalk.domain.user.repository.UserRepository;
+import com.popcorntalk.domain.user.service.UserService;
 import com.popcorntalk.global.entity.DeletionStatus;
 import com.popcorntalk.global.exception.customException.NotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -23,14 +21,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     @Override
     @Transactional
-    public void createProduct(ProductCreateRequestDto productCreateRequestDto,
-        Long userId) {
-        User user = findUser(userId);
-        validateAdmin(user.getRole());
+    public void createProduct(ProductCreateRequestDto productCreateRequestDto, Long userId) {
+        userService.validateAdminUser(userId);
         Product product = Product.createOf(productCreateRequestDto);
 
         productRepository.save(product);
@@ -39,8 +35,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public void deleteProduct(Long productId, Long userId) {
-        User user = findUser(userId);
-        validateAdmin(user.getRole());
+        userService.validateAdminUser(userId);
         Product productDelete = findProduct(productId);
         validateDeleteProduct(productDelete);
 
@@ -51,8 +46,7 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public void updateProduct(Long productId, ProductUpdateRequestDto productUpdateRequestDto,
         Long userId) {
-        User user = findUser(userId);
-        validateAdmin(user.getRole());
+        userService.validateAdminUser(userId);
         Product productUpdate = findProduct(productId);
         validateDeleteProduct(productUpdate);
 
@@ -75,16 +69,5 @@ public class ProductServiceImpl implements ProductService {
     private Product findProduct(Long productId) {
         return productRepository.findById(productId)
             .orElseThrow(() -> new NotFoundException(NOT_FOUND));
-    }
-
-    private void validateAdmin(UserRoleEnum userRoleEnum) {
-        if (userRoleEnum != UserRoleEnum.ADMIN) {
-            throw new IllegalArgumentException("관리자가 권한이 필요합니다.");
-        }
-    }
-
-    private User findUser(Long userId) {
-        return userRepository.findById(userId)
-            .orElseThrow(() -> new IllegalArgumentException("유저가 존재하지 않습니다."));
     }
 }
