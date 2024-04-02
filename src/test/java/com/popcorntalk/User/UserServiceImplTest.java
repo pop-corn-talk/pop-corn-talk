@@ -8,6 +8,7 @@ import static org.springframework.test.util.AssertionErrors.assertTrue;
 
 import com.popcorntalk.domain.point.entity.Point;
 import com.popcorntalk.domain.point.service.PointServiceImpl;
+import com.popcorntalk.domain.post.service.PostRecodeServiceImpl;
 import com.popcorntalk.domain.user.dto.UserInfoResponseDto;
 import com.popcorntalk.domain.user.dto.UserPublicInfoResponseDto;
 import com.popcorntalk.domain.user.entity.User;
@@ -39,6 +40,9 @@ public class UserServiceImplTest {
   @Mock
   PointServiceImpl pointService;
 
+  @Mock
+  PostRecodeServiceImpl postRecodeService;
+
   /*
    *
    * 관지자 검증 관련.
@@ -53,7 +57,7 @@ public class UserServiceImplTest {
     long userId = 1;
     boolean flag = true;
 
-    UserServiceImpl userService = new UserServiceImpl(mockRepo,passwordEncoder,pointService);
+    UserServiceImpl userService = new UserServiceImpl(mockRepo,passwordEncoder,pointService,postRecodeService);
 
     given(mockRepo.validateAdminUser(userId)).willReturn(true);
 
@@ -76,7 +80,7 @@ public class UserServiceImplTest {
     long userId = 1;
     boolean flag = true;
 
-    UserServiceImpl userService = new UserServiceImpl(mockRepo,passwordEncoder,pointService);
+    UserServiceImpl userService = new UserServiceImpl(mockRepo,passwordEncoder,pointService,postRecodeService);
 
     given(mockRepo.validateAdminUser(userId)).willReturn(false);
 
@@ -113,11 +117,12 @@ public class UserServiceImplTest {
 
     Point point = Point.createOf(userId,100);
 
-    UserServiceImpl userService = new UserServiceImpl(mockRepo,passwordEncoder,pointService);
+    UserServiceImpl userService = new UserServiceImpl(mockRepo,passwordEncoder,pointService,postRecodeService);
 
 
     given(mockRepo.getUser(userId)).willReturn(user);
     when(pointService.getPoint(userId)).thenReturn(point);
+    when(postRecodeService.getPostCountInToday(userId)).thenReturn(2);
     //when
 
     UserInfoResponseDto userInfoResponseDto = userService.getMyInfo(userId);
@@ -125,8 +130,7 @@ public class UserServiceImplTest {
     // then
     assertEquals("개인 유저가 자신의 이메일 보기 ",user.getEmail(),userInfoResponseDto.getEmail());
     assertEquals("개인 유저가 자신의 포인트 보기 ",100,userInfoResponseDto.getPoint());
-    // todo 일일 횟수 가져오기 구현 전까진 유지.
-    assertEquals("개인 유저가 자신의 일일 횟수 보기 ",3,userInfoResponseDto.getDailyPostsLimit());
+    assertEquals("개인 유저가 자신의 일일 횟수 보기 2번 포스트 했기에 갑은 1",1,userInfoResponseDto.getDailyPostsLimit());
   }
 
   @Test
@@ -139,7 +143,7 @@ public class UserServiceImplTest {
         .email("email1@email.com")
         .build();
 
-    UserServiceImpl userService = new UserServiceImpl(mockRepo,passwordEncoder,pointService);
+    UserServiceImpl userService = new UserServiceImpl(mockRepo,passwordEncoder,pointService,postRecodeService);
 
     given(mockRepo.getUserEmail(userId)).willReturn(userPublicInfoResponseDto);
 
@@ -168,7 +172,7 @@ public class UserServiceImplTest {
 
     Page<UserPublicInfoResponseDto> userPage = new PageImpl<>(userList, pageable, userList.size());
 
-    UserServiceImpl userService = new UserServiceImpl(mockRepo,passwordEncoder,pointService);
+    UserServiceImpl userService = new UserServiceImpl(mockRepo,passwordEncoder,pointService,postRecodeService);
     when(mockRepo.getPageUsers(pageable)).thenReturn(userPage);
 
 
