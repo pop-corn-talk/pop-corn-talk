@@ -1,24 +1,20 @@
 package com.popcorntalk.domain.notification.entity;
 
-import com.popcorntalk.global.entity.TimeStamped;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@Builder
-@AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "notification")
-public class Notification extends TimeStamped {
+public class Notification {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,4 +28,18 @@ public class Notification extends TimeStamped {
 
     @Column(nullable = false, length = 500)
     private String contents;
+
+    @Column(nullable = false)
+    private LocalDateTime createdAt;
+
+    private Notification(Long userId, String sender, String contents) {
+        this.userId = userId;
+        this.sender = sender;
+        this.contents = contents;
+        this.createdAt = LocalDateTime.now();
+    }
+
+    public static Notification createOf(Long userId, String sender, String contents) {
+        return new Notification(userId, sender, contents);
+    }
 }

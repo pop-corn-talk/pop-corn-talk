@@ -4,6 +4,7 @@ import com.popcorntalk.domain.comment.dto.CommentCreateRequestDto;
 import com.popcorntalk.domain.comment.dto.CommentGetResponseDto;
 import com.popcorntalk.domain.comment.dto.CommentUpdateRequestDto;
 import com.popcorntalk.domain.comment.service.CommentService;
+import com.popcorntalk.domain.notification.service.NotificationService;
 import com.popcorntalk.global.dto.CommonResponseDto;
 import com.popcorntalk.global.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class CommentController {
 
     private final CommentService commentService;
+    private final NotificationService notificationService;
 
     @PostMapping
     public ResponseEntity<CommonResponseDto<Void>> createComment(
@@ -41,7 +43,7 @@ public class CommentController {
             postId,
             requestDto
         );
-
+        notificationService.notifyComment(postId);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
