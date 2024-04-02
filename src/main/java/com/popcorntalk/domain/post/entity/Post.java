@@ -1,6 +1,5 @@
 package com.popcorntalk.domain.post.entity;
 
-import com.popcorntalk.domain.post.dto.PostCreateRequestDto;
 import com.popcorntalk.domain.post.dto.PostUpdateRequestDto;
 import com.popcorntalk.global.entity.DeletionStatus;
 import com.popcorntalk.global.entity.TimeStamped;
@@ -31,50 +30,49 @@ public class Post extends TimeStamped {
     private Long id;
 
     @Column(nullable = false, length = 50)
-    private String postName;
+    private String name;
 
     @Column(nullable = false, length = 1000)
-    private String postContent;
+    private String content;
 
     @Column(nullable = false)
-    private String postImage;
+    private String image;
 
     @Column(nullable = false)
     private Long userId;
 
     @Enumerated(value = EnumType.STRING)
     @Column(nullable = false, length = 50)
-    private PostEnum postType;
+    private PostEnum type;
 
     @Enumerated(EnumType.STRING)
     private DeletionStatus deletionStatus;
 
-    public static Post toEntity(PostCreateRequestDto requestDto, Long userId) {
-        return Post.builder()
-            .postName(requestDto.getPostName())
-            .userId(userId)
-            .postContent(requestDto.getPostContent())
-            .postImage(requestDto.getPostImage())
-            .postType(PostEnum.POSTED)
-            .deletionStatus(DeletionStatus.N)
-            .build();
+    private Post(String name, String content, String image, Long userId, PostEnum type) {
+        this.name = name;
+        this.content = content;
+        this.image = image;
+        this.userId = userId;
+        this.type = type;
+        this.deletionStatus = DeletionStatus.N;
     }
 
-    public static Post toNoticeEntity(PostCreateRequestDto requestDto, Long userId) {
-        return Post.builder()
-            .postName(requestDto.getPostName())
-            .userId(userId)
-            .postContent(requestDto.getPostContent())
-            .postImage(requestDto.getPostImage())
-            .postType(PostEnum.NOTICED)
-            .deletionStatus(DeletionStatus.N)
-            .build();
+    public static Post createOf(String postName, String postContent, String postImage,
+        Long userId) {
+        PostEnum postEnum = PostEnum.POSTED;
+        return new Post(postName, postContent, postImage, userId, postEnum);
+    }
+
+    public static Post noticeOf(String postName, String postContent, String postImage,
+        Long userId) {
+        PostEnum postEnum = PostEnum.NOTICED;
+        return new Post(postName, postContent, postImage, userId, postEnum);
     }
 
     public void update(PostUpdateRequestDto requestDto) {
-        this.postName = requestDto.getPostName();
-        this.postContent = requestDto.getPostContent();
-        this.postImage = requestDto.getPostImage();
+        this.name = requestDto.getPostName();
+        this.content = requestDto.getPostContent();
+        this.image = requestDto.getPostImage();
     }
 
     public void softDelete() {
