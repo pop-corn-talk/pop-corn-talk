@@ -10,6 +10,6 @@ import lombok.Getter;
 public class UserInfoResponseDto {
 
   private String email;
-  private Long point;
-  private Long maxDailyPostsLimit;
+  private Integer point;
+  private Integer DailyPostsLimit;
 }

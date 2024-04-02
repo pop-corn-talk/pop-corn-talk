@@ -16,10 +16,10 @@ import lombok.NoArgsConstructor;
 
 
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "users")
 public class User {
 
