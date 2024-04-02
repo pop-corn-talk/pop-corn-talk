@@ -2,8 +2,11 @@ package com.popcorntalk.point;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.times;
 
 import com.popcorntalk.domain.point.entity.Point;
 import com.popcorntalk.domain.point.repository.PointRepository;
@@ -100,6 +103,20 @@ public class PointServiceImplTest {
 
             int resultPoint = TEST_POINT.getPoint();
             assertEquals(expectedPoint, resultPoint);
+        }
+    }
+
+    @Nested
+    @DisplayName("회원가입 시 포인트 지급 테스트")
+    class rewardPointForSignUp {
+
+        @Test
+        @DisplayName("회원가입 시 포인트 지급 성공 테스트")
+        void rewardPointSuccess() {
+
+            pointService.rewardPointForSignUp(TEST_USER_ID);
+
+            then(pointRepository).should(times(1)).save(any(Point.class));
         }
     }
 }
