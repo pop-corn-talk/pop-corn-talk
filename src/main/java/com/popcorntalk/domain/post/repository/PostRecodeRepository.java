@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 public interface PostRecodeRepository extends JpaRepository<PostRecode, Long> {
 
     @Query(value = "SELECT Count(*) FROM PostRecode pr WHERE pr.createdAt BETWEEN :todayStart AND :todayEnd AND pr.userId = :userId")
-    Long existsCreatePostInToday(Long userId, LocalDateTime todayStart, LocalDateTime todayEnd);
+    int getCreatePostCountInToday(Long userId, LocalDateTime todayStart, LocalDateTime todayEnd);
 
     @Query(value = "SELECT pr FROM PostRecode pr WHERE pr.createdAt < :now")
     List<PostRecode> findOlderThanSevenDaysPosts(LocalDateTime now);

@@ -89,8 +89,6 @@ public class PostTestData {
         .id(TEST_USER_ID)
         .email(EMAIL)
         .password(USER_PASSWORD)
-        .point(USER_POINT)
-        .maxDailyPostsLimit(MAX_DAILY_POSTS_LIMIT)
         .role(UserRoleEnum.USER)
         .deletionStatus(DeletionStatus.N)
         .build();
@@ -99,8 +97,6 @@ public class PostTestData {
         .id(TEST_ANOTHER_USER_ID)
         .email(ANOTHER_PREFIX + EMAIL)
         .password(ANOTHER_PREFIX + USER_PASSWORD)
-        .point(ANOTHER_USER_POINT)
-        .maxDailyPostsLimit(MAX_DAILY_POSTS_LIMIT)
         .role(UserRoleEnum.USER)
         .deletionStatus(DeletionStatus.N)
         .build();
@@ -109,8 +105,6 @@ public class PostTestData {
         .id(TEST_ADMIN_USER_ID)
         .email(ADMIN_PREFIX + EMAIL)
         .password(ADMIN_PREFIX + USER_PASSWORD)
-        .point(USER_POINT + 100_000L)
-        .maxDailyPostsLimit(MAX_DAILY_POSTS_LIMIT)
         .role(UserRoleEnum.ADMIN)
         .deletionStatus(DeletionStatus.N)
         .build();

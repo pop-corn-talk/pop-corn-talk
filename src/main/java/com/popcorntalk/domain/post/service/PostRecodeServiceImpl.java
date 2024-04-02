@@ -24,16 +24,13 @@ public class PostRecodeServiceImpl implements PostRecodeService {
     }
 
     @Override
-    public Boolean isExistsReachedPostLimit(Long userId) {
+    public int getPostCountInToday(Long userId) {
         LocalDateTime todayStart = LocalDateTime.now().withHour(0).withMinute(0).withSecond(0)
             .withNano(0);
         LocalDateTime todayEnd = LocalDateTime.now().withHour(23).withMinute(59).withSecond(59)
             .withNano(999999999);
 
-        Long userCreatePostInToday = postRecodeRepository.existsCreatePostInToday(userId,
-            todayStart, todayEnd);
-
-        return userCreatePostInToday <= 3;
+        return postRecodeRepository.getCreatePostCountInToday(userId, todayStart, todayEnd);
     }
 
     @Override
