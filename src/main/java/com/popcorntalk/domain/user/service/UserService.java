@@ -40,4 +40,12 @@ public interface UserService {
      *
      */
     Page<UserPublicInfoResponseDto> getAllUserInfo(Pageable pageable);
+
+    /**
+     * 유저가 Admin 인지 조회
+     *
+     * @param id 조회할 유저 요청
+     *
+     */
+    void validateAdminUser(Long id);
 }

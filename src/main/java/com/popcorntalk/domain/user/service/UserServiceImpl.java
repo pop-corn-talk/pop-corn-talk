@@ -9,7 +9,9 @@ import com.popcorntalk.domain.user.entity.User;
 import com.popcorntalk.domain.user.entity.UserRoleEnum;
 import com.popcorntalk.domain.user.repository.UserRepository;
 import com.popcorntalk.global.entity.DeletionStatus;
+import com.popcorntalk.global.exception.ErrorCode;
 import com.popcorntalk.global.exception.customException.DuplicateUserInfoException;
+import com.popcorntalk.global.exception.customException.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -59,5 +61,14 @@ public class UserServiceImpl implements UserService {
   public Page<UserPublicInfoResponseDto> getAllUserInfo(Pageable pageable) {
 
     return userRepository.getPageUsers(pageable);
+  }
+
+  @Override
+  public void validateAdminUser(Long id) {
+
+    if(!userRepository.validateAdminUser(id)){
+      // todo 승현님이 만들어 놓운 exception 으로 변경
+      throw new UserNotFoundException(ErrorCode.USER_NOT_FOUND);
+    }
   }
 }
