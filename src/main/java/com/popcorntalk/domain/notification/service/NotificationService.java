@@ -47,7 +47,7 @@ public class NotificationService {
     }
 
     public void notifyComment(Long postId) {
-        Post post = postService.findPost(postId);
+        Post post = postService.getPost(postId);
         Comment receiveComment = commentService.findLatestComment(postId);
         User commentUser = userRepository.findById(receiveComment.getUserId()).orElseThrow(
             () -> new IllegalArgumentException("User not found")
