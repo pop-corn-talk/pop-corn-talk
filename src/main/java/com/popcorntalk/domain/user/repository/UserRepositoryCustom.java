@@ -11,8 +11,6 @@ public interface UserRepositoryCustom {
 
   User getUser(Long userId);
 
-  boolean validateAdminUser(Long userId);
-
   UserPublicInfoResponseDto getUserEmail(Long userId);
 
   Page<UserPublicInfoResponseDto> getPageUsers(Pageable pageable);

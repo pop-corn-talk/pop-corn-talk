@@ -161,18 +161,6 @@ public class JwtUtil {
             .compact();
   }
 
-  // TODO 이미 만들어 저 있던 FUNCTION 입니다 일단 팀원들의 의견을 듣고 지우기 or 유지 하겠습니다. !
-//  public Long getExpiration(String accessToken) {
-//    Date expiration = Jwts.parserBuilder()
-//        .setSigningKey(key)
-//        .build()
-//        .parseClaimsJws(accessToken)
-//        .getBody()
-//        .getExpiration();
-//    Long now = new Date().getTime();
-//    return (expiration.getTime() - now);
-//  }
-
   public Claims getMemberInfoFromExpiredToken(String token) {
     try {
       return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
