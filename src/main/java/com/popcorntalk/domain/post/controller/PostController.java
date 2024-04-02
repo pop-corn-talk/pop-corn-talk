@@ -1,14 +1,12 @@
 package com.popcorntalk.domain.post.controller;
 
 import com.popcorntalk.domain.post.dto.PostCreateRequestDto;
-import com.popcorntalk.domain.post.dto.PostGetImageResponseDto;
 import com.popcorntalk.domain.post.dto.PostGetResponseDto;
 import com.popcorntalk.domain.post.dto.PostUpdateRequestDto;
 import com.popcorntalk.domain.post.service.PostService;
 import com.popcorntalk.global.dto.CommonResponseDto;
 import com.popcorntalk.global.security.UserDetailsImpl;
 import jakarta.validation.Valid;
-import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -24,9 +22,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -115,14 +111,5 @@ public class PostController {
             postId
         );
         return ResponseEntity.status(HttpStatus.OK).build();
-    }
-
-    //게시물 이미지 업로드
-    @PostMapping("/image")
-    public ResponseEntity<CommonResponseDto<PostGetImageResponseDto>> createImage(
-        @RequestPart(value = "postImage") MultipartFile file
-    ) throws IOException {
-        PostGetImageResponseDto imageUrl = postService.createImage(file);
-        return ResponseEntity.status(HttpStatus.CREATED).body(CommonResponseDto.success(imageUrl));
     }
 }

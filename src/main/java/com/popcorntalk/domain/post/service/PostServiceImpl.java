@@ -4,7 +4,6 @@ import static com.popcorntalk.global.exception.ErrorCode.PERMISSION_DENIED;
 
 import com.popcorntalk.domain.point.service.PointService;
 import com.popcorntalk.domain.post.dto.PostCreateRequestDto;
-import com.popcorntalk.domain.post.dto.PostGetImageResponseDto;
 import com.popcorntalk.domain.post.dto.PostGetResponseDto;
 import com.popcorntalk.domain.post.dto.PostUpdateRequestDto;
 import com.popcorntalk.domain.post.entity.Post;
@@ -14,9 +13,7 @@ import com.popcorntalk.domain.user.entity.User;
 import com.popcorntalk.domain.user.service.UserService;
 import com.popcorntalk.global.entity.DeletionStatus;
 import com.popcorntalk.global.exception.customException.PermissionDeniedException;
-import com.popcorntalk.global.util.StorageService;
 import com.querydsl.core.types.Predicate;
-import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
@@ -25,14 +22,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 @RequiredArgsConstructor
 @CacheConfig(cacheManager = "postCacheManager")
 @Service
 public class PostServiceImpl implements PostService {
 
-    private final StorageService storageService;
     private final PostRecodeService postRecodeService;
     private final PointService pointService;
     private final UserService userService;
@@ -107,11 +102,6 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostGetImageResponseDto createImage(MultipartFile file) throws IOException {
-        return new PostGetImageResponseDto(getImageUrl(file));
-    }
-
-    @Override
     public Post getPost(Long postId) {
         Post post = postRepository.findById(postId).orElseThrow(
             () -> new IllegalArgumentException("해당하는 게시물이 없습니다."));
@@ -130,12 +120,5 @@ public class PostServiceImpl implements PostService {
         if (!postUserId.equals(loginUserId)) {
             throw new PermissionDeniedException(PERMISSION_DENIED);
         }
-    }
-
-    private String getImageUrl(MultipartFile file) throws IOException {
-        if (file.isEmpty()) {
-            throw new IllegalArgumentException("이미지가 없습니다.");
-        }
-        return storageService.uploadFile(file);
     }
 }
