@@ -83,4 +83,23 @@ public class PointServiceImplTest {
             assertEquals(expectedPoint, resultPoint);
         }
     }
+
+    @Nested
+    @DisplayName("포인트 적립 테스트")
+    class EarnPoint {
+
+        @Test
+        @DisplayName("포인트 적립 성공 테스트")
+        void earnPointSuccess() {
+
+            int ADD_POINT = 1000;
+            int expectedPoint = POINT + ADD_POINT;
+
+            given(pointRepository.findByUserId(anyLong())).willReturn(Optional.of(TEST_POINT));
+            pointService.earnPoint(TEST_USER_ID, ADD_POINT);
+
+            int resultPoint = TEST_POINT.getPoint();
+            assertEquals(expectedPoint, resultPoint);
+        }
+    }
 }
