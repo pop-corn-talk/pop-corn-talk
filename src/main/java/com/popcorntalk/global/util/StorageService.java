@@ -1,33 +1,25 @@
 package com.popcorntalk.global.util;
 
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.popcorntalk.global.dto.StorageGetImageResponseDto;
+import com.popcorntalk.global.dto.StorageImageUrlRequestDto;
 import java.io.IOException;
-import java.util.UUID;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-@Service
-public class StorageService {
+public interface StorageService {
 
-    @Value("${cloud.aws.bucket.name}")
-    private String bucket;
+    /**
+     * S3에 이미지 업로드 로직
+     *
+     * @param file 업로드할 이미지 파일
+     * @return StorageGetImageResponseDto
+     * @throws IOException
+     */
+    StorageGetImageResponseDto uploadFile(MultipartFile file) throws IOException;
 
-    @Autowired
-    private AmazonS3 s3Client;
-
-    public String uploadFile(MultipartFile file) throws IOException {
-        String originalFilename = file.getOriginalFilename();
-        String fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
-        String fileName = UUID.randomUUID().toString() + fileExtension;
-
-        ObjectMetadata metadata = new ObjectMetadata();
-        metadata.setContentLength(file.getSize());
-        metadata.setContentType(file.getContentType());
-
-        s3Client.putObject(bucket, fileName, file.getInputStream(), metadata);
-        return s3Client.getUrl(bucket, fileName).toString();
-    }
+    /**
+     * S3에 업로드 된 이미지 삭제
+     *
+     * @param request 삭제할 키(이미지명)
+     */
+    void deleteImage(StorageImageUrlRequestDto request);
 }

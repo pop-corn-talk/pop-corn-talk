@@ -1,4 +1,4 @@
-package com.popcorntalk.domain.post.dto;
+package com.popcorntalk.global.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PostGetImageResponseDto {
+public class StorageGetImageResponseDto {
 
-    private String postImage;
+    private String imageUrl;
 }
