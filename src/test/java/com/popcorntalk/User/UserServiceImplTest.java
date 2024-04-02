@@ -7,7 +7,6 @@ import static org.springframework.test.util.AssertionErrors.assertFalse;
 import static org.springframework.test.util.AssertionErrors.assertTrue;
 
 import com.popcorntalk.domain.point.entity.Point;
-import com.popcorntalk.domain.point.repository.PointRepository;
 import com.popcorntalk.domain.point.service.PointServiceImpl;
 import com.popcorntalk.domain.user.dto.UserInfoResponseDto;
 import com.popcorntalk.domain.user.dto.UserPublicInfoResponseDto;
@@ -19,13 +18,11 @@ import com.popcorntalk.global.entity.DeletionStatus;
 import com.popcorntalk.global.exception.customException.UserNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -146,7 +143,7 @@ public class UserServiceImplTest {
 
     given(mockRepo.getUserEmail(userId)).willReturn(userPublicInfoResponseDto);
 
-    //when
+    // when
     UserPublicInfoResponseDto userPublicInfoResponseDto1 = userService.getUserInfo(userId);
 
     // then
@@ -162,6 +159,7 @@ public class UserServiceImplTest {
         .email("email1@email.com")
         .build();
 
+    //when
     Pageable pageable = Pageable.ofSize(10).withPage(0); // Assuming page size is 10 and page number is 0
     List<UserPublicInfoResponseDto> userList = new ArrayList<>();
     userList.add(user);
@@ -176,7 +174,7 @@ public class UserServiceImplTest {
 
     Page<UserPublicInfoResponseDto> result = userService.getAllUserInfo(pageable);
 
-
+    // then
     assertEquals("유저 element 갯수",userPage.getTotalElements(), result.getTotalElements());
     assertEquals("유저 페이지 총 갯수",userPage.getTotalPages(), result.getTotalPages());
     assertEquals("유저 페이지 갯수",userPage.getNumber(), result.getNumber());
