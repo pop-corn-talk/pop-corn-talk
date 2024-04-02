@@ -1,11 +1,15 @@
 package com.popcorntalk.domain.post.service;
 
 import com.popcorntalk.domain.post.dto.PostCreateRequestDto;
+import com.popcorntalk.domain.post.dto.PostGetImageResponseDto;
 import com.popcorntalk.domain.post.dto.PostGetResponseDto;
 import com.popcorntalk.domain.post.dto.PostUpdateRequestDto;
+import com.popcorntalk.domain.post.entity.Post;
 import com.popcorntalk.domain.user.entity.User;
-import java.util.List;
+import java.io.IOException;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface PostService {
 
@@ -15,7 +19,7 @@ public interface PostService {
      * @param postId 조회할 게시물의 번호
      * @return PostGetResponseDto
      */
-    PostGetResponseDto getPost(Long postId);
+    PostGetResponseDto getPostById(Long postId);
 
     /**
      * 모든 게시물 조회
@@ -23,7 +27,14 @@ public interface PostService {
      * @param pageable 페이징처리(기본값: size 10, page 0, order createdAt::DESC)
      * @return List<PostGetResponseDto>
      */
-    List<PostGetResponseDto> getPosts(Pageable pageable);
+    Slice<PostGetResponseDto> getPosts(Pageable pageable);
+
+    /**
+     * @param user     로그인유저
+     * @param pageable 페이징처리(기본값: size 10, page 0, order modifiedAt::DESC)
+     * @return Slice<PostGetResponseDto>
+     */
+    Slice<PostGetResponseDto> getDeletePosts(User user, Pageable pageable);
 
     /**
      * 게시물 생성
@@ -32,6 +43,14 @@ public interface PostService {
      * @param requestDto 생성될 게시물의 내용
      */
     void createPost(User user, PostCreateRequestDto requestDto);
+
+    /**
+     * 공지 게시물 작성
+     *
+     * @param user       로그인 유저(게시물생성자)
+     * @param requestDto 생성될 게시물의 내용
+     */
+    void createNoticePost(User user, PostCreateRequestDto requestDto);
 
     /**
      * 게시물 수정
@@ -49,4 +68,29 @@ public interface PostService {
      * @param postId 삭제할 게시물의 번호
      */
     void deletePost(User user, Long postId);
+
+    /**
+     * 이미지 업로드
+     *
+     * @param file 업로드할 파일
+     * @return PostGetImageResponseDto
+     * @throws IOException
+     */
+    PostGetImageResponseDto createImage(MultipartFile file) throws IOException;
+
+    /**
+     * Post Entity 조회
+     *
+     * @param postId 조회할 Post Entity id
+     * @return Post
+     */
+    Post getPost(Long postId);
+
+    /**
+     * Post Entity 존재 확인
+     *
+     * @param postId 확인할 Post Entity od
+     * @return true/false
+     */
+    Boolean isExistsPost(Long postId);
 }

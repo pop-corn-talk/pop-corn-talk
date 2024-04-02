@@ -1,8 +1,7 @@
 package com.popcorntalk.global.util;
 
 import com.popcorntalk.domain.user.entity.UserRoleEnum;
-import com.popcorntalk.global.dto.RefreshToken;
-import com.popcorntalk.global.repository.RefreshTokenRepository;
+import com.popcorntalk.global.entity.RefreshToken;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -14,7 +13,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
-import java.util.Optional;
+import java.util.NoSuchElementException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,133 +25,159 @@ import org.springframework.util.StringUtils;
 @RequiredArgsConstructor
 public class JwtUtil {
 
-    private final RedisUtil redisUtil;
+  private final RedisUtil redisUtil;
 
-    private final RefreshTokenRepository refreshTokenRepository;
 
-    // Header KEY 값
-    public static final String AUTHORIZATION_HEADER = "Authorization";
-    // 사용자 권한 값의 KEY
-    public static final String AUTHORIZATION_KEY = "auth";
-    // Token 식별자 꼭 붙일 필요는 없지만 규칙
-    public static final String BEARER_PREFIX = "Bearer ";
-    //토큰 만료시간
-    private final long TOKEN_TIME = 60 * 60 * 1000L;
+  // Header KEY 값
+  public static final String AUTHORIZATION_HEADER = "Authorization";
+  // 사용자 권한 값의 KEY
+  public static final String BEARER_PREFIX = "Bearer ";
+  //토큰 만료시간
+  private final long TOKEN_TIME = 60 * 60 * 1000L;
 
-    private final long REFRESHTOKENTIME = 60 * 60 * 1000 * 24 * 7L;
+  private final long REFRESH_TOKEN_TIME = 24 * 60 * 60 * 1000L;
 
-    @Value("${jwt.secret.key}") //application.properties에 들어있던 값이 들어감
-    private String secretKey;
-    //secretKey를 넣을 Key 객체
-    private Key key;
-    //알고리즘 선택
-    private final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
+  private String redisKeys;
 
-    @PostConstruct //딱 한번만 받아 오면 되는 값을 받을 때 요청을 새로 받는 걸 방지
-    public void init() {
-        byte[] bytes = Base64.getDecoder().decode(secretKey); //base64로 디코딩
-        key = Keys.hmacShaKeyFor(bytes); //key에다가 디코딩한 secretKey를 넣습니다.
+  @Value("${jwt.secret.key}")
+  private String secretKey;
+  //secretKey 를 넣을 Key 객체
+  private Key key;
+  //알고리즘 선택
+  private final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
+
+  @PostConstruct //딱 한번만 받아 오면 되는 값을 받을 때 요청을 새로 받는 걸 방지
+  public void init() {
+    byte[] bytes = Base64.getDecoder().decode(secretKey); //base64로 디코딩
+    key = Keys.hmacShaKeyFor(bytes); //key에다가 디코딩한 secretKey를 넣습니다.
+  }
+
+  // 로그인시 토큰 생성
+  public String createToken(Long userId, String email) {
+    Date date = new Date();
+    String accessToken = createAccessToken(userId, email);
+
+    try {
+      UpdateValidRefreshToken(accessToken, userId);
+    } catch (Exception e) {
+      log.info("새로운 refresh 토큰 생성");
+      SaveNewRefreshToken(date, accessToken, userId, email);
     }
 
-    // 토큰 생성
-    public String createToken(Long userId, String email) {
-        Date date = new Date();
+    return accessToken;
+  }
 
-        String accessToken = recreationAccessToken(userId, email);
+  private void UpdateValidRefreshToken(String accessToken, Long userId) {
 
-        deleteRefreshToken(userId);
-        String refreshToken = BEARER_PREFIX +
-            Jwts.builder()
-                .claim("userId", userId)
-                .claim("email", email)
-                .claim("role", UserRoleEnum.USER.toString())
-                .setIssuedAt(new Date(date.getTime())) // 토큰 발행 시간 정보
-                .setExpiration(new Date(date.getTime() + REFRESHTOKENTIME)) // set Expire Time
-                .signWith(key, signatureAlgorithm)  // 사용할 암호화 알고리즘과
-                // signature 에 들어갈 secret값 세팅
-                .compact();
-        RefreshToken token = RefreshToken.builder().refreshToken(refreshToken).userId(userId)
-            .build();
-        refreshTokenRepository.save(token);
+    redisKeys = "ID : " + userId;
 
-        return accessToken;
+    RefreshToken refreshToken = (RefreshToken) redisUtil.get(redisKeys);
+    refreshToken.update(accessToken);
+
+    redisUtil.set(redisKeys, refreshToken, (int) REFRESH_TOKEN_TIME);
+    log.info("기존 refresh 토큰 으로 생성");
+  }
+
+  private void SaveNewRefreshToken(Date date, String accessToken, Long userId, String email) {
+
+    String refreshToken = BEARER_PREFIX +
+        Jwts.builder()
+            .claim("userId", userId)
+            .claim("email", email)
+            .claim("role", UserRoleEnum.USER.toString())
+            .setIssuedAt(new Date(date.getTime())) // 토큰 발행 시간 정보
+            .setExpiration(new Date(date.getTime() + REFRESH_TOKEN_TIME)) // set Expire Time
+            .signWith(key, signatureAlgorithm)  // 사용할 암호화 알고리즘과
+            .compact();// signature 에 들어갈 secret 값 세팅
+
+    RefreshToken token = RefreshToken
+        .builder()
+        .refreshToken(refreshToken)
+        .previousAccessToken(accessToken.substring(7))
+        .userId(userId)
+        .build();
+
+    redisKeys = "ID : " + userId;
+    redisUtil.set(redisKeys, token, (int) REFRESH_TOKEN_TIME);
+  }
+
+  // header 에서 JWT 가져오기
+  public String getJwtFromHeader(HttpServletRequest request) {
+    String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
+    if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
+      //순수한 토큰이 필요하기 때문에 bearer 을 잘라버림
+      return bearerToken.substring(7);
+    }
+    return null;
+  }
+
+  // 토큰에서 사용자 정보 가져오기
+  public Claims getUserInfoFromToken(String token) {
+    return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+  }
+
+  public boolean validateToken(String token) {
+    try {
+      Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+      return true;
+    } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
+      log.error("토큰검증오류");
+      return false;
+    }
+  }
+
+  public String validateRefreshToken(Long userId, String previousJwt) {
+
+    redisKeys = "ID : " + userId;
+    RefreshToken refreshToken = new RefreshToken();
+    if (redisUtil.hasKey(redisKeys)) {
+      refreshToken = (RefreshToken) redisUtil.get(redisKeys);
     }
 
-    public void deleteRefreshToken(Long userId) {
-        Optional<RefreshToken> checkToken = refreshTokenRepository.findByUserId(userId);
-        checkToken.ifPresent(refreshTokenRepository::delete);
-        //만약 로그아웃이 없다면 업데이트가 맞다 로그아웃은 사실 프론트꺼다
+    if (!refreshToken.getPreviousAccessToken().equals(previousJwt)) {
+      System.out.println(refreshToken.getPreviousAccessToken());
+      redisUtil.delete(redisKeys);
+      throw new NoSuchElementException("JWT refresh 인증 문제!!! 강제 로그아웃 합니다");
     }
 
-    // header 에서 JWT 가져오기
-    public String getJwtFromHeader(HttpServletRequest request) {
-        String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
-            //순수한 토큰이 필요하기 때문에 bearer 을 잘라버림
-            return bearerToken.substring(7);
-        }
-        return null;
-    }
+    Claims info = Jwts.parserBuilder().setSigningKey(key).build()
+        .parseClaimsJws(refreshToken.getRefreshToken().substring(7)).getBody();
 
-    // 토큰에서 사용자 정보 가져오기
-    public Claims getUserInfoFromToken(String token) {
-        //validateToken에서 검증을 한 토큰의 body를 가져옴 claims라는 데이터의 집합으로 반환함
-        return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
-    }
+    String token = createAccessToken(refreshToken.getUserId(),
+        info.get("email", String.class));
+    refreshToken.update(token);
+    redisUtil.set(redisKeys, refreshToken, (int) REFRESH_TOKEN_TIME);
+    return token;
+  }
 
-    public boolean validateToken(String token) {
-        try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
-            if (redisUtil.hasKeyBlackList(token)) {
-                return false;
-            }
-            return true;
-        } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
-            log.error("토큰검증오류");
-            return false;
-        }
-    }
+  public String createAccessToken(Long userId, String email) {
+    Date date = new Date();
+    return BEARER_PREFIX +
+        Jwts.builder()
+            .claim("userId", userId)
+            .claim("email", email)
+            .setExpiration(new Date(date.getTime() + TOKEN_TIME))
+            .signWith(key, signatureAlgorithm)
+            .compact();
+  }
 
-    public String validateRefreshToken(Long userId) {
-        RefreshToken token = refreshTokenRepository.findByUserId(userId).orElseThrow(
-            () -> new IllegalArgumentException("RefreshToken 이 유효하지 않습니다.")
-        );
-        String refreshToken = token.getRefreshToken().substring(7);
-        Claims info = Jwts.parserBuilder().setSigningKey(key).build()
-            .parseClaimsJws(refreshToken).getBody();
-        return recreationAccessToken(info.get("userId", Long.class),
-            info.get("email", String.class));
-    }
+  // TODO 이미 만들어 저 있던 FUNCTION 입니다 일단 팀원들의 의견을 듣고 지우기 or 유지 하겠습니다. !
+//  public Long getExpiration(String accessToken) {
+//    Date expiration = Jwts.parserBuilder()
+//        .setSigningKey(key)
+//        .build()
+//        .parseClaimsJws(accessToken)
+//        .getBody()
+//        .getExpiration();
+//    Long now = new Date().getTime();
+//    return (expiration.getTime() - now);
+//  }
 
-    public String recreationAccessToken(Long userId, String email) {
-        Date date = new Date();
-        String accessToken = BEARER_PREFIX + // bearer 을 앞에 붙어줌
-            Jwts.builder()
-                .claim("userId", userId)
-                .claim("email", email)
-                .setExpiration(new Date(date.getTime() + TOKEN_TIME)) // 만료 시간
-                .signWith(key, signatureAlgorithm) // 암호화 알고리즘
-                .compact();
-
-        return accessToken;
+  public Claims getMemberInfoFromExpiredToken(String token) {
+    try {
+      return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+    } catch (ExpiredJwtException e) {
+      return e.getClaims();
     }
-
-    public Long getExpiration(String accessToken) {
-        Date expiration = Jwts.parserBuilder()
-            .setSigningKey(key)
-            .build()
-            .parseClaimsJws(accessToken)
-            .getBody()
-            .getExpiration();
-        Long now = new Date().getTime();
-        return (expiration.getTime() - now);
-    }
-
-    public Claims getMemberInfoFromExpiredToken(String token) {
-        try {
-            return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
-        } catch (ExpiredJwtException e) {
-            return e.getClaims();
-        }
-    }
+  }
 }
