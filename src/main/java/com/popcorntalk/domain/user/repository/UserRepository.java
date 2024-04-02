@@ -1,10 +1,20 @@
 package com.popcorntalk.domain.user.repository;
 
+import com.popcorntalk.domain.user.dto.UserPublicInfoResponseDto;
 import com.popcorntalk.domain.user.entity.User;
 import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+public interface UserRepository extends JpaRepository<User, Long> ,UserRepositoryCustom{
 
-public interface UserRepository extends JpaRepository<User, Long> {
+    boolean existsByEmail(String email);
+
+    @Override
+    User getUser(Long userId);
+
+    @Override
+    Page<UserPublicInfoResponseDto> getPageUsers(Pageable pageable);
 
     Optional<User> findByEmail(String email);
 }
