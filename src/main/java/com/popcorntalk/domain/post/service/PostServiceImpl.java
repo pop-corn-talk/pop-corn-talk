@@ -11,8 +11,7 @@ import com.popcorntalk.domain.post.entity.Post;
 import com.popcorntalk.domain.post.entity.QPost;
 import com.popcorntalk.domain.post.repository.PostRepository;
 import com.popcorntalk.domain.user.entity.User;
-import com.popcorntalk.domain.user.entity.UserRoleEnum;
-import com.popcorntalk.domain.user.repository.UserRepository;
+import com.popcorntalk.domain.user.service.UserService;
 import com.popcorntalk.global.entity.DeletionStatus;
 import com.popcorntalk.global.exception.customException.PermissionDeniedException;
 import com.popcorntalk.global.util.StorageService;
@@ -36,8 +35,8 @@ public class PostServiceImpl implements PostService {
     private final StorageService storageService;
     private final PostRecodeService postRecodeService;
     private final PointService pointService;
+    private final UserService userService;
     private final PostRepository postRepository;
-    private final UserRepository userRepository;
 
     private final int POST_CREATE_REWORD = 100;
 
@@ -59,13 +58,7 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional(readOnly = true)
     public Slice<PostGetResponseDto> getDeletePosts(User user, Pageable pageable) {
-        //1.userRepository 주입
-        User adminUser = userRepository.findById(user.getId()).orElseThrow(
-            () -> new IllegalArgumentException("해당하는 유저가 없습니다.")
-        );
-        //2.userService주입
-//        user adminUser = userService.findUser(user.getId());
-        validateAdminUser(adminUser.getRole());
+        userService.validateAdminUser(user.getId());
         Predicate predicate = QPost.post.deletionStatus.eq(DeletionStatus.Y);
         return postRepository.findPosts(pageable, predicate);
     }
@@ -79,7 +72,7 @@ public class PostServiceImpl implements PostService {
         Post savedPost = postRepository.save(newPost);
 
         postRecodeService.createPostRecode(user.getId(), savedPost.getId());
-        if (postRecodeService.isExistsReachedPostLimit(user.getId())) {
+        if (postRecodeService.getPostCountInToday(user.getId()) <= 3) {
             pointService.earnPoint(user.getId(), POST_CREATE_REWORD);
         }
     }
@@ -87,15 +80,9 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional
     public void createNoticePost(User user, PostCreateRequestDto requestDto) {
-        //1.userRepository 주입
-        User adminUser = userRepository.findById(user.getId()).orElseThrow(
-            () -> new PermissionDeniedException(PERMISSION_DENIED)
-        );
-        //2.userService주입
-//        user adminUser = userService.findUser(user.getId());
-        validateAdminUser(adminUser.getRole());
+        userService.validateAdminUser(user.getId());
         Post noticePost = Post.noticeOf(requestDto.getPostName(), requestDto.getPostContent(),
-            requestDto.getPostImage(), adminUser.getId());
+            requestDto.getPostImage(), user.getId());
         postRepository.save(noticePost);
     }
 
@@ -141,12 +128,6 @@ public class PostServiceImpl implements PostService {
 
     private void validatePostOwner(Long postUserId, Long loginUserId) {
         if (!postUserId.equals(loginUserId)) {
-            throw new PermissionDeniedException(PERMISSION_DENIED);
-        }
-    }
-
-    private void validateAdminUser(UserRoleEnum role) {
-        if (!role.equals(UserRoleEnum.ADMIN)) {
             throw new PermissionDeniedException(PERMISSION_DENIED);
         }
     }
