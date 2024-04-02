@@ -13,6 +13,7 @@ import com.popcorntalk.domain.point.repository.PointRepository;
 import com.popcorntalk.domain.point.service.PointRecordService;
 import com.popcorntalk.domain.point.service.PointServiceImpl;
 import com.popcorntalk.global.exception.customException.InsufficientPointException;
+import com.popcorntalk.global.exception.customException.PointNotFoundException;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -118,5 +119,16 @@ public class PointServiceImplTest {
 
             then(pointRepository).should(times(1)).save(any(Point.class));
         }
+    }
+
+    @Test
+    @DisplayName("해당 userId의 포인트가 존재하지 않을 때 포인트 반환 실패 테스트")
+    void notFoundPoint() {
+
+        Long NotExistUserId = 123L;
+
+        assertThrows(PointNotFoundException.class, () -> {
+            pointService.getPoint(NotExistUserId);
+        });
     }
 }
