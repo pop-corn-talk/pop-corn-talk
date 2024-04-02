@@ -28,8 +28,8 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-@RequiredArgsConstructor
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/posts")
 public class PostController {
 
@@ -120,8 +120,7 @@ public class PostController {
     //게시물 이미지 업로드
     @PostMapping("/image")
     public ResponseEntity<CommonResponseDto<PostGetImageResponseDto>> createImage(
-        @RequestPart(value = "postImage")
-        MultipartFile file
+        @RequestPart(value = "postImage") MultipartFile file
     ) throws IOException {
         PostGetImageResponseDto imageUrl = postService.createImage(file);
         return ResponseEntity.status(HttpStatus.CREATED).body(CommonResponseDto.success(imageUrl));
