@@ -1,11 +1,15 @@
 package com.popcorntalk.domain.post.repository;
 
+import com.popcorntalk.domain.comment.entity.QComment;
+import com.popcorntalk.domain.post.dto.PostBest3GetResponseDto;
 import com.popcorntalk.domain.post.dto.PostGetResponseDto;
 import com.popcorntalk.domain.post.entity.Post;
 import com.popcorntalk.domain.post.entity.QPost;
 import com.popcorntalk.domain.user.entity.QUser;
 import com.popcorntalk.global.config.QuerydslConfig;
 import com.popcorntalk.global.entity.DeletionStatus;
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Predicate;
@@ -28,6 +32,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
     private final QuerydslConfig querydslConfig;
     QPost qPost = QPost.post;
     QUser qUser = QUser.user;
+    QComment qComment = QComment.comment;
 
     @Override
     public PostGetResponseDto findPost(Long postId) {
@@ -80,6 +85,46 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
         }
 
         return new SliceImpl<>(responses, pageable, hasNext);
+    }
+
+    @Override
+    public List<PostBest3GetResponseDto> getBest3PostsInPreMonth(List<Long> postIds) {
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+
+        for (Long best3PostId : postIds) {
+            Predicate postIdPredicate = qPost.id.eq(best3PostId);
+            booleanBuilder.or(postIdPredicate);
+        }
+
+        return querydslConfig.jpaQueryFactory()
+            .select(Projections.fields(PostBest3GetResponseDto.class,
+                qPost.id,
+                qPost.name,
+                qUser.id.as("userId"),
+                qUser.email
+            ))
+            .from(qPost)
+            .leftJoin(qUser).on(qPost.userId.eq(qUser.id))
+            .where(booleanBuilder)
+            .fetch();
+    } //정렬이 들어간순서대로 되지가 않음...
+
+    @Override
+    public List<Long> getBest3PostIds(Predicate predicate) {
+        List<Tuple> postIds = querydslConfig.jpaQueryFactory()
+            .select(
+                qPost.id,
+                qComment.id.count()
+            )
+            .from(qPost)
+            .leftJoin(qComment).on(qPost.id.eq(qComment.postId))
+            .where(predicate)
+            .groupBy(qPost.id)
+            .orderBy(qComment.id.count().desc())
+            .limit(3)
+            .fetch();
+
+        return postIds.stream().map(i -> i.get(0, Long.class)).toList();
     }
 
     public OrderSpecifier<LocalDateTime> postOrderSpecifier(Pageable pageable) {

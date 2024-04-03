@@ -1,11 +1,13 @@
 package com.popcorntalk.domain.post.service;
 
+import com.popcorntalk.domain.post.dto.PostBest3GetResponseDto;
 import com.popcorntalk.domain.post.dto.PostCreateRequestDto;
 import com.popcorntalk.domain.post.dto.PostGetResponseDto;
 import com.popcorntalk.domain.post.dto.PostSearchKeywordRequestDto;
 import com.popcorntalk.domain.post.dto.PostUpdateRequestDto;
 import com.popcorntalk.domain.post.entity.Post;
 import com.popcorntalk.domain.user.entity.User;
+import java.util.List;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 
@@ -45,6 +47,13 @@ public interface PostService {
      * @return Slice<PostGetResponseDto>
      */
     Slice<PostGetResponseDto> getDeletePosts(User user, Pageable pageable);
+
+    /**
+     * 전 달에 가장 인기있었던(댓글↑) 게시물 3개 조회
+     *
+     * @return List<PostBest3GetResponseDto>
+     */
+    List<PostBest3GetResponseDto> getBest3PostsInPreMonth();
 
     /**
      * 게시물 생성

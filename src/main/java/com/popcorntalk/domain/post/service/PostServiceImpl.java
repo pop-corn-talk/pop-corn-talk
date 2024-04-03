@@ -3,6 +3,7 @@ package com.popcorntalk.domain.post.service;
 import static com.popcorntalk.global.exception.ErrorCode.PERMISSION_DENIED;
 
 import com.popcorntalk.domain.point.service.PointService;
+import com.popcorntalk.domain.post.dto.PostBest3GetResponseDto;
 import com.popcorntalk.domain.post.dto.PostCreateRequestDto;
 import com.popcorntalk.domain.post.dto.PostGetResponseDto;
 import com.popcorntalk.domain.post.dto.PostSearchKeywordRequestDto;
@@ -18,6 +19,8 @@ import com.popcorntalk.global.entity.DeletionStatus;
 import com.popcorntalk.global.exception.customException.PermissionDeniedException;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheConfig;
@@ -54,9 +57,9 @@ public class PostServiceImpl implements PostService {
         PostSearchKeywordRequestDto requestDto) {
 
         BooleanBuilder booleanBuilder = new BooleanBuilder();
-        Predicate predicate = QPost.post.deletionStatus.eq(DeletionStatus.N);
-        Predicate andPredicate = QPost.post.type.eq(PostEnum.POSTED);
-        booleanBuilder.and(predicate).and(andPredicate);
+        Predicate deleteNPredicate = QPost.post.deletionStatus.eq(DeletionStatus.N);
+        Predicate typePostPredicate = QPost.post.type.eq(PostEnum.POSTED);
+        booleanBuilder.and(deleteNPredicate).and(typePostPredicate);
 
         if (!Objects.isNull(requestDto)) {
             switch (requestDto.getType()) {
@@ -79,10 +82,10 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional(readOnly = true)
     public Slice<PostGetResponseDto> getNoticePosts(Pageable pageable) {
-        Predicate predicate = QPost.post.deletionStatus.eq(DeletionStatus.N);
-        Predicate andPredicate = QPost.post.type.eq(PostEnum.NOTICED);
+        Predicate deleteNPredicate = QPost.post.deletionStatus.eq(DeletionStatus.N);
+        Predicate typeNoticePredicate = QPost.post.type.eq(PostEnum.NOTICED);
         BooleanBuilder booleanBuilder = new BooleanBuilder();
-        booleanBuilder.and(predicate).and(andPredicate);
+        booleanBuilder.and(deleteNPredicate).and(typeNoticePredicate);
 
         return postRepository.findPosts(pageable, booleanBuilder);
     }
@@ -93,6 +96,26 @@ public class PostServiceImpl implements PostService {
         userService.validateAdminUser(user.getId());
         Predicate predicate = QPost.post.deletionStatus.eq(DeletionStatus.Y);
         return postRepository.findPosts(pageable, predicate);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<PostBest3GetResponseDto> getBest3PostsInPreMonth() {
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+
+        LocalDate preMonth = LocalDate.now().minusMonths(1);
+        Predicate createAtPredicate = QPost.post.createdAt.between(
+            preMonth.withDayOfMonth(1).atStartOfDay(),
+            preMonth.withDayOfMonth(LocalDate.now().minusMonths(1).lengthOfMonth())
+                .atTime(23, 59, 59, 999999999)
+        );
+        Predicate deleteNPredicate = QPost.post.deletionStatus.eq(DeletionStatus.N);
+        Predicate typePostPredicate = QPost.post.type.eq(PostEnum.POSTED);
+
+        booleanBuilder.and(createAtPredicate).and(deleteNPredicate).and(typePostPredicate);
+
+        List<Long> postIds = postRepository.getBest3PostIds(booleanBuilder);
+        return postRepository.getBest3PostsInPreMonth(postIds);
     }
 
     @Override

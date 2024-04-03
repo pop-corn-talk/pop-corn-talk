@@ -1,5 +1,6 @@
 package com.popcorntalk.domain.post.controller;
 
+import com.popcorntalk.domain.post.dto.PostBest3GetResponseDto;
 import com.popcorntalk.domain.post.dto.PostCreateRequestDto;
 import com.popcorntalk.domain.post.dto.PostGetResponseDto;
 import com.popcorntalk.domain.post.dto.PostSearchKeywordRequestDto;
@@ -8,6 +9,7 @@ import com.popcorntalk.domain.post.service.PostService;
 import com.popcorntalk.global.dto.CommonResponseDto;
 import com.popcorntalk.global.security.UserDetailsImpl;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -71,6 +73,14 @@ public class PostController {
             pageable
         );
         return ResponseEntity.status(HttpStatus.OK).body(CommonResponseDto.success(deletePosts));
+    }
+
+    //전 달 댓글많은 3개의 게시글 조회
+    @GetMapping("/best")
+    public ResponseEntity<CommonResponseDto<List<PostBest3GetResponseDto>>> getBest3PostsInPreMonth(
+    ) {
+        List<PostBest3GetResponseDto> best3Posts = postService.getBest3PostsInPreMonth();
+        return ResponseEntity.status(HttpStatus.OK).body(CommonResponseDto.success(best3Posts));
     }
 
     //게시글 등록
