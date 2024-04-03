@@ -12,7 +12,6 @@ import com.popcorntalk.domain.post.entity.Post;
 import com.popcorntalk.domain.post.service.PostService;
 import com.popcorntalk.domain.user.entity.User;
 import com.popcorntalk.global.exception.customException.NotFoundException;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -64,11 +63,6 @@ public class CommentServiceImpl implements CommentService {
         postService.getPost(postId);
         Comment comment = getComment(commentId);
         comment.softDelete();
-    }
-
-    @Override
-    public List<Long> getDailyTop3PostsUserIds() {
-        return commentRepository.getDailyTop3PostsUserIds();
     }
 
     private Comment getComment(Long commentId) {
