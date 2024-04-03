@@ -36,7 +36,7 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public void deleteProduct(Long productId, Long userId) {
         userService.validateAdminUser(userId);
-        Product productDelete = findProduct(productId);
+        Product productDelete = getProduct(productId);
         validateDeleteProduct(productDelete);
 
         productDelete.softDelete();
@@ -47,7 +47,7 @@ public class ProductServiceImpl implements ProductService {
     public void updateProduct(Long productId, ProductUpdateRequestDto productUpdateRequestDto,
         Long userId) {
         userService.validateAdminUser(userId);
-        Product productUpdate = findProduct(productId);
+        Product productUpdate = getProduct(productId);
         validateDeleteProduct(productUpdate);
 
         productUpdate.update(productUpdateRequestDto);
@@ -66,7 +66,7 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
-    private Product findProduct(Long productId) {
+    private Product getProduct(Long productId) {
         return productRepository.findById(productId)
             .orElseThrow(() -> new NotFoundException(NOT_FOUND));
     }
