@@ -37,7 +37,6 @@ public class ProductServiceImpl implements ProductService {
     public void deleteProduct(Long productId, Long userId) {
         userService.validateAdminUser(userId);
         Product productDelete = getProduct(productId);
-        validateDeleteProduct(productDelete);
 
         productDelete.softDelete();
     }
@@ -48,26 +47,23 @@ public class ProductServiceImpl implements ProductService {
         Long userId) {
         userService.validateAdminUser(userId);
         Product productUpdate = getProduct(productId);
-        validateDeleteProduct(productUpdate);
 
         productUpdate.update(productUpdateRequestDto);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Page<ProductReadResponseDto> getProduct(Pageable pageable) {
+    public Page<ProductReadResponseDto> getProducts(Pageable pageable) {
 
-        return productRepository.findProduct(pageable);
+        return productRepository.findProducts(pageable);
     }
 
-    private void validateDeleteProduct(Product product) {
-        if (product.getDeletionStatus() == DeletionStatus.Y) {
-            throw new IllegalArgumentException("삭제된 상품입니다.");
-        }
-    }
-
-    private Product getProduct(Long productId) {
-        return productRepository.findById(productId)
+    public Product getProduct(Long productId) {
+        Product product = productRepository.findById(productId)
             .orElseThrow(() -> new NotFoundException(NOT_FOUND));
+        if(product.getDeletionStatus() == DeletionStatus.Y){
+             throw new IllegalArgumentException("삭제된 상품입니다.");
+         }
+        return product;
     }
 }
