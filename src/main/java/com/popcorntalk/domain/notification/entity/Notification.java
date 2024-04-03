@@ -21,7 +21,7 @@ public class Notification {
     private Long id;
 
     @Column(nullable = false)
-    private Long userId;
+    private Long recipientId;
 
     @Column(nullable = false, length = 50)
     private String sender;
@@ -32,14 +32,14 @@ public class Notification {
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
-    private Notification(Long userId, String sender, String contents) {
-        this.userId = userId;
+    private Notification(Long recipientId, String sender, String contents) {
+        this.recipientId = recipientId;
         this.sender = sender;
         this.contents = contents;
         this.createdAt = LocalDateTime.now();
     }
 
-    public static Notification createOf(Long userId, String sender, String contents) {
-        return new Notification(userId, sender, contents);
+    public static Notification createOf(Long recipientId, String sender, String contents) {
+        return new Notification(recipientId, sender, contents);
     }
 }
