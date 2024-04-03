@@ -21,4 +21,6 @@ public class ProductCreateRequestDto {
     private String description;
     @NotNull
     private int price;
+    @NotEmpty
+    private String voucherImage;
 }
