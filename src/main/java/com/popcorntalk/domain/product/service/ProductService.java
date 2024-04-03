@@ -41,5 +41,5 @@ public interface ProductService {
      * @param pageable 페이징처리(기본값: size 10, page 0)
      * @return Page<ProductReadResponseDto>
      */
-    Page<ProductReadResponseDto> getProduct(Pageable pageable);
+    Page<ProductReadResponseDto> getProducts(Pageable pageable);
 }
