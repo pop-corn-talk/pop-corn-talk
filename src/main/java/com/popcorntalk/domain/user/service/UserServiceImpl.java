@@ -32,7 +32,6 @@ public class UserServiceImpl implements UserService {
   private final PostRecodeServiceImpl postRecodeService;
 
   @Override
-  @Transactional
   public void signup(UserSignupRequestDto userSignupRequestDto) {
 
     if (userRepository.existsByEmail(userSignupRequestDto.getEmail())) {
@@ -43,7 +42,8 @@ public class UserServiceImpl implements UserService {
         passwordEncoder.encode(userSignupRequestDto.getPassword()),
         DeletionStatus.N,
         UserRoleEnum.USER);
-    userRepository.save(user);
+
+    pointService.rewardPointForSignUp(userRepository.save(user).getId());
   }
 
   @Override
