@@ -1,6 +1,6 @@
 package com.popcorntalk.domain.exchange.repository;
 
-import com.popcorntalk.domain.exchange.controller.ExchangeGetResponseDto;
+import com.popcorntalk.domain.exchange.dto.ExchangeGetResponseDto;
 import com.popcorntalk.domain.exchange.entity.QExchange;
 import com.popcorntalk.domain.product.entity.QProduct;
 import com.popcorntalk.global.config.QuerydslConfig;

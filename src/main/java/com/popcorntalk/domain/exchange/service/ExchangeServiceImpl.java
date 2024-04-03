@@ -1,6 +1,6 @@
 package com.popcorntalk.domain.exchange.service;
 
-import com.popcorntalk.domain.exchange.controller.ExchangeGetResponseDto;
+import com.popcorntalk.domain.exchange.dto.ExchangeGetResponseDto;
 import com.popcorntalk.domain.exchange.entity.Exchange;
 import com.popcorntalk.domain.exchange.repository.ExchangeRepository;
 import com.popcorntalk.domain.notification.service.NotificationService;

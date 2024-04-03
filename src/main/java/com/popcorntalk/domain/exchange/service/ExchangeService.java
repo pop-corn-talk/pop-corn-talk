@@ -1,6 +1,6 @@
 package com.popcorntalk.domain.exchange.service;
 
-import com.popcorntalk.domain.exchange.controller.ExchangeGetResponseDto;
+import com.popcorntalk.domain.exchange.dto.ExchangeGetResponseDto;
 import java.util.List;
 
 public interface ExchangeService {
