@@ -6,6 +6,8 @@ import com.popcorntalk.global.entity.DeletionStatus;
 import com.popcorntalk.global.entity.TimeStamped;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -43,6 +45,7 @@ public class Product extends TimeStamped {
     private String voucherImage;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private DeletionStatus deletionStatus;
 
     private Product(String name, String image, String description,

@@ -3,6 +3,7 @@ package com.popcorntalk.domain.product.service;
 import com.popcorntalk.domain.product.dto.ProductCreateRequestDto;
 import com.popcorntalk.domain.product.dto.ProductReadResponseDto;
 import com.popcorntalk.domain.product.dto.ProductUpdateRequestDto;
+import com.popcorntalk.domain.product.entity.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -42,4 +43,11 @@ public interface ProductService {
      * @return Page<ProductReadResponseDto>
      */
     Page<ProductReadResponseDto> getProducts(Pageable pageable);
+
+    /**
+     *
+     * @param productId 상품의 번호
+     * @return Product
+     */
+    Product getProduct(Long productId);
 }
