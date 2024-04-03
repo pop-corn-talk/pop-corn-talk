@@ -1,5 +1,7 @@
 package com.popcorntalk.domain.comment.service;
 
+import static com.popcorntalk.global.exception.ErrorCode.COMMENT_NOT_FOUND;
+
 import com.popcorntalk.domain.comment.dto.CommentCreateRequestDto;
 import com.popcorntalk.domain.comment.dto.CommentGetResponseDto;
 import com.popcorntalk.domain.comment.dto.CommentUpdateRequestDto;
@@ -9,6 +11,7 @@ import com.popcorntalk.domain.notification.service.NotificationService;
 import com.popcorntalk.domain.post.entity.Post;
 import com.popcorntalk.domain.post.service.PostService;
 import com.popcorntalk.domain.user.entity.User;
+import com.popcorntalk.global.exception.customException.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -64,6 +67,6 @@ public class CommentServiceImpl implements CommentService {
 
     private Comment getComment(Long commentId) {
         return commentRepository.findById(commentId)
-            .orElseThrow(() -> new IllegalArgumentException("해당 게시글에 작성한 댓글이 존재하지 않습니다"));
+            .orElseThrow(() -> new NotFoundException(COMMENT_NOT_FOUND));
     }
 }
