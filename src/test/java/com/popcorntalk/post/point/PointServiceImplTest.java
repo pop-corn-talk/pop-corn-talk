@@ -1,4 +1,4 @@
-package com.popcorntalk.point;
+package com.popcorntalk.post.point;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
