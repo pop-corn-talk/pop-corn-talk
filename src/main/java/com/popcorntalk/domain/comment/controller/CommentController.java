@@ -4,6 +4,7 @@ import com.popcorntalk.domain.comment.dto.CommentCreateRequestDto;
 import com.popcorntalk.domain.comment.dto.CommentGetResponseDto;
 import com.popcorntalk.domain.comment.dto.CommentUpdateRequestDto;
 import com.popcorntalk.domain.comment.service.CommentService;
+import com.popcorntalk.domain.comment.service.CommentServiceImpl;
 import com.popcorntalk.global.dto.CommonResponseDto;
 import com.popcorntalk.global.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class CommentController {
 
     private final CommentService commentService;
+    private final CommentServiceImpl commentServiceImpl;
 
     @PostMapping
     public ResponseEntity<CommonResponseDto<Void>> createComment(
@@ -90,6 +92,4 @@ public class CommentController {
 
         return ResponseEntity.status(HttpStatus.OK).build();
     }
-
-
 }

@@ -4,6 +4,7 @@ import com.popcorntalk.domain.comment.dto.CommentCreateRequestDto;
 import com.popcorntalk.domain.comment.dto.CommentGetResponseDto;
 import com.popcorntalk.domain.comment.dto.CommentUpdateRequestDto;
 import com.popcorntalk.domain.user.entity.User;
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -51,11 +52,9 @@ public interface CommentService {
     void deleteComment(Long userId, Long postId, Long commentId);
 
     /**
-     * 오늘 게시글에 작성한 댓글 수
+     * 매일 댓글이 가장 많이달린 게시글 3개의 작성자Id 가져오기
      *
-     * @param userId 유저의 번호
-     * @param postId 게시글의 번호
-     * @return 오늘 작성한 댓글 수
+     * @return List<Long>
      */
-    int getCommentCountInToday(Long userId, Long postId);
+    List<Long> getDailyTop3PostsUserIds();
 }
