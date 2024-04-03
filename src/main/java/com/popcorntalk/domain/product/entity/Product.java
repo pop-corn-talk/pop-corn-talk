@@ -46,11 +46,12 @@ public class Product extends TimeStamped {
     private DeletionStatus deletionStatus;
 
     private Product(String name, String image, String description,
-        int price) {
+        int price, String voucherImage) {
         this.name = name;
         this.image = image;
         this.description = description;
         this.price = price;
+        this.voucherImage = voucherImage;
         this.deletionStatus = DeletionStatus.N;
     }
 
@@ -59,7 +60,8 @@ public class Product extends TimeStamped {
             productCreateRequestDto.getName(),
             productCreateRequestDto.getImage(),
             productCreateRequestDto.getDescription(),
-            productCreateRequestDto.getPrice()
+            productCreateRequestDto.getPrice(),
+            productCreateRequestDto.getVoucherImage()
         );
     }
 
