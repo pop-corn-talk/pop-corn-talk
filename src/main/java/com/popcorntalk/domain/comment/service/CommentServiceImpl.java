@@ -66,9 +66,4 @@ public class CommentServiceImpl implements CommentService {
         return commentRepository.findById(commentId)
             .orElseThrow(() -> new IllegalArgumentException("해당 게시글에 작성한 댓글이 존재하지 않습니다"));
     }
-
-    public Comment findLatestComment(Long postId) {
-        return commentRepository.findFirstByPostIdOrderByCreatedAtDesc(postId)
-            .orElseThrow(() -> new IllegalArgumentException("댓글을 찾을 수 없습니다."));
-    }
 }
