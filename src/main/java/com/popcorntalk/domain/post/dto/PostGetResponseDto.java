@@ -12,9 +12,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class PostGetResponseDto {
 
-    private String postName;
-    private String postContent;
-    private String postImage;
+    private String name;
+    private String content;
+    private String image;
     private String email;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
