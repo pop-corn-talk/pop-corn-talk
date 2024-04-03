@@ -1,4 +1,4 @@
-package com.popcorntalk.domain.exchange.controller;
+package com.popcorntalk.domain.exchange.dto;
 
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
