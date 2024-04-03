@@ -1,6 +1,7 @@
 package com.popcorntalk.domain.exchange.controller;
 
 
+import com.popcorntalk.domain.exchange.dto.ExchangeGetResponseDto;
 import com.popcorntalk.domain.exchange.service.ExchangeService;
 import com.popcorntalk.global.dto.CommonResponseDto;
 import com.popcorntalk.global.security.UserDetailsImpl;
