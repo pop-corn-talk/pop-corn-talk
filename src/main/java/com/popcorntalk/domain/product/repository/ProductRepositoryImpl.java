@@ -19,7 +19,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
     QProduct qProduct = QProduct.product;
 
     @Override
-    public Page<ProductReadResponseDto> findProduct(Pageable pageable) {
+    public Page<ProductReadResponseDto> findProducts(Pageable pageable) {
         List<ProductReadResponseDto> productResponseDtoList = querydslConfig.jpaQueryFactory()
             .select(Projections.fields(ProductReadResponseDto.class,
                 qProduct.id,
@@ -27,6 +27,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
                 qProduct.image,
                 qProduct.description,
                 qProduct.price,
+                qProduct.voucherImage,
                 qProduct.createdAt,
                 qProduct.modifiedAt))
             .from(qProduct)
