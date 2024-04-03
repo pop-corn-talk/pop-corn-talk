@@ -27,8 +27,18 @@ public interface PostService {
     Slice<PostGetResponseDto> getPosts(Pageable pageable);
 
     /**
+     * 모든 공지 게시물 조회
+     *
+     * @param pageable 페이징처리(기본값: size 10, page 0, order createdAt::DESC)
+     * @return Slice<PostGetResponseDto>
+     */
+    Slice<PostGetResponseDto> getNoticePosts(Pageable pageable);
+
+    /**
+     * 삭제된 모든 게시물 조회
+     *
      * @param user     로그인유저
-     * @param pageable 페이징처리(기본값: size 10, page 0, order modifiedAt::DESC)
+     * @param pageable 페이징처리(기본값: size 3, page 0, order modifiedAt::DESC)
      * @return Slice<PostGetResponseDto>
      */
     Slice<PostGetResponseDto> getDeletePosts(User user, Pageable pageable);

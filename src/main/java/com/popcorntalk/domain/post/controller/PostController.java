@@ -49,6 +49,15 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.OK).body(CommonResponseDto.success(posts));
     }
 
+    //공지 게시물 조회
+    @GetMapping("/notice")
+    public ResponseEntity<CommonResponseDto<Slice<PostGetResponseDto>>> getNoticePosts(
+        @PageableDefault(size = 3, sort = "createdAt", direction = Direction.DESC) Pageable pageable
+    ) {
+        Slice<PostGetResponseDto> noticePosts = postService.getNoticePosts(pageable);
+        return ResponseEntity.status(HttpStatus.OK).body(CommonResponseDto.success(noticePosts));
+    }
+
     //삭제된 게시물 조회
     @GetMapping("/delete")
     public ResponseEntity<CommonResponseDto<Slice<PostGetResponseDto>>> getDeletePosts(

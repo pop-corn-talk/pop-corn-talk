@@ -7,12 +7,14 @@ import com.popcorntalk.domain.post.dto.PostCreateRequestDto;
 import com.popcorntalk.domain.post.dto.PostGetResponseDto;
 import com.popcorntalk.domain.post.dto.PostUpdateRequestDto;
 import com.popcorntalk.domain.post.entity.Post;
+import com.popcorntalk.domain.post.entity.PostEnum;
 import com.popcorntalk.domain.post.entity.QPost;
 import com.popcorntalk.domain.post.repository.PostRepository;
 import com.popcorntalk.domain.user.entity.User;
 import com.popcorntalk.domain.user.service.UserService;
 import com.popcorntalk.global.entity.DeletionStatus;
 import com.popcorntalk.global.exception.customException.PermissionDeniedException;
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheConfig;
@@ -48,6 +50,17 @@ public class PostServiceImpl implements PostService {
     public Slice<PostGetResponseDto> getPosts(Pageable pageable) {
         Predicate predicate = QPost.post.deletionStatus.eq(DeletionStatus.N);
         return postRepository.findPosts(pageable, predicate);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Slice<PostGetResponseDto> getNoticePosts(Pageable pageable) {
+        Predicate predicate = QPost.post.deletionStatus.eq(DeletionStatus.N);
+        Predicate andPredicate = QPost.post.type.eq(PostEnum.NOTICED);
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+        booleanBuilder.and(predicate).and(andPredicate);
+
+        return postRepository.findPosts(pageable, booleanBuilder);
     }
 
     @Override
