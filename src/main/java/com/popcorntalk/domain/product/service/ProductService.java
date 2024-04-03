@@ -49,5 +49,5 @@ public interface ProductService {
      * @param productId 상품의 번호
      * @return Product
      */
-    public Product getProduct(Long productId);
+    Product getProduct(Long productId);
 }
