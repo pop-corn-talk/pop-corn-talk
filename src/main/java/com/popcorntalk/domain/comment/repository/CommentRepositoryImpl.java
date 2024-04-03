@@ -50,4 +50,5 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
         return new PageImpl<>(commentList, pageable, totalCount);
 
     }
+
 }
