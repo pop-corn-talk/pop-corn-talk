@@ -5,17 +5,20 @@ import static com.popcorntalk.global.exception.ErrorCode.PERMISSION_DENIED;
 import com.popcorntalk.domain.point.service.PointService;
 import com.popcorntalk.domain.post.dto.PostCreateRequestDto;
 import com.popcorntalk.domain.post.dto.PostGetResponseDto;
+import com.popcorntalk.domain.post.dto.PostSearchKeywordRequestDto;
 import com.popcorntalk.domain.post.dto.PostUpdateRequestDto;
 import com.popcorntalk.domain.post.entity.Post;
 import com.popcorntalk.domain.post.entity.PostEnum;
 import com.popcorntalk.domain.post.entity.QPost;
 import com.popcorntalk.domain.post.repository.PostRepository;
+import com.popcorntalk.domain.user.entity.QUser;
 import com.popcorntalk.domain.user.entity.User;
 import com.popcorntalk.domain.user.service.UserService;
 import com.popcorntalk.global.entity.DeletionStatus;
 import com.popcorntalk.global.exception.customException.PermissionDeniedException;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
@@ -47,12 +50,29 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional(readOnly = true)
-    public Slice<PostGetResponseDto> getNormalPosts(Pageable pageable) {
+    public Slice<PostGetResponseDto> getNormalPosts(Pageable pageable,
+        PostSearchKeywordRequestDto requestDto) {
+
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
         Predicate predicate = QPost.post.deletionStatus.eq(DeletionStatus.N);
         Predicate andPredicate = QPost.post.type.eq(PostEnum.POSTED);
-        BooleanBuilder booleanBuilder = new BooleanBuilder();
         booleanBuilder.and(predicate).and(andPredicate);
 
+        if (!Objects.isNull(requestDto)) {
+            switch (requestDto.getType()) {
+                case 1:
+                    Predicate emailEqualPredicate = QUser.user.email.eq(requestDto.getKeyword());
+                    booleanBuilder.and(emailEqualPredicate);
+                    break;
+                case 2:
+                    Predicate titleLikePredicate = QPost.post.name.contains(
+                        requestDto.getKeyword().trim());
+                    booleanBuilder.and(titleLikePredicate);
+                    break;
+                default:
+                    throw new IllegalArgumentException("검색조건이 맞지않습니다.");
+            }
+        }
         return postRepository.findPosts(pageable, booleanBuilder);
     }
 

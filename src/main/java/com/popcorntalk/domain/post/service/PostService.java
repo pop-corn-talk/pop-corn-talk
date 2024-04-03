@@ -2,6 +2,7 @@ package com.popcorntalk.domain.post.service;
 
 import com.popcorntalk.domain.post.dto.PostCreateRequestDto;
 import com.popcorntalk.domain.post.dto.PostGetResponseDto;
+import com.popcorntalk.domain.post.dto.PostSearchKeywordRequestDto;
 import com.popcorntalk.domain.post.dto.PostUpdateRequestDto;
 import com.popcorntalk.domain.post.entity.Post;
 import com.popcorntalk.domain.user.entity.User;
@@ -21,10 +22,12 @@ public interface PostService {
     /**
      * 모든 일반 게시물 조회
      *
-     * @param pageable 페이징처리(기본값: size 10, page 0, order createdAt::DESC)
+     * @param pageable   페이징처리(기본값: size 10, page 0, order createdAt::DESC)
+     * @param requestDto 검색 타입,키워드
      * @return List<PostGetResponseDto>
      */
-    Slice<PostGetResponseDto> getNormalPosts(Pageable pageable);
+    Slice<PostGetResponseDto> getNormalPosts(Pageable pageable,
+        PostSearchKeywordRequestDto requestDto);
 
     /**
      * 모든 공지 게시물 조회

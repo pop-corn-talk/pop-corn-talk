@@ -2,6 +2,7 @@ package com.popcorntalk.domain.post.controller;
 
 import com.popcorntalk.domain.post.dto.PostCreateRequestDto;
 import com.popcorntalk.domain.post.dto.PostGetResponseDto;
+import com.popcorntalk.domain.post.dto.PostSearchKeywordRequestDto;
 import com.popcorntalk.domain.post.dto.PostUpdateRequestDto;
 import com.popcorntalk.domain.post.service.PostService;
 import com.popcorntalk.global.dto.CommonResponseDto;
@@ -43,9 +44,10 @@ public class PostController {
     //일반 게시글 전체조회
     @GetMapping
     public ResponseEntity<CommonResponseDto<Slice<PostGetResponseDto>>> getNormalPosts(
-        @PageableDefault(sort = "createdAt", direction = Direction.DESC) Pageable pageable
+        @PageableDefault(sort = "createdAt", direction = Direction.DESC) Pageable pageable,
+        @Valid @RequestBody(required = false) PostSearchKeywordRequestDto requestDto
     ) {
-        Slice<PostGetResponseDto> normalPosts = postService.getNormalPosts(pageable);
+        Slice<PostGetResponseDto> normalPosts = postService.getNormalPosts(pageable, requestDto);
         return ResponseEntity.status(HttpStatus.OK).body(CommonResponseDto.success(normalPosts));
     }
 
