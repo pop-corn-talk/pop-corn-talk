@@ -32,7 +32,6 @@ public class UserServiceImpl implements UserService {
   private final PostRecodeServiceImpl postRecodeService;
 
   @Override
-  @Transactional
   public void signup(UserSignupRequestDto userSignupRequestDto) {
 
     if (userRepository.existsByEmail(userSignupRequestDto.getEmail())) {
