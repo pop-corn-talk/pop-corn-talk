@@ -4,7 +4,7 @@ import com.popcorntalk.domain.point.entity.Point;
 import com.popcorntalk.domain.point.repository.PointRepository;
 import com.popcorntalk.global.exception.ErrorCode;
 import com.popcorntalk.global.exception.customException.InsufficientPointException;
-import com.popcorntalk.global.exception.customException.PointNotFoundException;
+import com.popcorntalk.global.exception.customException.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -66,6 +66,6 @@ public class PointServiceImpl implements PointService {
     @Override
     public Point getPoint(Long userId) {
         return pointRepository.findByUserId(userId)
-            .orElseThrow(() -> new PointNotFoundException(ErrorCode.POINT_NOT_FOUND));
+            .orElseThrow(() -> new NotFoundException(ErrorCode.POINT_NOT_FOUND));
     }
 }
