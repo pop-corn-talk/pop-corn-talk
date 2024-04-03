@@ -35,13 +35,11 @@ public class CommentController {
         @PathVariable Long postId,
         @RequestBody CommentCreateRequestDto requestDto
     ) {
-
         commentService.createComment(
             userDetails.getUser(),
             postId,
             requestDto
         );
-
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
@@ -90,6 +88,4 @@ public class CommentController {
 
         return ResponseEntity.status(HttpStatus.OK).build();
     }
-
-
 }

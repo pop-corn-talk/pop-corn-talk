@@ -5,10 +5,10 @@ import com.popcorntalk.domain.comment.dto.CommentGetResponseDto;
 import com.popcorntalk.domain.comment.dto.CommentUpdateRequestDto;
 import com.popcorntalk.domain.comment.entity.Comment;
 import com.popcorntalk.domain.comment.repository.CommentRepository;
+import com.popcorntalk.domain.notification.service.NotificationService;
 import com.popcorntalk.domain.post.entity.Post;
 import com.popcorntalk.domain.post.service.PostService;
 import com.popcorntalk.domain.user.entity.User;
-import com.popcorntalk.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,7 +21,7 @@ public class CommentServiceImpl implements CommentService {
 
     private final CommentRepository commentRepository;
     private final PostService postService;
-    private final UserRepository userRepository;
+    private final NotificationService notificationService;
 
     @Override
     @Transactional
@@ -35,6 +35,7 @@ public class CommentServiceImpl implements CommentService {
 
         Comment savedComment = commentRepository.save(comment);
 
+        notificationService.notifyComment(postUserId, user, savedComment);
     }
 
     @Override
@@ -52,6 +53,7 @@ public class CommentServiceImpl implements CommentService {
         Comment comment = getComment(commentId);
         comment.update(requestDto);
     }
+
     @Override
     @Transactional
     public void deleteComment(Long userId, Long postId, Long commentId) {
