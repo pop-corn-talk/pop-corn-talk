@@ -28,35 +28,40 @@ public class Product extends TimeStamped {
     private Long id;
 
     @Column(nullable = false, length = 50)
-    private String productName;
+    private String name;
 
     @Column(nullable = false)
-    private String productImage;
+    private String image;
 
-    @Column(nullable = false, length = 50)
-    private String productDescription;
+    @Column(nullable = true, length = 50)
+    private String description;
 
     @Column(nullable = false)
-    private Long productPrice;
+    private int price;
+
+    @Column(nullable = false)
+    private String voucherImage;
 
     @Column(nullable = false)
     private DeletionStatus deletionStatus;
 
-    private Product(String productName, String productImage, String productDescription,
-        Long productPrice) {
-        this.productName = productName;
-        this.productImage = productImage;
-        this.productDescription = productDescription;
-        this.productPrice = productPrice;
+    private Product(String name, String image, String description,
+        int price, String voucherImage) {
+        this.name = name;
+        this.image = image;
+        this.description = description;
+        this.price = price;
+        this.voucherImage = voucherImage;
         this.deletionStatus = DeletionStatus.N;
     }
 
     public static Product createOf(ProductCreateRequestDto productCreateRequestDto) {
         return new Product(
-            productCreateRequestDto.getProductName(),
-            productCreateRequestDto.getProductImage(),
-            productCreateRequestDto.getProductDescription(),
-            productCreateRequestDto.getProductPrice()
+            productCreateRequestDto.getName(),
+            productCreateRequestDto.getImage(),
+            productCreateRequestDto.getDescription(),
+            productCreateRequestDto.getPrice(),
+            productCreateRequestDto.getVoucherImage()
         );
     }
 
@@ -64,10 +69,10 @@ public class Product extends TimeStamped {
         this.deletionStatus = DeletionStatus.Y;
     }
 
-    public void Update(ProductUpdateRequestDto productUpdateRequestDto) {
-        this.productName = productUpdateRequestDto.getProductName();
-        this.productImage = productUpdateRequestDto.getProductImage();
-        this.productDescription = productUpdateRequestDto.getProductDescription();
-        this.productPrice = productUpdateRequestDto.getProductPrice();
+    public void update(ProductUpdateRequestDto productUpdateRequestDto) {
+        this.name = productUpdateRequestDto.getName();
+        this.image = productUpdateRequestDto.getImage();
+        this.description = productUpdateRequestDto.getDescription();
+        this.price = productUpdateRequestDto.getPrice();
     }
 }
