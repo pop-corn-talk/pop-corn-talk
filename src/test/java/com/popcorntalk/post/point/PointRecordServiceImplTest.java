@@ -1,4 +1,4 @@
-package com.popcorntalk.point;
+package com.popcorntalk.post.point;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.then;

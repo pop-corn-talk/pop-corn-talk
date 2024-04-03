@@ -16,7 +16,7 @@ import com.popcorntalk.domain.user.entity.UserRoleEnum;
 import com.popcorntalk.domain.user.repository.UserRepository;
 import com.popcorntalk.domain.user.service.UserServiceImpl;
 import com.popcorntalk.global.entity.DeletionStatus;
-import com.popcorntalk.global.exception.customException.UserNotFoundException;
+import com.popcorntalk.global.exception.customException.NotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -64,7 +64,7 @@ public class UserServiceImplTest {
     //when
     try {
       userService.validateAdminUser(userId);
-    }catch (UserNotFoundException e){
+    }catch (NotFoundException e){
       flag = false;
     }
 
@@ -87,7 +87,7 @@ public class UserServiceImplTest {
     //when
     try {
       userService.validateAdminUser(userId);
-    }catch (UserNotFoundException e){
+    }catch (NotFoundException e){
       flag = false;
     }
 
