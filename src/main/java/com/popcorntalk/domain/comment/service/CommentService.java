@@ -55,7 +55,7 @@ public interface CommentService {
      *
      * @param userId 유저의 번호
      * @param postId 게시글의 번호
-     * @return
+     * @return 오늘 작성한 댓글 수
      */
     int getCommentCountInToday(Long userId, Long postId);
 }
