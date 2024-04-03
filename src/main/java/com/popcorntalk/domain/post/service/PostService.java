@@ -19,12 +19,12 @@ public interface PostService {
     PostGetResponseDto getPostById(Long postId);
 
     /**
-     * 모든 게시물 조회
+     * 모든 일반 게시물 조회
      *
      * @param pageable 페이징처리(기본값: size 10, page 0, order createdAt::DESC)
      * @return List<PostGetResponseDto>
      */
-    Slice<PostGetResponseDto> getPosts(Pageable pageable);
+    Slice<PostGetResponseDto> getNormalPosts(Pageable pageable);
 
     /**
      * 모든 공지 게시물 조회

@@ -47,9 +47,13 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional(readOnly = true)
-    public Slice<PostGetResponseDto> getPosts(Pageable pageable) {
+    public Slice<PostGetResponseDto> getNormalPosts(Pageable pageable) {
         Predicate predicate = QPost.post.deletionStatus.eq(DeletionStatus.N);
-        return postRepository.findPosts(pageable, predicate);
+        Predicate andPredicate = QPost.post.type.eq(PostEnum.POSTED);
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+        booleanBuilder.and(predicate).and(andPredicate);
+
+        return postRepository.findPosts(pageable, booleanBuilder);
     }
 
     @Override

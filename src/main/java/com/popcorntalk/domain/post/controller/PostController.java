@@ -40,13 +40,13 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.OK).body(CommonResponseDto.success(post));
     }
 
-    //게시글 전체조회
+    //일반 게시글 전체조회
     @GetMapping
-    public ResponseEntity<CommonResponseDto<Slice<PostGetResponseDto>>> getPosts(
+    public ResponseEntity<CommonResponseDto<Slice<PostGetResponseDto>>> getNormalPosts(
         @PageableDefault(sort = "createdAt", direction = Direction.DESC) Pageable pageable
     ) {
-        Slice<PostGetResponseDto> posts = postService.getPosts(pageable);
-        return ResponseEntity.status(HttpStatus.OK).body(CommonResponseDto.success(posts));
+        Slice<PostGetResponseDto> normalPosts = postService.getNormalPosts(pageable);
+        return ResponseEntity.status(HttpStatus.OK).body(CommonResponseDto.success(normalPosts));
     }
 
     //공지 게시물 조회
