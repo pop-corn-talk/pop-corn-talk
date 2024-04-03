@@ -13,7 +13,7 @@ import com.popcorntalk.domain.user.repository.UserRepository;
 import com.popcorntalk.global.entity.DeletionStatus;
 import com.popcorntalk.global.exception.ErrorCode;
 import com.popcorntalk.global.exception.customException.DuplicateUserInfoException;
-import com.popcorntalk.global.exception.customException.UserNotFoundException;
+import com.popcorntalk.global.exception.customException.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -79,8 +79,7 @@ public class UserServiceImpl implements UserService {
   public void validateAdminUser(Long id) {
 
     if(!userRepository.validateAdminUser(id)){
-      // todo 승현님이 만들어 놓운 exception 으로 변경
-      throw new UserNotFoundException(ErrorCode.USER_NOT_FOUND);
+      throw new NotFoundException(ErrorCode.PERMISSION_DENIED);
     }
   }
 }

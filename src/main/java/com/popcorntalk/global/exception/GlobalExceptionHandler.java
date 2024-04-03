@@ -5,7 +5,6 @@ import com.popcorntalk.global.exception.customException.InsufficientPointExcepti
 import com.popcorntalk.global.exception.customException.NotFoundException;
 import com.popcorntalk.global.exception.customException.PermissionDeniedException;
 import com.popcorntalk.global.exception.customException.PointNotFoundException;
-import com.popcorntalk.global.exception.customException.UserNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -63,15 +62,6 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(InsufficientPointException.class)
     public ResponseEntity handleEntityNotFoundException(InsufficientPointException ex,
-        HttpServletRequest request) {
-        log.error("url: {}, 메세지: {}", request.getRequestURI(), ex.getErrorCode().getMsg());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).
-            body(CommonResponseDto.fail(ex.getErrorCode().getHttpStatus(),
-                ex.getErrorCode().getMsg()));
-    }
-
-    @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity handleEntityNotFoundException(UserNotFoundException ex,
         HttpServletRequest request) {
         log.error("url: {}, 메세지: {}", request.getRequestURI(), ex.getErrorCode().getMsg());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).
