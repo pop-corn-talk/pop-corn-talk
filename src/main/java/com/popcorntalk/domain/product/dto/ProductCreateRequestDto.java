@@ -2,20 +2,25 @@ package com.popcorntalk.domain.product.dto;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class ProductCreateRequestDto {
 
     @NotEmpty
-    private String productName;
+    private String name;
     @NotEmpty
-    private String productImage;
+    private String image;
     @NotEmpty
-    private String productDescription;
+    private String description;
     @NotNull
-    private Long productPrice;
-
+    private int price;
+    @NotEmpty
+    private String voucherImage;
 }
