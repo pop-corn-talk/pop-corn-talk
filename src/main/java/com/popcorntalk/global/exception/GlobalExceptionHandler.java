@@ -1,6 +1,7 @@
 package com.popcorntalk.global.exception;
 
 import com.popcorntalk.global.dto.CommonResponseDto;
+import com.popcorntalk.global.exception.customException.CommentNotFoundException;
 import com.popcorntalk.global.exception.customException.InsufficientPointException;
 import com.popcorntalk.global.exception.customException.NotFoundException;
 import com.popcorntalk.global.exception.customException.PermissionDeniedException;
@@ -72,6 +73,15 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity handleEntityNotFoundException(UserNotFoundException ex,
+        HttpServletRequest request) {
+        log.error("url: {}, 메세지: {}", request.getRequestURI(), ex.getErrorCode().getMsg());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).
+            body(CommonResponseDto.fail(ex.getErrorCode().getHttpStatus(),
+                ex.getErrorCode().getMsg()));
+    }
+
+    @ExceptionHandler(CommentNotFoundException.class)
+    public ResponseEntity handleEntityNotFoundException(CommentNotFoundException ex,
         HttpServletRequest request) {
         log.error("url: {}, 메세지: {}", request.getRequestURI(), ex.getErrorCode().getMsg());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).
