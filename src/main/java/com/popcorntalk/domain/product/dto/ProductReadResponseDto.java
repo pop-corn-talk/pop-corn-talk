@@ -16,7 +16,7 @@ public class ProductReadResponseDto {
     private String name;
     private String image;
     private String description;
-    private Long price;
+    private int price;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
 

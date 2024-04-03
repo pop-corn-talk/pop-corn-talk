@@ -37,16 +37,16 @@ public class Product extends TimeStamped {
     private String description;
 
     @Column(nullable = false)
-    private Long price;
+    private int price;
 
     @Column(nullable = false)
-    private String ProductVoucherImage;
+    private String voucherImage;
 
     @Column(nullable = false)
     private DeletionStatus deletionStatus;
 
     private Product(String name, String image, String description,
-        Long price) {
+        int price) {
         this.name = name;
         this.image = image;
         this.description = description;

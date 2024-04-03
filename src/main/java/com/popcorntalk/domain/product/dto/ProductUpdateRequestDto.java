@@ -20,5 +20,5 @@ public class ProductUpdateRequestDto {
     @NotEmpty
     private String description;
     @NotNull
-    private Long price;
+    private int price;
 }
