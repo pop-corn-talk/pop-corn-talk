@@ -48,7 +48,7 @@ public class ProductController {
         productService.deleteProduct(
             productId,
             userDetails.getUser().getId());
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @PutMapping("/{productId}")
@@ -61,14 +61,14 @@ public class ProductController {
             productId,
             productUpdateRequestDto,
             userDetails.getUser().getId());
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @GetMapping
-    public ResponseEntity<CommonResponseDto<Page<ProductReadResponseDto>>> getProduct(
+    public ResponseEntity<CommonResponseDto<Page<ProductReadResponseDto>>> getProducts(
         @PageableDefault Pageable pageable
     ) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(
-            CommonResponseDto.success(productService.getProduct(pageable)));
+        return ResponseEntity.status(HttpStatus.OK).body(
+            CommonResponseDto.success(productService.getProducts(pageable)));
     }
 }
