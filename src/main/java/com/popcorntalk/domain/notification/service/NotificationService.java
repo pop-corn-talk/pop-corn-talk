@@ -6,6 +6,7 @@ import com.popcorntalk.domain.notification.entity.Notification;
 import com.popcorntalk.domain.notification.repository.NotificationRepository;
 import com.popcorntalk.domain.user.entity.User;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -64,6 +65,35 @@ public class NotificationService {
 
             } catch (IOException e) {
                 NotificationController.sseEmitters.remove(postUserId);
+            }
+        }
+    }
+
+    public void notifyPurchase(Long recipientId, String sender, String productVoucherImage) {
+
+        if (NotificationController.sseEmitters.containsKey(recipientId)) {
+            SseEmitter sseEmitter = NotificationController.sseEmitters.get(recipientId);
+            try {
+                Map<String, String> eventData = new HashMap<>();
+                eventData.put("sender", sender + " 님이 주문하신 상품을 보냈습니다.");
+                eventData.put("contents", productVoucherImage);
+                eventData.put("time", String.valueOf(LocalDateTime.now()));
+
+                sseEmitter.send(SseEmitter.event().name("sendProduct").data(eventData));
+
+                Notification notification = Notification.createOf(
+                    recipientId, sender, productVoucherImage
+                );
+                notificationRepository.save(notification);
+
+                notificationCounts.put(recipientId,
+                    notificationCounts.getOrDefault(recipientId, 0) + 1);
+
+                sseEmitter.send(SseEmitter.event().name("notificationCount")
+                    .data(notificationCounts.get(recipientId)));
+
+            } catch (IOException e) {
+                NotificationController.sseEmitters.remove(recipientId);
             }
         }
     }
