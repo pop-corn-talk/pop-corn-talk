@@ -1,12 +1,9 @@
 package com.popcorntalk.global.exception;
 
 import com.popcorntalk.global.dto.CommonResponseDto;
-import com.popcorntalk.global.exception.customException.CommentNotFoundException;
 import com.popcorntalk.global.exception.customException.InsufficientPointException;
 import com.popcorntalk.global.exception.customException.NotFoundException;
 import com.popcorntalk.global.exception.customException.PermissionDeniedException;
-import com.popcorntalk.global.exception.customException.PointNotFoundException;
-import com.popcorntalk.global.exception.customException.UserNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -53,35 +50,8 @@ public class GlobalExceptionHandler {
                 ex.getErrorCode().getMsg()));
     }
 
-    @ExceptionHandler(PointNotFoundException.class)
-    public ResponseEntity handleEntityNotFoundException(PointNotFoundException ex,
-        HttpServletRequest request) {
-        log.error("url: {}, 메세지: {}", request.getRequestURI(), ex.getErrorCode().getMsg());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).
-            body(CommonResponseDto.fail(ex.getErrorCode().getHttpStatus(),
-                ex.getErrorCode().getMsg()));
-    }
-
     @ExceptionHandler(InsufficientPointException.class)
     public ResponseEntity handleEntityNotFoundException(InsufficientPointException ex,
-        HttpServletRequest request) {
-        log.error("url: {}, 메세지: {}", request.getRequestURI(), ex.getErrorCode().getMsg());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).
-            body(CommonResponseDto.fail(ex.getErrorCode().getHttpStatus(),
-                ex.getErrorCode().getMsg()));
-    }
-
-    @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity handleEntityNotFoundException(UserNotFoundException ex,
-        HttpServletRequest request) {
-        log.error("url: {}, 메세지: {}", request.getRequestURI(), ex.getErrorCode().getMsg());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).
-            body(CommonResponseDto.fail(ex.getErrorCode().getHttpStatus(),
-                ex.getErrorCode().getMsg()));
-    }
-
-    @ExceptionHandler(CommentNotFoundException.class)
-    public ResponseEntity handleEntityNotFoundException(CommentNotFoundException ex,
         HttpServletRequest request) {
         log.error("url: {}, 메세지: {}", request.getRequestURI(), ex.getErrorCode().getMsg());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).

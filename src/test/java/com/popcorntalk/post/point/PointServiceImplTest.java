@@ -1,4 +1,4 @@
-package com.popcorntalk.point;
+package com.popcorntalk.post.point;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -13,7 +13,7 @@ import com.popcorntalk.domain.point.repository.PointRepository;
 import com.popcorntalk.domain.point.service.PointRecordService;
 import com.popcorntalk.domain.point.service.PointServiceImpl;
 import com.popcorntalk.global.exception.customException.InsufficientPointException;
-import com.popcorntalk.global.exception.customException.PointNotFoundException;
+import com.popcorntalk.global.exception.customException.NotFoundException;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -127,7 +127,7 @@ public class PointServiceImplTest {
 
         Long NotExistUserId = 123L;
 
-        assertThrows(PointNotFoundException.class, () -> {
+        assertThrows(NotFoundException.class, () -> {
             pointService.getPoint(NotExistUserId);
         });
     }
