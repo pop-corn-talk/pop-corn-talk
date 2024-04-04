@@ -1,10 +1,13 @@
 package com.popcorntalk.domain.post.service;
 
+import com.popcorntalk.domain.post.dto.PostBest3GetResponseDto;
 import com.popcorntalk.domain.post.dto.PostCreateRequestDto;
 import com.popcorntalk.domain.post.dto.PostGetResponseDto;
+import com.popcorntalk.domain.post.dto.PostSearchKeywordRequestDto;
 import com.popcorntalk.domain.post.dto.PostUpdateRequestDto;
 import com.popcorntalk.domain.post.entity.Post;
 import com.popcorntalk.domain.user.entity.User;
+import java.util.List;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 
@@ -19,19 +22,38 @@ public interface PostService {
     PostGetResponseDto getPostById(Long postId);
 
     /**
-     * 모든 게시물 조회
+     * 모든 일반 게시물 조회
      *
-     * @param pageable 페이징처리(기본값: size 10, page 0, order createdAt::DESC)
+     * @param pageable   페이징처리(기본값: size 10, page 0, order createdAt::DESC)
+     * @param requestDto 검색 타입,키워드
      * @return List<PostGetResponseDto>
      */
-    Slice<PostGetResponseDto> getPosts(Pageable pageable);
+    Slice<PostGetResponseDto> getNormalPosts(Pageable pageable,
+        PostSearchKeywordRequestDto requestDto);
 
     /**
+     * 모든 공지 게시물 조회
+     *
+     * @param pageable 페이징처리(기본값: size 10, page 0, order createdAt::DESC)
+     * @return Slice<PostGetResponseDto>
+     */
+    Slice<PostGetResponseDto> getNoticePosts(Pageable pageable);
+
+    /**
+     * 삭제된 모든 게시물 조회
+     *
      * @param user     로그인유저
-     * @param pageable 페이징처리(기본값: size 10, page 0, order modifiedAt::DESC)
+     * @param pageable 페이징처리(기본값: size 3, page 0, order modifiedAt::DESC)
      * @return Slice<PostGetResponseDto>
      */
     Slice<PostGetResponseDto> getDeletePosts(User user, Pageable pageable);
+
+    /**
+     * 전 달에 가장 인기있었던(댓글↑) 게시물 3개 조회
+     *
+     * @return List<PostBest3GetResponseDto>
+     */
+    List<PostBest3GetResponseDto> getBest3PostsInPreMonth();
 
     /**
      * 게시물 생성
@@ -65,6 +87,11 @@ public interface PostService {
      * @param postId 삭제할 게시물의 번호
      */
     void deletePost(User user, Long postId);
+
+    /**
+     * [Cron 동작] 매일 9시에 전날 댓글이 가장 많은 게시물작성자에게 포인트 지급
+     */
+    void awardPopularPostsOwners();
 
     /**
      * Post Entity 조회

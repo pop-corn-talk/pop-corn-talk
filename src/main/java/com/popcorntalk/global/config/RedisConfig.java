@@ -104,4 +104,22 @@ public class RedisConfig {
 
         return builder.build();
     }
+
+    @Bean(name = "best3CacheManager")
+    public CacheManager best3Cachemanager() {
+        RedisCacheManager.RedisCacheManagerBuilder builder =
+            RedisCacheManager.RedisCacheManagerBuilder.fromConnectionFactory(
+                redisConnectionFactory());
+
+        RedisCacheConfiguration configuration = RedisCacheConfiguration.defaultCacheConfig()
+            .serializeValuesWith(
+                RedisSerializationContext.SerializationPair.fromSerializer(
+                    new GenericJackson2JsonRedisSerializer())) // Value Serializer 변경
+            .disableCachingNullValues()
+            .entryTtl(Duration.ofMinutes(10L));
+
+        builder.cacheDefaults(configuration);
+
+        return builder.build();
+    }
 }
