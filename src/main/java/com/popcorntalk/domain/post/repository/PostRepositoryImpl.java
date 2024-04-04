@@ -1,5 +1,7 @@
 package com.popcorntalk.domain.post.repository;
 
+import static com.popcorntalk.global.exception.ErrorCode.SEARCH_POST_NOT_FOUND;
+
 import com.popcorntalk.domain.comment.entity.QComment;
 import com.popcorntalk.domain.post.dto.PostBest3GetResponseDto;
 import com.popcorntalk.domain.post.dto.PostGetResponseDto;
@@ -9,6 +11,7 @@ import com.popcorntalk.domain.post.entity.QPost;
 import com.popcorntalk.domain.user.entity.QUser;
 import com.popcorntalk.global.config.QuerydslConfig;
 import com.popcorntalk.global.entity.DeletionStatus;
+import com.popcorntalk.global.exception.customException.NotFoundException;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Order;
@@ -52,7 +55,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
             .fetchOne();
 
         if (Objects.isNull(response)) {
-            throw new IllegalArgumentException("해당하는 게시물이 없습니다.");
+            throw new NotFoundException(SEARCH_POST_NOT_FOUND);
         }
         return response;
     }
@@ -75,8 +78,8 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
             .orderBy(postOrderSpecifier(pageable))
             .fetch();
 
-        if (Objects.isNull(responses)) {
-            throw new IllegalArgumentException("게시물이 없습니다.");
+        if (responses.isEmpty()) {
+            throw new NotFoundException(SEARCH_POST_NOT_FOUND);
         }
 
         boolean hasNext = false;
@@ -104,7 +107,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
             .where(postIdPredicate)
             .orderBy()
             .fetch();
-    } //정렬이 들어간순서대로 되지가 않음...
+    }
 
     @Override
     public List<Long> getBest3PostIds(Predicate predicate) {

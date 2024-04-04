@@ -1,6 +1,8 @@
 package com.popcorntalk.domain.post.service;
 
+import static com.popcorntalk.global.exception.ErrorCode.DELETE_POST_FOUND;
 import static com.popcorntalk.global.exception.ErrorCode.PERMISSION_DENIED;
+import static com.popcorntalk.global.exception.ErrorCode.POST_NOT_FOUND;
 
 import com.popcorntalk.domain.point.service.PointService;
 import com.popcorntalk.domain.post.dto.PostBest3GetResponseDto;
@@ -16,6 +18,7 @@ import com.popcorntalk.domain.user.entity.QUser;
 import com.popcorntalk.domain.user.entity.User;
 import com.popcorntalk.domain.user.service.UserService;
 import com.popcorntalk.global.entity.DeletionStatus;
+import com.popcorntalk.global.exception.customException.NotFoundException;
 import com.popcorntalk.global.exception.customException.PermissionDeniedException;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
@@ -174,9 +177,9 @@ public class PostServiceImpl implements PostService {
     @Override
     public Post getPost(Long postId) {
         Post post = postRepository.findById(postId).orElseThrow(
-            () -> new IllegalArgumentException("해당하는 게시물이 없습니다."));
+            () -> new NotFoundException(POST_NOT_FOUND));
         if (post.getDeletionStatus().equals(DeletionStatus.Y)) {
-            throw new IllegalArgumentException("삭제된 게시물 입니다.");
+            throw new NotFoundException(DELETE_POST_FOUND);
         }
         return post;
     }
