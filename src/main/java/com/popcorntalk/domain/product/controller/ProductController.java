@@ -1,7 +1,7 @@
 package com.popcorntalk.domain.product.controller;
 
 import com.popcorntalk.domain.product.dto.ProductCreateRequestDto;
-import com.popcorntalk.domain.product.dto.ProductReadResponseDto;
+import com.popcorntalk.domain.product.dto.ProductGetResponseDto;
 import com.popcorntalk.domain.product.dto.ProductUpdateRequestDto;
 import com.popcorntalk.domain.product.service.ProductService;
 import com.popcorntalk.global.dto.CommonResponseDto;
@@ -65,7 +65,7 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<CommonResponseDto<Page<ProductReadResponseDto>>> getProducts(
+    public ResponseEntity<CommonResponseDto<Page<ProductGetResponseDto>>> getProducts(
         @PageableDefault Pageable pageable
     ) {
         return ResponseEntity.status(HttpStatus.OK).body(
