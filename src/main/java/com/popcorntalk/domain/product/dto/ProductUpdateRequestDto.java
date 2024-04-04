@@ -21,6 +21,8 @@ public class ProductUpdateRequestDto {
     private String description;
     @NotNull
     private int price;
+    @NotNull
+    private int amount;
     @NotEmpty
     private String voucherImage;
 }
