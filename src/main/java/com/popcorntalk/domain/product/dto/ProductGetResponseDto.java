@@ -10,13 +10,14 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductReadResponseDto {
+public class ProductGetResponseDto {
 
     private Long id;
     private String name;
     private String image;
     private String description;
     private int price;
+    private int amount;
     private String voucherImage;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
