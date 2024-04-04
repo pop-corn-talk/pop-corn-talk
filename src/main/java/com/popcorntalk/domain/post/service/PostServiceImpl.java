@@ -27,6 +27,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,6 +41,7 @@ public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
 
     private final int POST_CREATE_REWORD = 100;
+    private final int POST_REWARD = 500;
 
 
     @Override
@@ -161,6 +163,15 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @Scheduled(cron = "0 0 9 * * *")
+    @Transactional
+    public void awardPopularPostsOwners() {
+        for (Long userId : getDailyTop3PostsUserIds()) {
+            pointService.earnPoint(userId, POST_REWARD);
+        }
+    }
+
+    @Override
     public Post getPost(Long postId) {
         Post post = postRepository.findById(postId).orElseThrow(
             () -> new IllegalArgumentException("해당하는 게시물이 없습니다."));
@@ -179,5 +190,9 @@ public class PostServiceImpl implements PostService {
         if (!postUserId.equals(loginUserId)) {
             throw new PermissionDeniedException(PERMISSION_DENIED);
         }
+    }
+
+    private List<Long> getDailyTop3PostsUserIds() {
+        return postRepository.getDailyTop3PostsUserIds();
     }
 }

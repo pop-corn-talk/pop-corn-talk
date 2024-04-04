@@ -4,6 +4,7 @@ import com.popcorntalk.domain.comment.entity.QComment;
 import com.popcorntalk.domain.post.dto.PostBest3GetResponseDto;
 import com.popcorntalk.domain.post.dto.PostGetResponseDto;
 import com.popcorntalk.domain.post.entity.Post;
+import com.popcorntalk.domain.post.entity.PostEnum;
 import com.popcorntalk.domain.post.entity.QPost;
 import com.popcorntalk.domain.user.entity.QUser;
 import com.popcorntalk.global.config.QuerydslConfig;
@@ -121,6 +122,28 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
             .fetch();
 
         return postIds.stream().map(i -> i.get(0, Long.class)).toList();
+    }
+
+    @Override
+    public List<Long> getDailyTop3PostsUserIds() {
+        List<Tuple> userIds = querydslConfig.jpaQueryFactory()
+            .select(
+                qPost.userId,
+                qComment.id.count())
+            .from(qComment)
+            .leftJoin(qPost).on(qComment.postId.eq(qPost.id))
+            .where(qPost.createdAt.between(
+                    LocalDateTime.now().minusDays(1L).withHour(0).withMinute(0).withSecond(0)
+                        .withNano(0),
+                    (LocalDateTime.now().minusDays(1L).withHour(23).withMinute(59).withSecond(59)
+                        .withNano(999999999)))
+                .and(qPost.deletionStatus.eq(DeletionStatus.N))
+                .and(qPost.type.eq(PostEnum.POSTED)))
+            .groupBy(qPost.userId)
+            .orderBy(qComment.id.count().desc())
+            .limit(3)
+            .fetch();
+        return userIds.stream().map(i -> i.get(0, Long.class)).toList();
     }
 
     public OrderSpecifier<LocalDateTime> postOrderSpecifier(Pageable pageable) {

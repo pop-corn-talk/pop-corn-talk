@@ -41,4 +41,11 @@ public interface PostRepositoryCustom {
      * @return List<Long>
      */
     List<Long> getBest3PostIds(Predicate predicate);
+
+    /**
+     * 매일 댓글이 가장 많이달린 게시물들의 회원 id 3개 조회
+     *
+     * @return List<Long>
+     */
+    List<Long> getDailyTop3PostsUserIds();
 }
