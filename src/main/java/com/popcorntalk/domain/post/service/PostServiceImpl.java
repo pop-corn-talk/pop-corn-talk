@@ -23,7 +23,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
@@ -32,7 +31,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
-@CacheConfig(cacheManager = "postCacheManager")
 @Service
 public class PostServiceImpl implements PostService {
 
@@ -45,7 +43,7 @@ public class PostServiceImpl implements PostService {
 
 
     @Override
-    @Cacheable(value = "Post", key = "#postId", unless = "#result == null")
+    @Cacheable(value = "Post", key = "#postId", unless = "#result == null", cacheManager = "postCacheManager")
     @Transactional(readOnly = true)
     public PostGetResponseDto getPostById(Long postId) {
         return postRepository.findPost(postId);
@@ -99,6 +97,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @Cacheable(value = "Best3", unless = "#result == null", cacheManager = "best3CacheManager")
     @Transactional(readOnly = true)
     public List<PostBest3GetResponseDto> getBest3PostsInPreMonth() {
         BooleanBuilder booleanBuilder = new BooleanBuilder();
@@ -142,7 +141,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    @CacheEvict(value = "Post", key = "#postId")
+    @CacheEvict(value = "Post", key = "#postId", cacheManager = "postCacheManager")
     @Transactional
     public void updatePost(User user, PostUpdateRequestDto requestDto, Long postId) {
         Post updatePost = getPost(postId);
@@ -152,7 +151,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    @CacheEvict(value = "Post", key = "#postId")
+    @CacheEvict(value = "Post", key = "#postId", cacheManager = "postCacheManager")
     @Transactional
     public void deletePost(User user, Long postId) {
         Post deletePost = getPost(postId);

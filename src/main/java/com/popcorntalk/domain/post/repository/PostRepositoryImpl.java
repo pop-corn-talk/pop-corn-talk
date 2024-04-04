@@ -90,12 +90,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
     @Override
     public List<PostBest3GetResponseDto> getBest3PostsInPreMonth(List<Long> postIds) {
         BooleanBuilder booleanBuilder = new BooleanBuilder();
-
-        for (Long best3PostId : postIds) {
-            Predicate postIdPredicate = qPost.id.eq(best3PostId);
-            booleanBuilder.or(postIdPredicate);
-        }
-
+        Predicate postIdPredicate = qPost.id.in(postIds);
         return querydslConfig.jpaQueryFactory()
             .select(Projections.fields(PostBest3GetResponseDto.class,
                 qPost.id,
@@ -105,7 +100,8 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
             ))
             .from(qPost)
             .leftJoin(qUser).on(qPost.userId.eq(qUser.id))
-            .where(booleanBuilder)
+            .where(postIdPredicate)
+            .orderBy()
             .fetch();
     } //정렬이 들어간순서대로 되지가 않음...
 
