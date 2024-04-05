@@ -3,7 +3,6 @@ package com.popcorntalk.domain.post.service;
 import com.popcorntalk.domain.post.dto.PostBest3GetResponseDto;
 import com.popcorntalk.domain.post.dto.PostCreateRequestDto;
 import com.popcorntalk.domain.post.dto.PostGetResponseDto;
-import com.popcorntalk.domain.post.dto.PostSearchKeywordRequestDto;
 import com.popcorntalk.domain.post.dto.PostUpdateRequestDto;
 import com.popcorntalk.domain.post.entity.Post;
 import com.popcorntalk.domain.user.entity.User;
@@ -24,12 +23,12 @@ public interface PostService {
     /**
      * 모든 일반 게시물 조회
      *
-     * @param pageable   페이징처리(기본값: size 10, page 0, order createdAt::DESC)
-     * @param requestDto 검색 타입,키워드
-     * @return List<PostGetResponseDto>
+     * @param pageable 페이징처리(기본값: size 10, page 0, order createdAt::DESC)
+     * @param type     검색타입
+     * @param keyword  검색키워드
+     * @return Slice<PostGetResponseDto>
      */
-    Slice<PostGetResponseDto> getNormalPosts(Pageable pageable,
-        PostSearchKeywordRequestDto requestDto);
+    Slice<PostGetResponseDto> getNormalPosts(Pageable pageable, int type, String keyword);
 
     /**
      * 모든 공지 게시물 조회

@@ -3,7 +3,6 @@ package com.popcorntalk.domain.post.controller;
 import com.popcorntalk.domain.post.dto.PostBest3GetResponseDto;
 import com.popcorntalk.domain.post.dto.PostCreateRequestDto;
 import com.popcorntalk.domain.post.dto.PostGetResponseDto;
-import com.popcorntalk.domain.post.dto.PostSearchKeywordRequestDto;
 import com.popcorntalk.domain.post.dto.PostUpdateRequestDto;
 import com.popcorntalk.domain.post.service.PostService;
 import com.popcorntalk.global.dto.CommonResponseDto;
@@ -25,6 +24,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -47,9 +47,11 @@ public class PostController {
     @GetMapping
     public ResponseEntity<CommonResponseDto<Slice<PostGetResponseDto>>> getNormalPosts(
         @PageableDefault(sort = "createdAt", direction = Direction.DESC) Pageable pageable,
-        @Valid @RequestBody(required = false) PostSearchKeywordRequestDto requestDto
+        @RequestParam(defaultValue = "0") int type,
+        @RequestParam(required = false) String keyword
     ) {
-        Slice<PostGetResponseDto> normalPosts = postService.getNormalPosts(pageable, requestDto);
+        Slice<PostGetResponseDto> normalPosts = postService.getNormalPosts(pageable, type,
+            keyword.trim());
         return ResponseEntity.status(HttpStatus.OK).body(CommonResponseDto.success(normalPosts));
     }
 
