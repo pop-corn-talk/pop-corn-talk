@@ -8,7 +8,6 @@ import com.popcorntalk.domain.point.service.PointService;
 import com.popcorntalk.domain.post.dto.PostBest3GetResponseDto;
 import com.popcorntalk.domain.post.dto.PostCreateRequestDto;
 import com.popcorntalk.domain.post.dto.PostGetResponseDto;
-import com.popcorntalk.domain.post.dto.PostSearchKeywordRequestDto;
 import com.popcorntalk.domain.post.dto.PostUpdateRequestDto;
 import com.popcorntalk.domain.post.entity.Post;
 import com.popcorntalk.domain.post.entity.PostEnum;
@@ -24,7 +23,6 @@ import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -56,23 +54,24 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional(readOnly = true)
-    public Slice<PostGetResponseDto> getNormalPosts(Pageable pageable,
-        PostSearchKeywordRequestDto requestDto) {
+    public Slice<PostGetResponseDto> getNormalPosts(Pageable pageable, int type, String keyword) {
 
         BooleanBuilder booleanBuilder = new BooleanBuilder();
         Predicate deleteNPredicate = QPost.post.deletionStatus.eq(DeletionStatus.N);
         Predicate typePostPredicate = QPost.post.type.eq(PostEnum.POSTED);
         booleanBuilder.and(deleteNPredicate).and(typePostPredicate);
 
-        if (!Objects.isNull(requestDto)) {
-            switch (requestDto.getType()) {
+        if (type != 0) {
+            switch (type) {
                 case 1:
-                    Predicate emailEqualPredicate = QUser.user.email.eq(requestDto.getKeyword());
+                    Predicate emailEqualPredicate = QUser.user.email.eq(keyword);
                     booleanBuilder.and(emailEqualPredicate);
                     break;
                 case 2:
-                    Predicate titleLikePredicate = QPost.post.name.contains(
-                        requestDto.getKeyword().trim());
+                    if (keyword.isEmpty()) {
+                        throw new IllegalArgumentException("검색어를 입력해 주세요");
+                    }
+                    Predicate titleLikePredicate = QPost.post.name.contains(keyword);
                     booleanBuilder.and(titleLikePredicate);
                     break;
                 default:
