@@ -48,6 +48,6 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
             .fetch().size();
 
         return new PageImpl<>(commentList, pageable, totalCount);
-
     }
 }
+

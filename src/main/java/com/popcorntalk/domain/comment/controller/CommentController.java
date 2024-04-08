@@ -70,7 +70,6 @@ public class CommentController {
             commentId,
             requestDto
         );
-
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
@@ -85,7 +84,6 @@ public class CommentController {
             postId,
             commentId
         );
-
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

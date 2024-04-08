@@ -1,11 +1,19 @@
 package com.popcorntalk.domain.post.repository;
 
+import static com.popcorntalk.global.exception.ErrorCode.SEARCH_POST_NOT_FOUND;
+
+import com.popcorntalk.domain.comment.entity.QComment;
+import com.popcorntalk.domain.post.dto.PostBest3GetResponseDto;
 import com.popcorntalk.domain.post.dto.PostGetResponseDto;
 import com.popcorntalk.domain.post.entity.Post;
+import com.popcorntalk.domain.post.entity.PostEnum;
 import com.popcorntalk.domain.post.entity.QPost;
 import com.popcorntalk.domain.user.entity.QUser;
 import com.popcorntalk.global.config.QuerydslConfig;
 import com.popcorntalk.global.entity.DeletionStatus;
+import com.popcorntalk.global.exception.customException.NotFoundException;
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Predicate;
@@ -28,6 +36,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
     private final QuerydslConfig querydslConfig;
     QPost qPost = QPost.post;
     QUser qUser = QUser.user;
+    QComment qComment = QComment.comment;
 
     @Override
     public PostGetResponseDto findPost(Long postId) {
@@ -46,7 +55,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
             .fetchOne();
 
         if (Objects.isNull(response)) {
-            throw new IllegalArgumentException("해당하는 게시물이 없습니다.");
+            throw new NotFoundException(SEARCH_POST_NOT_FOUND);
         }
         return response;
     }
@@ -69,8 +78,8 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
             .orderBy(postOrderSpecifier(pageable))
             .fetch();
 
-        if (Objects.isNull(responses)) {
-            throw new IllegalArgumentException("게시물이 없습니다.");
+        if (responses.isEmpty()) {
+            throw new NotFoundException(SEARCH_POST_NOT_FOUND);
         }
 
         boolean hasNext = false;
@@ -80,6 +89,64 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
         }
 
         return new SliceImpl<>(responses, pageable, hasNext);
+    }
+
+    @Override
+    public List<PostBest3GetResponseDto> getBest3PostsInPreMonth(List<Long> postIds) {
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+        Predicate postIdPredicate = qPost.id.in(postIds);
+        return querydslConfig.jpaQueryFactory()
+            .select(Projections.fields(PostBest3GetResponseDto.class,
+                qPost.id,
+                qPost.name,
+                qUser.id.as("userId"),
+                qUser.email
+            ))
+            .from(qPost)
+            .leftJoin(qUser).on(qPost.userId.eq(qUser.id))
+            .where(postIdPredicate)
+            .orderBy()
+            .fetch();
+    }
+
+    @Override
+    public List<Long> getBest3PostIds(Predicate predicate) {
+        List<Tuple> postIds = querydslConfig.jpaQueryFactory()
+            .select(
+                qPost.id,
+                qComment.id.count()
+            )
+            .from(qPost)
+            .leftJoin(qComment).on(qPost.id.eq(qComment.postId))
+            .where(predicate)
+            .groupBy(qPost.id)
+            .orderBy(qComment.id.count().desc())
+            .limit(3)
+            .fetch();
+
+        return postIds.stream().map(i -> i.get(0, Long.class)).toList();
+    }
+
+    @Override
+    public List<Long> getDailyTop3PostsUserIds() {
+        List<Tuple> userIds = querydslConfig.jpaQueryFactory()
+            .select(
+                qPost.userId,
+                qComment.id.count())
+            .from(qComment)
+            .leftJoin(qPost).on(qComment.postId.eq(qPost.id))
+            .where(qPost.createdAt.between(
+                    LocalDateTime.now().minusDays(1L).withHour(0).withMinute(0).withSecond(0)
+                        .withNano(0),
+                    (LocalDateTime.now().minusDays(1L).withHour(23).withMinute(59).withSecond(59)
+                        .withNano(999999999)))
+                .and(qPost.deletionStatus.eq(DeletionStatus.N))
+                .and(qPost.type.eq(PostEnum.POSTED)))
+            .groupBy(qPost.userId)
+            .orderBy(qComment.id.count().desc())
+            .limit(3)
+            .fetch();
+        return userIds.stream().map(i -> i.get(0, Long.class)).toList();
     }
 
     public OrderSpecifier<LocalDateTime> postOrderSpecifier(Pageable pageable) {

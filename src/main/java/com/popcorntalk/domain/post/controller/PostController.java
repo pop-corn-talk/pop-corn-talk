@@ -1,5 +1,6 @@
 package com.popcorntalk.domain.post.controller;
 
+import com.popcorntalk.domain.post.dto.PostBest3GetResponseDto;
 import com.popcorntalk.domain.post.dto.PostCreateRequestDto;
 import com.popcorntalk.domain.post.dto.PostGetResponseDto;
 import com.popcorntalk.domain.post.dto.PostUpdateRequestDto;
@@ -7,6 +8,7 @@ import com.popcorntalk.domain.post.service.PostService;
 import com.popcorntalk.global.dto.CommonResponseDto;
 import com.popcorntalk.global.security.UserDetailsImpl;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -40,13 +43,25 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.OK).body(CommonResponseDto.success(post));
     }
 
-    //게시글 전체조회
+    //일반 게시글 전체조회
     @GetMapping
-    public ResponseEntity<CommonResponseDto<Slice<PostGetResponseDto>>> getPosts(
-        @PageableDefault(sort = "createdAt", direction = Direction.DESC) Pageable pageable
+    public ResponseEntity<CommonResponseDto<Slice<PostGetResponseDto>>> getNormalPosts(
+        @PageableDefault(sort = "createdAt", direction = Direction.DESC) Pageable pageable,
+        @RequestParam(defaultValue = "0") int type,
+        @RequestParam(required = false) String keyword
     ) {
-        Slice<PostGetResponseDto> posts = postService.getPosts(pageable);
-        return ResponseEntity.status(HttpStatus.OK).body(CommonResponseDto.success(posts));
+        Slice<PostGetResponseDto> normalPosts = postService.getNormalPosts(pageable, type,
+            keyword.trim());
+        return ResponseEntity.status(HttpStatus.OK).body(CommonResponseDto.success(normalPosts));
+    }
+
+    //공지 게시물 조회
+    @GetMapping("/notice")
+    public ResponseEntity<CommonResponseDto<Slice<PostGetResponseDto>>> getNoticePosts(
+        @PageableDefault(size = 3, sort = "createdAt", direction = Direction.DESC) Pageable pageable
+    ) {
+        Slice<PostGetResponseDto> noticePosts = postService.getNoticePosts(pageable);
+        return ResponseEntity.status(HttpStatus.OK).body(CommonResponseDto.success(noticePosts));
     }
 
     //삭제된 게시물 조회
@@ -60,6 +75,14 @@ public class PostController {
             pageable
         );
         return ResponseEntity.status(HttpStatus.OK).body(CommonResponseDto.success(deletePosts));
+    }
+
+    //전 달 댓글많은 3개의 게시글 조회
+    @GetMapping("/best")
+    public ResponseEntity<CommonResponseDto<List<PostBest3GetResponseDto>>> getBest3PostsInPreMonth(
+    ) {
+        List<PostBest3GetResponseDto> best3Posts = postService.getBest3PostsInPreMonth();
+        return ResponseEntity.status(HttpStatus.OK).body(CommonResponseDto.success(best3Posts));
     }
 
     //게시글 등록

@@ -3,7 +3,7 @@ package com.popcorntalk.domain.product.service;
 import static com.popcorntalk.global.exception.ErrorCode.NOT_FOUND;
 
 import com.popcorntalk.domain.product.dto.ProductCreateRequestDto;
-import com.popcorntalk.domain.product.dto.ProductReadResponseDto;
+import com.popcorntalk.domain.product.dto.ProductGetResponseDto;
 import com.popcorntalk.domain.product.dto.ProductUpdateRequestDto;
 import com.popcorntalk.domain.product.entity.Product;
 import com.popcorntalk.domain.product.repository.ProductRepository;
@@ -53,7 +53,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<ProductReadResponseDto> getProducts(Pageable pageable) {
+    public Page<ProductGetResponseDto> getProducts(Pageable pageable) {
 
         return productRepository.findProducts(pageable);
     }
@@ -61,9 +61,9 @@ public class ProductServiceImpl implements ProductService {
     public Product getProduct(Long productId) {
         Product product = productRepository.findById(productId)
             .orElseThrow(() -> new NotFoundException(NOT_FOUND));
-        if(product.getDeletionStatus() == DeletionStatus.Y){
-             throw new IllegalArgumentException("삭제된 상품입니다.");
-         }
+        if (product.getDeletionStatus() == DeletionStatus.Y) {
+            throw new IllegalArgumentException("삭제된 상품입니다.");
+        }
         return product;
     }
 }

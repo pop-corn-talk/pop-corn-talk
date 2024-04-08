@@ -37,27 +37,27 @@ public class PostTestData {
 
     //조회 DTO
     PostGetResponseDto TEST_GET_RESPONSE_DTO = PostGetResponseDto.builder()
-        .postName(POST_NAME)
-        .postContent(POST_CONTENT)
-        .postImage(POST_IMAGE)
+        .name(POST_NAME)
+        .content(POST_CONTENT)
+        .image(POST_IMAGE)
         .email(EMAIL)
         .createdAt(CREATE_AT)
         .modifiedAt(MODIFIED_AT)
         .build();
 
     PostGetResponseDto TEST_ANOTHER_GET_RESPONSE_DTO = PostGetResponseDto.builder()
-        .postName(ANOTHER_PREFIX + POST_NAME)
-        .postContent(ANOTHER_PREFIX + POST_CONTENT)
-        .postImage(ANOTHER_PREFIX + POST_IMAGE)
+        .name(ANOTHER_PREFIX + POST_NAME)
+        .content(ANOTHER_PREFIX + POST_CONTENT)
+        .image(ANOTHER_PREFIX + POST_IMAGE)
         .email(ANOTHER_PREFIX + EMAIL)
         .createdAt(CREATE_AT_PLUS_1HOUR)
         .modifiedAt(MODIFIED_AT)
         .build();
 
     PostGetResponseDto TEST_GET_DELETE_RESPONSE_DTO = PostGetResponseDto.builder()
-        .postName(DELETE_PREFIX + POST_NAME)
-        .postContent(DELETE_PREFIX + POST_CONTENT)
-        .postImage(DELETE_PREFIX + POST_IMAGE)
+        .name(DELETE_PREFIX + POST_NAME)
+        .content(DELETE_PREFIX + POST_CONTENT)
+        .image(DELETE_PREFIX + POST_IMAGE)
         .email(EMAIL)
         .createdAt(CREATE_AT)
         .modifiedAt(MODIFIED_AT)

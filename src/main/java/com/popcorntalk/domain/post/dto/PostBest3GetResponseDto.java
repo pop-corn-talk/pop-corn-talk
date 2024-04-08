@@ -1,6 +1,5 @@
 package com.popcorntalk.domain.post.dto;
 
-import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,12 +9,10 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PostGetResponseDto {
+public class PostBest3GetResponseDto {
 
+    private Long id;
     private String name;
-    private String content;
-    private String image;
+    private Long userId;
     private String email;
-    private LocalDateTime createdAt;
-    private LocalDateTime modifiedAt;
 }
