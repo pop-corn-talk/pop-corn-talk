@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,6 +12,7 @@
           crossorigin="anonymous"></script>
   <link rel="stylesheet" href="/css/index.css">
   <script src="/js/logout.js"></script>
+  <script src="/js/post.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
 
 
@@ -50,6 +51,20 @@
            onchange="uploadImage(event)">
   </article>
 </div>
-</body>
 
+</body>
+<script>
+  window.onload = async function() {
+    await getPosts(0, '');
+    console.log('Page has completely loaded.');
+
+    try {
+      // Call the getPosts function here
+
+      // Optional: Add any additional code to run after getPosts completes
+    } catch (error) {
+      console.error('An error occurred while loading the page:', error);
+    }
+  };
+</script>
 </html>
