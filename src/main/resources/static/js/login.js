@@ -32,4 +32,9 @@ function login(){
       document.getElementById('error-msg').style.display = 'block';
       document.getElementById('error-msg').textContent = 'Login failed. Please try again.';
     });
+
+
   })}
+function moveLogin(){
+  window.location.href="users/testLogin";
+}
