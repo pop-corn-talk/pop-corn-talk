@@ -27,6 +27,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
                 qProduct.image,
                 qProduct.description,
                 qProduct.price,
+                qProduct.amount,
                 qProduct.voucherImage,
                 qProduct.createdAt,
                 qProduct.modifiedAt))
