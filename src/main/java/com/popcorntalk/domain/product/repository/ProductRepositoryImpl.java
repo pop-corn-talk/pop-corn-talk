@@ -1,6 +1,6 @@
 package com.popcorntalk.domain.product.repository;
 
-import com.popcorntalk.domain.product.dto.ProductReadResponseDto;
+import com.popcorntalk.domain.product.dto.ProductGetResponseDto;
 import com.popcorntalk.domain.product.entity.QProduct;
 import com.popcorntalk.global.config.QuerydslConfig;
 import com.popcorntalk.global.entity.DeletionStatus;
@@ -19,9 +19,9 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
     QProduct qProduct = QProduct.product;
 
     @Override
-    public Page<ProductReadResponseDto> findProducts(Pageable pageable) {
-        List<ProductReadResponseDto> productResponseDtoList = querydslConfig.jpaQueryFactory()
-            .select(Projections.fields(ProductReadResponseDto.class,
+    public Page<ProductGetResponseDto> findProducts(Pageable pageable) {
+        List<ProductGetResponseDto> productResponseDtoList = querydslConfig.jpaQueryFactory()
+            .select(Projections.fields(ProductGetResponseDto.class,
                 qProduct.id,
                 qProduct.name,
                 qProduct.image,

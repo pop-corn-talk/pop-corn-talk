@@ -1,7 +1,7 @@
 package com.popcorntalk.domain.product.service;
 
 import com.popcorntalk.domain.product.dto.ProductCreateRequestDto;
-import com.popcorntalk.domain.product.dto.ProductReadResponseDto;
+import com.popcorntalk.domain.product.dto.ProductGetResponseDto;
 import com.popcorntalk.domain.product.dto.ProductUpdateRequestDto;
 import com.popcorntalk.domain.product.entity.Product;
 import org.springframework.data.domain.Page;
@@ -42,10 +42,9 @@ public interface ProductService {
      * @param pageable 페이징처리(기본값: size 10, page 0)
      * @return Page<ProductReadResponseDto>
      */
-    Page<ProductReadResponseDto> getProducts(Pageable pageable);
+    Page<ProductGetResponseDto> getProducts(Pageable pageable);
 
     /**
-     *
      * @param productId 상품의 번호
      * @return Product
      */

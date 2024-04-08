@@ -42,6 +42,9 @@ public class Product extends TimeStamped {
     private int price;
 
     @Column(nullable = false)
+    private int amount;
+
+    @Column(nullable = false)
     private String voucherImage;
 
     @Column(nullable = false)
@@ -49,11 +52,12 @@ public class Product extends TimeStamped {
     private DeletionStatus deletionStatus;
 
     private Product(String name, String image, String description,
-        int price, String voucherImage) {
+        int price, int amount, String voucherImage) {
         this.name = name;
         this.image = image;
         this.description = description;
         this.price = price;
+        this.amount = amount;
         this.voucherImage = voucherImage;
         this.deletionStatus = DeletionStatus.N;
     }
@@ -64,6 +68,7 @@ public class Product extends TimeStamped {
             productCreateRequestDto.getImage(),
             productCreateRequestDto.getDescription(),
             productCreateRequestDto.getPrice(),
+            productCreateRequestDto.getAmount(),
             productCreateRequestDto.getVoucherImage()
         );
     }
@@ -77,5 +82,7 @@ public class Product extends TimeStamped {
         this.image = productUpdateRequestDto.getImage();
         this.description = productUpdateRequestDto.getDescription();
         this.price = productUpdateRequestDto.getPrice();
+        this.amount = productUpdateRequestDto.getAmount();
+        this.voucherImage = productUpdateRequestDto.getVoucherImage();
     }
 }
