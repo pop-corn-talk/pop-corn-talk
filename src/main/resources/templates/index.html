@@ -127,6 +127,7 @@
 </head>
 <body>
 
+
 <header>
 
 
@@ -138,12 +139,13 @@
   <div class="right-container">
     <div class="action-buttons">
       <input type="text" placeholder="Search">
-      <button id="login-btn">Login</button>
-      <button id="signup-btn">Signup</button>
+      <button id="login-btn" onclick=moveLogin()>Login</button>
+      <button id="signup-btn" onclick=moveSignup()>Signup</button>
     </div>
   </div>
 </header>
 <div class="center-container">
+
   <article id="posts" class="post-card">
     <button onclick=createPostData()>게시글 등록</button>
     <p id="post_name">
@@ -154,7 +156,7 @@
     </h3>
     <img id="post_imgPreview" src="#" alt="Post Image" style="display: none;">
     <input type="file" id="post_imgInput" placeholder="게시글 이미지를 업로드해주세요"
-           onchange="previewImage(event)">
+           onchange="uploadImage(event)">
   </article>
 </div>
 <div style="width: 200px; height: 50px;" id="logout-btn" onclick=logout()>로그아웃</div>
@@ -176,83 +178,218 @@
     }
   }
 
-  function previewImage(event) {
+  function uploadImage(event) {
     const input = event.target;
-    // 파일이 선택되었는지 확인
     if (input.files && input.files[0]) {
-      const reader = new FileReader();
+      const formData = new FormData();
+      formData.append('Image', input.files[0]);
 
-      reader.onload = function () {
-        // 이미지를 미리보기로 표시할 <img> 요소를 가져옴
+      fetch('/image', {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('HTTP error, status = ' + response.status);
+        }
+        return response.json();
+      })
+      .then(data => {
+        // 응답 데이터에서 이미지 URL 가져오기
+        const imageUrl = data.data.imageUrl;
+
+        // 이미지 미리보기 엘리먼트 가져오기
         const imgPreview = document.getElementById('post_imgPreview');
 
-        // FileReader에서 읽은 데이터 URL을 <img> 요소의 src 속성에 설정
-        imgPreview.src = reader.result;
-
-        // 미리보기 이미지를 표시하기 위해 <img> 요소를 보이도록 설정
+        // 이미지 URL 설정 및 보이도록 설정
+        imgPreview.src = imageUrl;
         imgPreview.style.display = 'block';
-      };
 
-      // FileReader를 사용하여 파일의 내용을 읽음
-      reader.readAsDataURL(input.files[0]);
+        console.log('이미지 업로드 성공:', imageUrl);
+      })
+      .catch(error => {
+        console.error('이미지 업로드 실패:', error);
+      });
     }
   }
 
-  function createPostData() {
-    const reader = new FileReader();
-    let postImg = document.querySelector("#post_imgInput").files[0];
-    reader.readAsDataURL(postImg);
-    let postName = document.querySelector("#post_nameInput").value.trim(); // Remove leading/trailing whitespace
-    let postContent = document.querySelector("#post_contentInput").value.trim(); // Remove leading/trailing whitespace
+  async function deleteImage(imageUrl) {
+    // 현재 posts에 저장된 게시글 목록중에서 클릭된 이미ㅈ
+    try {
+      const response = await fetch('/image', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({imageUrl: imageUrl})
+      });
 
-    let postImgPreview = document.getElementById('post_imgPreview');
-    let postNameData = document.querySelector("#post_name");
-    let postContentData = document.querySelector("#post_content");
+      if (!response.ok) {
+        throw new Error('이미지 삭제에 실패했습니다.');
+      }
 
-    if (!postImg) {
-      console.error("이미지를 선택하세요.");
-      return; // Exit the function early
+      console.log('이미지 삭제에 성공했습니다.');
+    } catch (error) {
+      console.error('오류 발생:', error);
+    }
+  }
+
+  async function createPostData() {
+    const postNameInput = document.querySelector("#post_nameInput");
+    const postContentInput = document.querySelector("#post_contentInput");
+    const imgPreview = document.getElementById('post_imgPreview');
+
+    const postName = postNameInput.value.trim();
+    const postContent = postContentInput.value.trim();
+    const postImageSrc = imgPreview.src;
+
+    // Check if all necessary fields are filled
+    if (!postName || !postContent || !postImageSrc || postImageSrc === '#') {
+      console.error("게시글 제목, 내용, 이미지를 모두 입력해주세요.");
+      return;
     }
 
-    // Validate form inputs
-    if (!postName || !postContent) {
-      console.error("게시글 제목 또는 내용을 입력하세요.");
-      return; // Exit the function early
-    }
+    try {
+      // Append post element to the posts container
+      const postsContainer = document.getElementById('posts');
+      const postElement = document.createElement('article');
+      postElement.classList.add('post-card');
 
-    reader.onload = function () {
-      const base64Img = reader.result.split(',')[1]; // Extract base64 data
-      console.log("base64Img", base64Img);
+      // Set post content
+      postElement.innerHTML = `
+            <button onclick="deletePost(this)">게시글 삭제</button>
+            <h2>${postName}</h2>
+            <p>${postContent}</p>
+            <img src="${postImageSrc}" alt="Post Image">
+        `;
+
+      // Prepend post element to the posts container
+      postsContainer.prepend(postElement);
+
+      // Clear image input field
+      const postImgInput = document.getElementById('post_imgInput');
+      postImgInput.value = '';  // Clear the input value
+
+      // Clear input fields
+      postNameInput.value = '';
+      postContentInput.value = '';
+      imgPreview.src = '#';
+      imgPreview.style.display = 'none';
+
+      // Send post data to the server
       const postData = {
-        postImage: base64Img,
         postName: postName,
-        postContent: postContent
+        postContent: postContent,
+        postImage: postImageSrc
       };
+
+      console.log('보낼 데이터:', postData); // 데이터 확인용 로그
 
       const token = sessionStorage.getItem('jwt');
 
-      fetch('/posts', {
+      const response = await fetch('/posts', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify(postData), // Convert data to JSON format
-      })
-      .then(response => {
-        console.log("response: {}", response);
-        if (response.ok && token) {
-          console.log("게시글 등록에 성공했습니다");
-          postImgPreview.src = URL.createObjectURL(postImg);
-          postNameData.textContent = postName;
-          postContentData.textContent = postContent;
-        } else {
-          console.log("게시글 등록에 실패했습니다");
-        }
-      })
+        body: JSON.stringify(postData),
+      });
 
+      if (!response.ok) {
+        throw new Error('게시글 등록에 실패했습니다.');
+      }
+
+      console.log('게시글 등록에 성공했습니다.');
+    } catch (error) {
+      console.error('오류 발생:', error);
     }
   }
+
+  window.onload = async function() {
+    console.log('페이지가 완전히 로드되었습니다.');
+
+    try {
+      // getPosts 함수가 Promise를 반환하도록 수정
+      await getPosts(0, '');
+
+      // 게시물 요소 찾기
+      const postData = document.querySelectorAll('.post-card');
+      postData.forEach(post => console.log(post));
+    } catch (error) {
+      console.error('페이지 로딩 중 오류가 발생했습니다:', error);
+    }
+  };
+
+  // 코드 수정 예시
+  async function getPosts(type, keyword) {
+    try {
+      const page = 0;
+      const size = 10;
+      const url = `/posts?type=${type}&keyword=${keyword}&page=${page}&size=${size}`;
+      const token = sessionStorage.getItem('jwt');
+
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to view post.');
+      }
+
+      const responseData = await response.json(); // 이부분에서 문제발생
+      console.log('Viewed post data:', responseData);
+      displayPosts(responseData);
+    } catch (error) {
+      console.error('An error occurred:', error);
+    }
+  }
+
+
+  function displayPosts(postsData) {
+    const postsContainer = document.getElementById('posts');
+    postsContainer.innerHTML = ''; // Clear previous posts
+
+
+    postsData.forEach(post => {
+      const article = document.createElement('article');
+      article.classList.add('post-card');
+
+      const postTitle = document.createElement('h2');
+      postTitle.textContent = post.title;
+
+      const postContent = document.createElement('p');
+      postContent.textContent = post.content;
+
+      const postImage = document.createElement('img');
+      postImage.src = post.image;
+      postImage.alt = 'Post Image';
+
+      article.appendChild(postTitle);
+      article.appendChild(postContent);
+      article.appendChild(postImage);
+
+      postsContainer.appendChild(article);
+
+      if (postsContainer.hasChildNodes()) {
+        console.log("조회 및 화면에 표시 성공!", article);
+      }
+    });
+  }
+  function moveLogin(){
+    window.location.href="users/testLogin";
+  }
+  function moveSignup(){
+    window.location.href="users/signup";
+  }
+
+
+
+
 
 </script>
 </html>

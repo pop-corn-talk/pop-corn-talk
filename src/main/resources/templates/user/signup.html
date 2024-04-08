@@ -6,6 +6,7 @@
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <link rel="preconnect" href="https://fonts.gstatic.com">
+  <script src="/js/signup.js"></script>
   <meta charset="UTF-8">
   <title>회원가입 페이지</title>
   <style>
@@ -68,7 +69,7 @@
   <div id="login-form">
     <div id="login-title">팝콘톡 회원가입</div>
 
-    <form id="signup-form" action="/users/signup" method="post">
+    <form id="signup-form" action="/users/signup" onclick=signup() method="post">
 
       <div class="login-id-label">E-mail</div>
       <input type="text" id="email" name="email" placeholder="E-mail" class="login-input-box">
@@ -82,37 +83,7 @@
   </div>
 </div>
 <script>
-  document.getElementById('signup-form').addEventListener('submit', function (event) {
-    event.preventDefault(); // Prevent the form from submitting normally
-    // fetch로 현재 Url로 페이지를 먼저 가져오고 post를 진행했으면 좋겠어
-    const username = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
 
-    const signupData = {
-      email: username,
-      password: password
-    };
-    // Perform AJAX request to submit form data
-    fetch('/users/signup', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(signupData),
-    })
-    .then(function (response) {
-      if (response.ok) {
-        // If signup successful, redirect to testLogin page
-        window.location.href = '/users/testLogin';
-      } else {
-        // If signup failed, redirect back to signup page
-        window.location.href = '/users/signup';
-      }
-    })
-    .catch(function (error) {
-      console.error('Error:', error);
-    });
-  });
 
 </script>
 </body>
