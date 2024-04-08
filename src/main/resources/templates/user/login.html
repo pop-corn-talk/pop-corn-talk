@@ -23,8 +23,8 @@
 </div>
 
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('login-btn').addEventListener('click', function() {
+  document.addEventListener('DOMContentLoaded', function () {
+    document.getElementById('login-btn').addEventListener('click', function () {
       const username = document.getElementById('username').value;
       const password = document.getElementById('password').value;
 
@@ -45,14 +45,13 @@
       })
       .then(response => {
         const jwt = response.headers.get('Authorization');
-        if (jwt){
-          sessionStorage.setItem("jwt",jwt.split(' ')[1]);
-          window.location.href="/";
-        }
-        else {
+        if (jwt) {
+          sessionStorage.setItem("jwt", jwt.split(' ')[1]);
+          window.location.href = "/";
+        } else {
           throw Error("리다이렉팅에러");
         }
-        })
+      })
       .catch((error) => {
         console.error('Error:', error);
         document.getElementById('error-msg').style.display = 'block';

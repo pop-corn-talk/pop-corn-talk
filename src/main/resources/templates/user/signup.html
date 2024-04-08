@@ -74,19 +74,19 @@
       <input type="text" id="email" name="email" placeholder="E-mail" class="login-input-box">
 
       <div class="login-id-label">Password</div>
-      <input type="password" id="password" name="password" placeholder="Password" class="login-input-box">
+      <input type="password" id="password" name="password" placeholder="Password"
+             class="login-input-box">
 
       <button id="login-id-submit">회원 가입</button>
     </form>
   </div>
 </div>
 <script>
-  document.getElementById('signup-form').addEventListener('submit', function(event) {
+  document.getElementById('signup-form').addEventListener('submit', function (event) {
     event.preventDefault(); // Prevent the form from submitting normally
     // fetch로 현재 Url로 페이지를 먼저 가져오고 post를 진행했으면 좋겠어
     const username = document.getElementById('email').value;
     const password = document.getElementById('password').value;
-
 
     const signupData = {
       email: username,
@@ -100,7 +100,7 @@
       },
       body: JSON.stringify(signupData),
     })
-    .then(function(response) {
+    .then(function (response) {
       if (response.ok) {
         // If signup successful, redirect to testLogin page
         window.location.href = '/users/testLogin';
@@ -109,7 +109,7 @@
         window.location.href = '/users/signup';
       }
     })
-    .catch(function(error) {
+    .catch(function (error) {
       console.error('Error:', error);
     });
   });
