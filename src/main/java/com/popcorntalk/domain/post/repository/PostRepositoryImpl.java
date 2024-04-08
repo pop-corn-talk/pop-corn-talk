@@ -42,6 +42,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
     public PostGetResponseDto findPost(Long postId) {
         PostGetResponseDto response = querydslConfig.jpaQueryFactory()
             .select(Projections.fields(PostGetResponseDto.class,
+                qPost.id,
                 qPost.name,
                 qPost.content,
                 qPost.image,
@@ -64,6 +65,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
     public Slice<PostGetResponseDto> findPosts(Pageable pageable, Predicate predicate) {
         List<PostGetResponseDto> responses = querydslConfig.jpaQueryFactory()
             .select(Projections.fields(PostGetResponseDto.class,
+                qPost.id,
                 qPost.name,
                 qPost.content,
                 qPost.image,

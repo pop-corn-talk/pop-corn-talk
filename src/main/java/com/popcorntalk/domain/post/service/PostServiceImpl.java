@@ -62,6 +62,7 @@ public class PostServiceImpl implements PostService {
         booleanBuilder.and(deleteNPredicate).and(typePostPredicate);
 
         if (type != 0) {
+            keyword = keyword.trim();
             switch (type) {
                 case 1:
                     Predicate emailEqualPredicate = QUser.user.email.eq(keyword);

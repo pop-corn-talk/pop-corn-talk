@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class PostGetResponseDto {
 
+    private Long id;
     private String name;
     private String content;
     private String image;
