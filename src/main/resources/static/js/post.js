@@ -1,38 +1,49 @@
 
-  function uploadImage(event) {
+function uploadImage(event) {
+  // 이벤트에서 입력 요소 가져오기
   const input = event.target;
+
+  // 파일이 선택되었는지 확인
   if (input.files && input.files[0]) {
-  const formData = new FormData();
-  formData.append('Image', input.files[0]);
+    // FormData 객체 생성
+    const formData = new FormData();
 
-  fetch('/image', {
-  method: 'POST',
-  body: formData
-})
-  .then(response => {
-  if (!response.ok) {
-  throw new Error('HTTP error, status = ' + response.status);
+    // FormData에 이미지 파일 추가
+    formData.append('Image', input.files[0]);
+
+    // 이미지를 서버로 업로드하기 위해 fetch 요청 보내기
+    fetch('/image', {
+      method: 'POST',
+      body: formData
+    })
+    .then(response => {
+      // 응답이 성공적으로 받아지는지 확인
+      if (!response.ok) {
+        throw new Error('HTTP error, status = ' + response.status);
+      }
+      // JSON 형식으로 응답 데이터 가져오기
+      return response.json();
+    })
+    .then(data => {
+      // 응답 데이터에서 이미지 URL 가져오기
+      const imageUrl = data.data.imageUrl;
+
+      // 이미지 미리보기 엘리먼트 가져오기
+      const imgPreview = document.getElementById('post_imgPreview');
+
+      // 이미지 URL 설정 및 데이터 전달 후에 이미지 미리보기 기능 block
+      imgPreview.src = imageUrl;
+      imgPreview.style.display = 'block';
+
+      console.log('이미지 업로드 성공:', imageUrl);
+    })
+    .catch(error => {
+      // 에러 발생 시 처리
+      console.error('이미지 업로드 실패:', error);
+    });
+  }
 }
-  return response.json();
-})
-  .then(data => {
-  // 응답 데이터에서 이미지 URL 가져오기
-  const imageUrl = data.data.imageUrl;
 
-  // 이미지 미리보기 엘리먼트 가져오기
-  const imgPreview = document.getElementById('post_imgPreview');
-
-  // 이미지 URL 설정 및 보이도록 설정
-  imgPreview.src = imageUrl;
-  imgPreview.style.display = 'block';
-
-  console.log('이미지 업로드 성공:', imageUrl);
-})
-  .catch(error => {
-  console.error('이미지 업로드 실패:', error);
-});
-}
-}
 
   async function deleteImage(imageUrl) {
   // 현재 posts에 저장된 게시글 목록중에서 클릭된 이미ㅈ
