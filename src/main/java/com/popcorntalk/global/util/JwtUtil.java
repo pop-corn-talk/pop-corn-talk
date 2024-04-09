@@ -33,7 +33,7 @@ public class JwtUtil {
   // 사용자 권한 값의 KEY
   public static final String BEARER_PREFIX = "Bearer ";
   //토큰 만료시간
-  private final long TOKEN_TIME = 60 * 60 * 1000L * 24;
+  private final long TOKEN_TIME = 60 * 60 * 1000L;
 
   private final long REFRESH_TOKEN_TIME = 24 * 60 * 60 * 1000L;
 
