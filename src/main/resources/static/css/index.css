@@ -1,11 +1,11 @@
 body {
-  font-family: Arial, sans-serif;
+  font-family: 'Roboto', sans-serif;
   margin: 0;
   padding: 0;
 }
 
 header {
-  background-color: transparent;
+  background-color: #212121;
   color: #fff;
   display: flex;
   justify-content: space-between;
@@ -16,11 +16,12 @@ header {
   left: 0;
   right: 0;
   z-index: 999;
-  height: 60px; /* 헤더 높이 감소 */
+  height: 60px;
 }
 
 header h1 {
   margin: 0;
+  font-size: 20px;
 }
 
 #welcome-message {
@@ -28,8 +29,8 @@ header h1 {
 }
 
 .left-container {
-  margin-top: 10px; /* 상단 여백 조정 */
-  padding: 10px;
+  margin-top: 80px;
+  padding: 20px;
   background-color: #f0f0f0;
   border-radius: 10px;
   max-height: calc(100vh - 100px);
@@ -37,39 +38,106 @@ header h1 {
 }
 
 .center-container {
-  padding: 10px;
-  background-color: #f0f0f0;
-  border-radius: 10px;
+  margin-top: 80px;
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 80px; /* 상단 여백 증가 */
 }
 
 .post-card {
-  width: 300px; /* 가로 너비 조정 */
+  cursor: pointer;
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out; /* Split transition properties for more control */
+  width: 300px;
   margin: 10px;
-  padding: 10px;
+  padding: 20px;
   background-color: #fff;
-  border-radius: 15px; /* 테두리 반경 조정 */
+  border-radius: 15px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
+.post-card:hover {
+  transform: scale(1.02); /* Slightly increase the scale on hover */
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1); /* Adjust the box shadow on hover */
+}
+
+.post-card.expanded {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  height: 80%;
+  z-index: 10;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.post-card.expanded .post-card-content {
+  padding: 30px;
+}
+
+.post-card.expanded .post-card-title {
+  font-size: 24px;
+}
+
+.post-card.expanded .post-card-body {
+  font-size: 18px;
+}
+
+
 .post-card img {
   width: 100%;
-  border-radius: 15px 15px 0 0; /* 테두리 반경 조정 */
+  border-radius: 15px 15px 0 0;
+}
+
+/* 모달 스타일 */
+.modal {
+  display: none; /* 초기에는 숨김 */
+  position: fixed; /* 위치를 고정 */
+  z-index: 1; /* 다른 요소 위에 표시 */
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto; /* 화면을 벗어나면 스크롤 */
+  background-color: rgba(0,0,0,0.4); /* 반투명 배경 */
+}
+
+/* 모달 콘텐츠 */
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto; /* 가운데 정렬 */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+}
+
+/* 모달 닫기 버튼 */
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
 }
 
 .post-card h3,
 .post-card p {
-  margin: 5px 0;
-  padding: 0 10px;
+  margin: 10px 0;
 }
 
+
 .right-container {
-  margin-top: 10px; /* 상단 여백 조정 */
-  padding: 10px;
-  background-color: transparent;
+  margin-top: 80px;
+  padding: 20px;
+  background-color: #f0f0f0;
   border-radius: 10px;
   display: flex;
   align-items: center;
@@ -85,7 +153,7 @@ header h1 {
   border-radius: 20px;
   border: none;
   margin-right: 10px;
-  width: 200px; /* 검색 버튼 너비 조정 */
+  width: 200px;
 }
 
 .action-buttons button {
@@ -94,17 +162,17 @@ header h1 {
   border: none;
   cursor: pointer;
   margin-bottom: 10px;
-  border-radius: 15px; /* 테두리 반경 조정 */
+  border-radius: 15px;
 }
 
 #login-btn {
-  background-color: #000;
+  background-color: #4CAF50;
 }
 
 #signup-btn {
-  background-color: #000;
+  background-color: #2196F3;
 }
 
 #login-btn:hover, #signup-btn:hover {
-<!-- 호버할때 animation이 없어서 너무 생동감이없어요 --> background-color: #004080;
+  background-color: #004080;
 }

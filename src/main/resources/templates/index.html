@@ -12,17 +12,16 @@
           crossorigin="anonymous"></script>
   <link rel="stylesheet" href="/css/index.css">
   <script src="/js/logout.js"></script>
+  <script src="/js/login.js"></script>
   <script src="/js/post.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
 
 
 </head>
 <body>
-<button onclick=logout()>로그아웃</button>
+<button onclick="logout()">로그아웃</button>
 
 <header>
-
-
   <div id="popular-posts" class="left-container">
     <h2>Popular Posts</h2>
     <div style="width: 300px;">Lorem ipsum password application properties hello</div>
@@ -31,15 +30,15 @@
   <div class="right-container">
     <div class="action-buttons">
       <input type="text" placeholder="Search">
-      <button id="login-btn" onclick=moveLogin()>Login</button>
-      <button id="signup-btn" onclick=moveSignup()>Signup</button>
+      <button id="login-btn" onclick="moveLogin()">Login</button>
+      <button id="signup-btn" onclick="moveSignup()">Signup</button>
     </div>
   </div>
 </header>
-<div class="center-container">
 
-  <article id="posts" class="post-card">
-    <button onclick=createPostData()>게시글 등록</button>
+<div class="center-container">
+  <article id="posts" class="post-card" >
+    <button onclick="createPostData()">게시글 등록</button>
     <p id="post_name">
       <input type="text" id="post_nameInput" placeholder="게시글 제목을 작성해주세요">
     </p>
@@ -47,24 +46,47 @@
       <input type="text" id="post_contentInput" placeholder="게시글 내용을 입력해주세요">
     </h3>
     <img id="post_imgPreview" src="#" alt="Post Image" style="display: none;">
+    <!-- Scrollable modal -->
+    <div class="modal-dialog modal-dialog-scrollable">
+      안녕하세요
+    </div>
     <input type="file" id="post_imgInput" placeholder="게시글 이미지를 업로드해주세요"
            onchange="uploadImage(event)">
+
+    <div class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <div class="modal-header">
+          <h2>게시글 내용</h2>
+        </div>
+        <div class="modal-body">
+          <div class="post-content">
+            <!-- 게시글 내용이 여기에 들어갑니다 -->
+          </div>
+          <div class="comment-section">
+            <textarea class="comment-input" placeholder="댓글을 입력하세요..."></textarea>
+            <button class="comment-button">댓글 작성</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </article>
 </div>
 
 </body>
 <script>
-  window.onload = async function() {
-    await getPosts(0, '');
-    console.log('Page has completely loaded.');
+  document.addEventListener('click', function(event) {
+    const clickedPostCard = event.target.closest('.post-card');
+    const modalDialog = document.querySelector('.modal-dialog');
 
-    try {
-      // Call the getPosts function here
-
-      // Optional: Add any additional code to run after getPosts completes
-    } catch (error) {
-      console.error('An error occurred while loading the page:', error);
+    if (!clickedPostCard) {
+      // If click occurred outside a post-card, hide the modal
+      modalDialog.classList.remove('show');
+    } else {
+      // If click occurred on a post-card, show the modal
+      modalDialog.classList.add('show');
     }
-  };
+  });
 </script>
+
 </html>
