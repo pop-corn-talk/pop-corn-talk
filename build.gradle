@@ -33,7 +33,7 @@ dependencies {
 
     // Redis
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
-    //implementation 'org.redisson:redisson-spring-boot-starter:3.27.1'
+    implementation 'org.redisson:redisson-spring-boot-starter:3.27.1'
 
     // JDBC Template 등.. Spring 의존성을 받기위한 의존성
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
