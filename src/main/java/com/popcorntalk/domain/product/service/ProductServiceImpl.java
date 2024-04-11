@@ -21,8 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Service
 public class ProductServiceImpl implements ProductService {
-
-    private static final String HASH_KEY = "product";
+    public static final String HASH_KEY = "product";
     private final UserService userService;
     private final ProductRepository productRepository;
 
