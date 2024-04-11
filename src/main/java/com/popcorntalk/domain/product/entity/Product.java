@@ -86,7 +86,7 @@ public class Product extends TimeStamped {
         this.voucherImage = productUpdateRequestDto.getVoucherImage();
     }
 
-    public void productAmount(int amount) {
+    public void updateAmount(int amount) {
         this.amount = amount;
     }
 }
