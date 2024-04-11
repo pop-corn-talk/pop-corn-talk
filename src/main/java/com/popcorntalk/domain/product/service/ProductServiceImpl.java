@@ -10,6 +10,7 @@ import com.popcorntalk.domain.product.repository.ProductRepository;
 import com.popcorntalk.domain.user.service.UserService;
 import com.popcorntalk.global.entity.DeletionStatus;
 import com.popcorntalk.global.exception.customException.NotFoundException;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,17 +22,24 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Service
 public class ProductServiceImpl implements ProductService {
+
     public static final String HASH_KEY = "product";
     private final UserService userService;
     private final ProductRepository productRepository;
 
     private final RedisTemplate<String, String> redisTemplate;
+    HashOperations<String, String, String> hashOperations;
+
+    @PostConstruct
+    private void initialize() {
+        hashOperations = redisTemplate.opsForHash();
+    }
 
     @Override
     @Transactional
-    public void createProduct(ProductCreateRequestDto productCreateRequestDto, Long userId) {
+    public void createProduct(ProductCreateRequestDto productCreateRequestDto,
+        Long userId) {
         userService.validateAdminUser(userId);
-        HashOperations<String, String, String> hashOperations = redisTemplate.opsForHash();
         Product product = Product.createOf(productCreateRequestDto);
         Product saveProduct = productRepository.save(product);
 
@@ -41,8 +49,8 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public void deleteProduct(Long productId, Long userId) {
-        HashOperations<String, String, String> hashOperations = redisTemplate.opsForHash();
+    public void deleteProduct(Long productId,
+        Long userId) {
         userService.validateAdminUser(userId);
         Product productDelete = getProduct(productId);
         productDelete.softDelete();
@@ -52,9 +60,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public void updateProduct(Long productId, ProductUpdateRequestDto productUpdateRequestDto,
+    public void updateProduct(Long productId,
+        ProductUpdateRequestDto productUpdateRequestDto,
         Long userId) {
-        HashOperations<String, String, String> hashOperations = redisTemplate.opsForHash();
         userService.validateAdminUser(userId);
         Product productUpdate = getProduct(productId);
         productUpdate.update(productUpdateRequestDto);
@@ -74,11 +82,11 @@ public class ProductServiceImpl implements ProductService {
     public Product getProduct(Long productId) {
         Product product = productRepository.findById(productId)
             .orElseThrow(() -> new NotFoundException(NOT_FOUND));
-        if (product.getDeletionStatus() == DeletionStatus.Y) {
-            throw new IllegalArgumentException("삭제된 상품입니다.");
-        }
         if (product.getAmount() == 0) {
             throw new IllegalArgumentException("상품의 수량이 없습니다.");
+        }
+        if (product.getDeletionStatus() == DeletionStatus.Y) {
+            throw new IllegalArgumentException("삭제된 상품입니다.");
         }
         return product;
     }
