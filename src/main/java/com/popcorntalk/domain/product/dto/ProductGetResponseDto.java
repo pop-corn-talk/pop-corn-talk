@@ -22,4 +22,8 @@ public class ProductGetResponseDto {
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
 
+    public void setAmount(int amount) {
+        this.amount = amount;
+    }
+
 }
