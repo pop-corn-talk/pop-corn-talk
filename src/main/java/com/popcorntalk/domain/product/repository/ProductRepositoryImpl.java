@@ -58,7 +58,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
 
         for (ProductGetResponseDto productDto : productResponseDtoList) {
             String amount = hashOperations.get(HASH_KEY, String.valueOf(productDto.getId()));
-            productDto.setAmount(Integer.parseInt(amount));
+            productDto.updateAmount(Integer.parseInt(amount));
         }
 
         return new PageImpl<>(productResponseDtoList, pageable, productCount);

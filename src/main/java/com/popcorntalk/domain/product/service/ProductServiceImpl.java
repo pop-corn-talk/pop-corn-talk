@@ -34,10 +34,10 @@ public class ProductServiceImpl implements ProductService {
         userService.validateAdminUser(userId);
         HashOperations<String, String, String> hashOperations = redisTemplate.opsForHash();
         Product product = Product.createOf(productCreateRequestDto);
-        Product svaedProduct = productRepository.save(product);
+        Product saveProduct = productRepository.save(product);
 
-        hashOperations.put(HASH_KEY, String.valueOf(svaedProduct.getId()),
-            String.valueOf(svaedProduct.getAmount()));
+        hashOperations.put(HASH_KEY, String.valueOf(saveProduct.getId()),
+            String.valueOf(saveProduct.getAmount()));
     }
 
     @Override
