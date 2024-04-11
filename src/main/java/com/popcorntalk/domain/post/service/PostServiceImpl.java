@@ -64,14 +64,14 @@ public class PostServiceImpl implements PostService {
         if (type != 0) {
             switch (type) {
                 case 1:
-                    Predicate emailEqualPredicate = QUser.user.email.eq(keyword);
+                    Predicate emailEqualPredicate = QUser.user.email.eq(keyword.trim());
                     booleanBuilder.and(emailEqualPredicate);
                     break;
                 case 2:
-                    if (keyword.isEmpty()) {
+                    if (keyword.trim().isEmpty()) {
                         throw new IllegalArgumentException("검색어를 입력해 주세요");
                     }
-                    Predicate titleLikePredicate = QPost.post.name.contains(keyword);
+                    Predicate titleLikePredicate = QPost.post.name.contains(keyword.trim());
                     booleanBuilder.and(titleLikePredicate);
                     break;
                 default:
