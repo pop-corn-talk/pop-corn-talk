@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  pull_request: # dev 브랜치 PR 발생시 실행
+    branches:
+      - dev
+
+jobs:
+  build: #BUILD
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: branch checkout # branch 체크아웃
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17 # JDK 17 설치
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'adopt'
+
+      - name: Grant execute permission for gradlew # gradlew 실행 권한 부여
+        run: chmod +x gradlew
+
+      - name: Build with Gradle Wrapper # build
+        run: ./gradlew build
+
+  dependency-submission: # 의존성그래프 작성
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: branch checkout # branch 체크아웃
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17 # JDK 17 설치
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'adopt'
+
+      - name: Generate and submit dependency graph # 의존성 그래프 작성
+        uses: gradle/actions/dependency-submission@417ae3ccd767c252f5661f1ace9f835f9654f2b5
