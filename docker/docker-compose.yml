@@ -1,0 +1,77 @@
+version: "1"
+services:
+  # main 데이터베이스 서비스 정의
+  db-main:
+    # Dockerfile을 사용하여 이미지 빌드
+    build:
+      context: ./
+      dockerfile: main/Dockerfile
+    # 컨테이너 재시작 설정
+    restart: always
+    # 플랫폼 설정
+    platform: linux/x86_64
+    # 환경 변수 설정
+    environment:
+      MYSQL_DATABASE: 'db'
+      MYSQL_USER: 'user'
+      MYSQL_PASSWORD: '1234'
+      MYSQL_ROOT_PASSWORD: '1234'
+    # MySQL 서버 설정
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    # 포트 포워딩 설정
+    ports:
+      - '3307:3306'
+    # 컨테이너 이름 설정
+    container_name: main-db
+    # 볼륨 설정
+    volumes:
+      - my-db-main:/var/lib/mysql
+      - my-db-main:/var/lib/mysql-files
+    # 네트워크 설정
+    networks:
+      - net-mysql
+
+  # replica 데이터베이스 서비스 정의
+  db-replica:
+    # Dockerfile을 사용하여 이미지 빌드
+    build:
+      context: ./
+      dockerfile: replica/Dockerfile
+    # 컨테이너 재시작 설정
+    restart: always
+    # 플랫폼 설정
+    platform: linux/x86_64
+    # 환경 변수 설정
+    environment:
+      MYSQL_DATABASE: 'db'
+      MYSQL_USER: 'user'
+      MYSQL_PASSWORD: '1234'
+      MYSQL_ROOT_PASSWORD: '1234'
+    # MySQL 서버 설정
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    # 포트 포워딩 설정
+    ports:
+      - '3308:3306'
+    # 컨테이너 이름 설정
+    container_name: replica-db
+    # 볼륨 설정
+    volumes:
+      - my-db-replica:/var/lib/mysql
+      - my-db-replica:/var/lib/mysql-files
+    # 네트워크 설정
+    networks:
+      - net-mysql
+
+# 볼륨 설정
+volumes:
+  my-db-main:
+  my-db-replica:
+
+# 네트워크 설정
+networks:
+  net-mysql:
+    driver: bridge
