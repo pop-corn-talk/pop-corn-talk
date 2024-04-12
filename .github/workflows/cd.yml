@@ -1,0 +1,112 @@
+name: CD
+
+on: # 발생 이벤트 타입
+  pull_request: # main 브랜치 PR 발생시 실행
+    branches:
+      - main
+
+env: # 환경변수
+  ECR_URL: 339713047224.dkr.ecr.ap-northeast-2.amazonaws.com
+  ECR_REPOSITORY: pct-image-repo
+  ECS_SERVICE: pct-service
+  ECS_CLUSTER: pct-cluster
+  ECS_TASK_DEFINITION: ./pct-task-definition.json
+  CONTAINER_NAME: pct-image-repo
+
+jobs:
+  merge: # main branch merge
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: change main branch # main 브랜치로
+        uses: actions/checkout@v4
+        with:
+          ref: 'main'
+          fetch-depth: '0'
+
+      - name: Merge the dev into the main and push changes # main 브랜치에 dev 브랜치를 merge, main 브랜치 push
+        run: |
+          git merge origin/dev --no-edit
+          git push origin main
+        env:
+          github_token: ${{ secrets.REPO_KEY }}
+
+  deploy: # 배포
+    runs-on: ubuntu-latest
+    needs: merge
+
+    steps:
+      - name: checkout main branch # main 브랜치 체크아웃
+        uses: actions/checkout@v4
+        with:
+          ref: 'main'
+          fetch-depth: '0'
+
+      - name: JDK 17 setup # JDK 17 설치
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: "adopt"
+
+      - name: Make application.yml # Application.yml 생성
+        run: |
+          mkdir ./src/main/resources
+          mkdir ./src/test/resources
+          touch ./src/main/resources/application.yml
+          touch ./src/test/resources/application.yml
+          
+          echo "${{ secrets.APPLICATION_PROPERTIES }}" > ./src/main/resources/application.yml
+          echo "${{ secrets.APPLICATION_PROPERTIES_TEST }}" > ./src/test/resources/application.yml
+
+      - name: Grant execute permission for gradlew # gradlew 실행 권한 부여
+        run: chmod +x gradlew
+
+      - name: Build with Gradle Wrapper # build
+        run: ./gradlew build
+
+      - name: Docker build # Docker 이미지 생성
+        run: |
+          docker login -u ${{ secrets.DOCKER_ID }} -p ${{ secrets.DOCKER_PASS }}
+          docker build -f dockerfile-pct -t popcorntalk:latest .
+
+      - name: AWS-cli setup # AWS CLI 설치
+        run: |
+          sudo apt install unzip
+          sudo curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+          sudo unzip awscliv2.zip
+          sudo ./aws/install --bin-dir /usr/local/bin --install-dir /usr/local/aws-cli --update
+
+      - name: Configure AWS credentials  # AWS 연결설정
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY}}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY}}
+          aws-region: ${{ secrets.AWS_REGION}}
+
+      - name: Login to Amazon ECR # ECR login
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: AWS ECR upload # Docker image upload
+        id: build-image
+        run: |
+          aws ecr get-login-password --region ${{ secrets.AWS_REGION}} | docker login --username AWS --password-stdin ${{ env.ECR_URL }}
+          docker tag popcorntalk:latest ${{ env.ECR_URL }}/${{ env.ECR_REPOSITORY }}:latest
+          docker push ${{ env.ECR_URL }}/${{ env.ECR_REPOSITORY }}:latest 
+          echo "image= ${{ env.ECR_URL }}/${{ env.ECR_REPOSITORY }}:latest" >> $GITHUB_OUTPUT
+
+      - name: Fill in the new image ID in the Amazon ECS task definition # ECS task definition 생성
+        id: task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: ${{ env.ECS_TASK_DEFINITION }}
+          container-name: ${{ env.CONTAINER_NAME }}
+          image: ${{ steps.build-image.outputs.image }}
+
+      - name: Deploy Amazon ECS task definition # ECS 배포
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: ${{ steps.task-def.outputs.task-definition }}
+          service: ${{ env.ECS_SERVICE }}
+          cluster: ${{ env.ECS_CLUSTER }}
+          wait-for-service-stability: true
