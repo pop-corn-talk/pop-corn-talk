@@ -23,7 +23,7 @@ jobs:
 
       - name: Verity target branch # pr 올린 브랜치가 dev 브랜치인지 검증
         run: |
-          if [ "${{ github.head_ref }}" != "test/CICD" ]; then
+          if [ "${{ github.head_ref }}" != "dev" ]; then
             echo "dev 브랜치만 main 브랜치에 PR 가능"
             exit 1
           fi
@@ -43,7 +43,7 @@ jobs:
 
       - name: Merge the dev into the main and push changes # main 브랜치에 dev 브랜치를 merge, main 브랜치 push
         run: |
-          git merge origin/test/CICD --no-edit
+          git merge origin/dev --no-edit
           git push origin main
 
   deploy: # 배포
