@@ -31,6 +31,8 @@ jobs:
   merge: # main branch merge
     runs-on: ubuntu-latest
     needs: check
+    permissions:
+      contents: write
 
     steps:
       - name: change main branch # main 브랜치로
@@ -43,8 +45,6 @@ jobs:
         run: |
           git merge origin/dev --no-edit
           git push origin main
-        env:
-          github_token: ${{ secrets.REPO_KEY }}
 
   deploy: # 배포
     runs-on: ubuntu-latest
