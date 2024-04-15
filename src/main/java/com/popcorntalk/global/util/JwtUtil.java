@@ -125,7 +125,6 @@ public class JwtUtil {
     }
 
     public String validateRefreshToken(Long userId, String previousJwt) {
-
         String redisKeys = "User : " + userId;
         RefreshToken refreshToken = new RefreshToken();
         if (redisUtil.hasKey(redisKeys)) {
