@@ -60,13 +60,10 @@ public class ExchangeServiceImpl implements ExchangeService {
     private void lockProductAmount(Product product) {
         String lockKey = "product_lock";
         RLock lock = redissonClient.getLock(lockKey);
-
         try {
-            boolean lockAcquired = lock.tryLock(2, 2, TimeUnit.SECONDS);
+            boolean lockAcquired = lock.tryLock(3, 5, TimeUnit.SECONDS);
             if (lockAcquired) {
-                int count = product.getAmount();
-                if (count > 0) {
-                    Long incrementCount = hashOperations.increment(HASH_KEY,
+                    long incrementCount = hashOperations.increment(HASH_KEY,
                         String.valueOf(product.getId()), -1);
                     hashOperations.get(HASH_KEY, String.valueOf(product.getId()));
 
@@ -74,8 +71,10 @@ public class ExchangeServiceImpl implements ExchangeService {
                         hashOperations.delete(HASH_KEY, String.valueOf(product.getId()));
                         product.updateAmount(0);
                         product.softDelete();
+                    }if (incrementCount < 0){
+                        hashOperations.delete(HASH_KEY, String.valueOf(product.getId()));
+                        throw new IllegalArgumentException("상품의 수량이 없습니다.");
                     }
-                }
             } else {
                 throw new RuntimeException("다시 시도해주세요.");
             }

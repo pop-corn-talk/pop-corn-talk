@@ -66,6 +66,7 @@ public class WebSecurityConfig implements WebMvcConfigurer {
                 .requestMatchers("/**").permitAll() // 메인 페이지 요청 허가
                 .requestMatchers("/posts/**").permitAll()
                 .requestMatchers("/users/**").permitAll() // '/api/user/'로 시작하는 요청 모두 접근 허가
+                .requestMatchers("/actuator/health").permitAll()
                 .anyRequest().authenticated() // 그 외 모든 요청 인증처리
         );
 
