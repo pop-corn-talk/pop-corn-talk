@@ -11,5 +11,5 @@ public class UserInfoResponseDto {
 
     private String email;
     private Integer point;
-    private Integer DailyPostsLimit;
+    private Integer dailyPostsLimit;
 }
