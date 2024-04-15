@@ -29,7 +29,6 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.data.domain.Sort;
 
-
 @RequiredArgsConstructor
 public class PostRepositoryImpl implements PostRepositoryCustom {
 

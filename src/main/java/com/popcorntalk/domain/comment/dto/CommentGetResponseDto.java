@@ -13,5 +13,4 @@ public class CommentGetResponseDto {
     private String email;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
-
 }

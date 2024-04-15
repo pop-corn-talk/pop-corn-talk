@@ -44,6 +44,7 @@ public class UserController {
         return ResponseEntity.ok().body(
             CommonResponseDto.success(userService.getMyInfo(userDetailsImpl.getUser().getId())));
     }
+
     @GetMapping("/{userId}/info")
     public ResponseEntity<CommonResponseDto<UserPublicInfoResponseDto>> getUserInfo(
         @PathVariable Long userId
@@ -54,7 +55,7 @@ public class UserController {
 
     @GetMapping
     public ResponseEntity<CommonResponseDto<Page<UserPublicInfoResponseDto>>> getAllUserInfo(
-        @PageableDefault(sort = "createdAt", direction = Direction.DESC)Pageable pageable
+        @PageableDefault(sort = "createdAt", direction = Direction.DESC) Pageable pageable
     ) {
         return ResponseEntity.ok().body(
             CommonResponseDto.success(userService.getAllUserInfo(pageable)));

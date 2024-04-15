@@ -14,5 +14,4 @@ public class PostUpdateRequestDto {
     private String postContent;
     @NotEmpty
     private String postImage;
-
 }

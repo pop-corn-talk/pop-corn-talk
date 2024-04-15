@@ -24,6 +24,7 @@ public class PostRecodeServiceImpl implements PostRecodeService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public int getPostCountInToday(Long userId) {
         LocalDateTime todayStart = LocalDateTime.now().withHour(0).withMinute(0).withSecond(0)
             .withNano(0);

@@ -17,8 +17,7 @@ public interface CommentService {
      * @param postId     게시글의 존재여부를 확인하기 위한 게시글의 번호
      * @param requestDto 생성될 댓글의 내용
      */
-    void createComment(User user, Long postId,
-        CommentCreateRequestDto requestDto);
+    void createComment(User user, Long postId, CommentCreateRequestDto requestDto);
 
     /**
      * 댓글 전체조회

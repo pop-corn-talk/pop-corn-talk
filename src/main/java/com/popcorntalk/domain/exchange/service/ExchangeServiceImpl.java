@@ -40,6 +40,7 @@ public class ExchangeServiceImpl implements ExchangeService {
     }
 
     @Override
+    @Transactional
     public void createExchange(Long userId, Long productId) {
         Product product = productService.getProduct(productId);
         pointService.deductPointForPurchase(userId, product.getPrice());
@@ -62,18 +63,19 @@ public class ExchangeServiceImpl implements ExchangeService {
         try {
             boolean lockAcquired = lock.tryLock(3, 5, TimeUnit.SECONDS);
             if (lockAcquired) {
-                    long incrementCount = hashOperations.increment(HASH_KEY,
-                        String.valueOf(product.getId()), -1);
-                    hashOperations.get(HASH_KEY, String.valueOf(product.getId()));
+                long incrementCount = hashOperations.increment(HASH_KEY,
+                    String.valueOf(product.getId()), -1);
+                hashOperations.get(HASH_KEY, String.valueOf(product.getId()));
 
-                    if (incrementCount == 0) {
-                        hashOperations.delete(HASH_KEY, String.valueOf(product.getId()));
-                        product.updateAmount(0);
-                        product.softDelete();
-                    }if (incrementCount < 0){
-                        hashOperations.delete(HASH_KEY, String.valueOf(product.getId()));
-                        throw new IllegalArgumentException("상품의 수량이 없습니다.");
-                    }
+                if (incrementCount == 0) {
+                    hashOperations.delete(HASH_KEY, String.valueOf(product.getId()));
+                    product.updateAmount(0);
+                    product.softDelete();
+                }
+                if (incrementCount < 0) {
+                    hashOperations.delete(HASH_KEY, String.valueOf(product.getId()));
+                    throw new IllegalArgumentException("상품의 수량이 없습니다.");
+                }
             } else {
                 throw new RuntimeException("다시 시도해주세요.");
             }

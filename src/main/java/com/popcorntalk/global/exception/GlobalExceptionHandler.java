@@ -1,6 +1,7 @@
 package com.popcorntalk.global.exception;
 
 import com.popcorntalk.global.dto.CommonResponseDto;
+import com.popcorntalk.global.exception.customException.DuplicateUserInfoException;
 import com.popcorntalk.global.exception.customException.InsufficientPointException;
 import com.popcorntalk.global.exception.customException.NotFoundException;
 import com.popcorntalk.global.exception.customException.PermissionDeniedException;
@@ -54,7 +55,16 @@ public class GlobalExceptionHandler {
     public ResponseEntity handleEntityNotFoundException(InsufficientPointException ex,
         HttpServletRequest request) {
         log.error("url: {}, 메세지: {}", request.getRequestURI(), ex.getErrorCode().getMsg());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).
+            body(CommonResponseDto.fail(ex.getErrorCode().getHttpStatus(),
+                ex.getErrorCode().getMsg()));
+    }
+
+    @ExceptionHandler(DuplicateUserInfoException.class)
+    public ResponseEntity handleEntityNotFoundException(DuplicateUserInfoException ex,
+        HttpServletRequest request) {
+        log.error("url: {}, 메세지: {}", request.getRequestURI(), ex.getErrorCode().getMsg());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).
             body(CommonResponseDto.fail(ex.getErrorCode().getHttpStatus(),
                 ex.getErrorCode().getMsg()));
     }
