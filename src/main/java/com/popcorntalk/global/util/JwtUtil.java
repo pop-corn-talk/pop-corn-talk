@@ -37,8 +37,6 @@ public class JwtUtil {
 
     private final long REFRESH_TOKEN_TIME = 24 * 60 * 60 * 1000L;
 
-    private String redisKeys;
-
     @Value("${jwt.secret.key}")
     private String secretKey;
     //secretKey 를 넣을 Key 객체
@@ -69,7 +67,7 @@ public class JwtUtil {
 
     private void UpdateValidRefreshToken(String accessToken, Long userId) {
 
-        redisKeys = "ID : " + userId;
+        String redisKeys = "User : " + userId;
 
         RefreshToken refreshToken = (RefreshToken) redisUtil.get(redisKeys);
         refreshToken.update(accessToken);
@@ -97,7 +95,7 @@ public class JwtUtil {
             .userId(userId)
             .build();
 
-        redisKeys = "ID : " + userId;
+        String redisKeys = "User : " + userId;
         redisUtil.set(redisKeys, token, (int) REFRESH_TOKEN_TIME);
     }
 
@@ -128,7 +126,7 @@ public class JwtUtil {
 
     public String validateRefreshToken(Long userId, String previousJwt) {
 
-        redisKeys = "ID : " + userId;
+        String redisKeys = "User : " + userId;
         RefreshToken refreshToken = new RefreshToken();
         if (redisUtil.hasKey(redisKeys)) {
             refreshToken = (RefreshToken) redisUtil.get(redisKeys);
