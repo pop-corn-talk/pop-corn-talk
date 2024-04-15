@@ -67,7 +67,7 @@ public class JwtUtil {
 
     private void UpdateValidRefreshToken(String accessToken, Long userId) {
 
-        String redisKeys = "User : " + userId;
+        String redisKeys = "UserId : " + userId;
 
         RefreshToken refreshToken = (RefreshToken) redisUtil.get(redisKeys);
         refreshToken.update(accessToken);
@@ -95,7 +95,7 @@ public class JwtUtil {
             .userId(userId)
             .build();
 
-        String redisKeys = "User : " + userId;
+        String redisKeys = "UserId : " + userId;
         redisUtil.set(redisKeys, token, (int) REFRESH_TOKEN_TIME);
     }
 
@@ -125,7 +125,7 @@ public class JwtUtil {
     }
 
     public String validateRefreshToken(Long userId, String previousJwt) {
-        String redisKeys = "User : " + userId;
+        String redisKeys = "UserId : " + userId;
         RefreshToken refreshToken = new RefreshToken();
         if (redisUtil.hasKey(redisKeys)) {
             refreshToken = (RefreshToken) redisUtil.get(redisKeys);
