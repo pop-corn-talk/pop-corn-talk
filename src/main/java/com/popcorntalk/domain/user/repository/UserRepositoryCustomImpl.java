@@ -1,13 +1,8 @@
 package com.popcorntalk.domain.user.repository;
 
-import static com.popcorntalk.domain.comment.entity.QComment.comment;
-import static com.popcorntalk.domain.user.entity.QUser.user;
-
-import com.popcorntalk.domain.user.dto.UserInfoResponseDto;
 import com.popcorntalk.domain.user.dto.UserPublicInfoResponseDto;
 import com.popcorntalk.domain.user.entity.QUser;
 import com.popcorntalk.domain.user.entity.User;
-import com.popcorntalk.domain.user.entity.UserRoleEnum;
 import com.popcorntalk.global.entity.DeletionStatus;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -21,49 +16,49 @@ import org.springframework.data.domain.Pageable;
 @RequiredArgsConstructor
 public class UserRepositoryCustomImpl implements UserRepositoryCustom {
 
-  private final JPAQueryFactory jpaQueryFactory;
-  private final QUser user = QUser.user;
+    private final JPAQueryFactory jpaQueryFactory;
+    private final QUser user = QUser.user;
 
-  @Override
-  public User getUser(Long userId) {
-    BooleanExpression predicate = user.id.eq(userId)
-        .and(user.deletionStatus.eq(DeletionStatus.N));
+    @Override
+    public User getUser(Long userId) {
+        BooleanExpression predicate = user.id.eq(userId)
+            .and(user.deletionStatus.eq(DeletionStatus.N));
 
-    return jpaQueryFactory.selectFrom(user).where(predicate).fetchOne();
-  }
+        return jpaQueryFactory.selectFrom(user).where(predicate).fetchOne();
+    }
 
-  @Override
-  public UserPublicInfoResponseDto getUserEmail(Long userId) {
-    BooleanExpression predicate = user.id.eq(userId)
-        .and(user.deletionStatus.eq(DeletionStatus.N));
+    @Override
+    public UserPublicInfoResponseDto getUserEmail(Long userId) {
+        BooleanExpression predicate = user.id.eq(userId)
+            .and(user.deletionStatus.eq(DeletionStatus.N));
 
-    return jpaQueryFactory
-        .select(Projections.fields(UserPublicInfoResponseDto.class, user.email))
-        .from(user)
-        .where(predicate)
-        .fetchOne();
-  }
+        return jpaQueryFactory
+            .select(Projections.fields(UserPublicInfoResponseDto.class, user.email))
+            .from(user)
+            .where(predicate)
+            .fetchOne();
+    }
 
-  @Override
-  public Page<UserPublicInfoResponseDto> getPageUsers(Pageable pageable) {
+    @Override
+    public Page<UserPublicInfoResponseDto> getPageUsers(Pageable pageable) {
 
-    BooleanExpression predicate = user.deletionStatus.eq(DeletionStatus.N);
+        BooleanExpression predicate = user.deletionStatus.eq(DeletionStatus.N);
 
-    List<UserPublicInfoResponseDto> userPublicDto =
-        jpaQueryFactory
-        .select(Projections.fields(UserPublicInfoResponseDto.class, user.email))
-        .from(user)
-        .where(predicate)
-         .offset(pageable.getOffset())
-        .limit(pageable.getPageSize())
-        .fetch();
+        List<UserPublicInfoResponseDto> userPublicDto =
+            jpaQueryFactory
+                .select(Projections.fields(UserPublicInfoResponseDto.class, user.email))
+                .from(user)
+                .where(predicate)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
 
-    long totalCount = jpaQueryFactory
-        .select(Projections.fields(UserPublicInfoResponseDto.class, user.email))
-        .from(user)
-        .where(predicate)
-        .fetch()
-        .size();
-    return new PageImpl<>(userPublicDto,pageable,totalCount);
-}
+        long totalCount = jpaQueryFactory
+            .select(Projections.fields(UserPublicInfoResponseDto.class, user.email))
+            .from(user)
+            .where(predicate)
+            .fetch()
+            .size();
+        return new PageImpl<>(userPublicDto, pageable, totalCount);
+    }
 }

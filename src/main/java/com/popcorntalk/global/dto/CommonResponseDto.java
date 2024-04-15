@@ -45,16 +45,4 @@ public class CommonResponseDto<T> {
     public static CommonResponseDto fail(String status, String msg) {
         return new CommonResponseDto<>(status, msg, null);
     }
-
-//    /**
-//     * 실패시 상태코드와 데이터를 전달
-//     *
-//     * @param status 상태코드
-//     * @param data   데이터
-//     * @param <T>    응답 데이터 타입
-//     * @return CommonResponseDto
-//     */
-//    public static <T> CommonResponseDto<T> fail(int status, T data) {
-//        return new CommonResponseDto<>(status, null, data);
-//    }
 }

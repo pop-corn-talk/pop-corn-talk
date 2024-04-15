@@ -19,8 +19,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@RequiredArgsConstructor
 @Service
+@RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
 
     public static final String HASH_KEY = "product";

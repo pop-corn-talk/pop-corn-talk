@@ -25,5 +25,4 @@ public class ProductGetResponseDto {
     public void updateAmount(int amount) {
         this.amount = amount;
     }
-
 }

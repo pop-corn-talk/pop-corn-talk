@@ -14,7 +14,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 
-
 @RequiredArgsConstructor
 public class ProductRepositoryImpl implements ProductRepositoryCustom {
 
