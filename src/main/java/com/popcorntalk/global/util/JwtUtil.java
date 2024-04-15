@@ -57,11 +57,11 @@ public class JwtUtil {
 
         String redisKeys = "UserId : " + userId;
 
-        if(redisUtil.hasKey(redisKeys)){
+        if (redisUtil.hasKey(redisKeys)) {
             UpdateValidRefreshToken(accessToken, redisKeys);
-        }else {
+        } else {
             log.info("새로운 refresh 토큰 생성");
-            SaveNewRefreshToken(date, accessToken, userId, email,redisKeys);
+            SaveNewRefreshToken(date, accessToken, userId, email, redisKeys);
         }
         return accessToken;
     }
@@ -75,7 +75,8 @@ public class JwtUtil {
         log.info("기존 refresh 토큰 으로 생성");
     }
 
-    private void SaveNewRefreshToken(Date date, String accessToken, Long userId, String email,String redisKeys) {
+    private void SaveNewRefreshToken(Date date, String accessToken, Long userId, String email,
+        String redisKeys) {
 
         String refreshToken = BEARER_PREFIX +
             Jwts.builder()
