@@ -55,19 +55,18 @@ public class JwtUtil {
         Date date = new Date();
         String accessToken = createAccessToken(userId, email);
 
-        try {
-            UpdateValidRefreshToken(accessToken, userId);
-        } catch (Exception e) {
-            log.info("새로운 refresh 토큰 생성");
-            SaveNewRefreshToken(date, accessToken, userId, email);
-        }
+        String redisKeys = "UserId : " + userId;
 
+        if(redisUtil.hasKey(redisKeys)){
+            UpdateValidRefreshToken(accessToken, redisKeys);
+        }else {
+            log.info("새로운 refresh 토큰 생성");
+            SaveNewRefreshToken(date, accessToken, userId, email,redisKeys);
+        }
         return accessToken;
     }
 
-    private void UpdateValidRefreshToken(String accessToken, Long userId) {
-
-        String redisKeys = "UserId : " + userId;
+    private void UpdateValidRefreshToken(String accessToken, String redisKeys) {
 
         RefreshToken refreshToken = (RefreshToken) redisUtil.get(redisKeys);
         refreshToken.update(accessToken);
@@ -76,7 +75,7 @@ public class JwtUtil {
         log.info("기존 refresh 토큰 으로 생성");
     }
 
-    private void SaveNewRefreshToken(Date date, String accessToken, Long userId, String email) {
+    private void SaveNewRefreshToken(Date date, String accessToken, Long userId, String email,String redisKeys) {
 
         String refreshToken = BEARER_PREFIX +
             Jwts.builder()
@@ -95,7 +94,6 @@ public class JwtUtil {
             .userId(userId)
             .build();
 
-        String redisKeys = "UserId : " + userId;
         redisUtil.set(redisKeys, token, (int) REFRESH_TOKEN_TIME);
     }
 
