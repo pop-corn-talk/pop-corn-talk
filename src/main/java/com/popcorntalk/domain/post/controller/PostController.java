@@ -50,7 +50,12 @@ public class PostController {
         @RequestParam(defaultValue = "0") int type,
         @RequestParam(required = false) String keyword
     ) {
-        Slice<PostGetResponseDto> normalPosts = postService.getNormalPosts(pageable, type, keyword);
+        Slice<PostGetResponseDto> normalPosts =
+            postService.getNormalPosts(
+                pageable,
+                type,
+                keyword
+            );
         return ResponseEntity.status(HttpStatus.OK).body(CommonResponseDto.success(normalPosts));
     }
 

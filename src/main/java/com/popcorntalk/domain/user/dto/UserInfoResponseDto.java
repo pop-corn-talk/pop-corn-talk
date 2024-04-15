@@ -9,7 +9,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public class UserInfoResponseDto {
 
-  private String email;
-  private Integer point;
-  private Integer dailyPostsLimit;
+    private String email;
+    private Integer point;
+    private Integer DailyPostsLimit;
 }

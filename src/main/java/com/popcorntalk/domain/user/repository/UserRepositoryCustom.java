@@ -1,17 +1,15 @@
 package com.popcorntalk.domain.user.repository;
 
-import com.popcorntalk.domain.user.dto.UserInfoResponseDto;
 import com.popcorntalk.domain.user.dto.UserPublicInfoResponseDto;
 import com.popcorntalk.domain.user.entity.User;
-import com.popcorntalk.domain.user.entity.UserRoleEnum;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface UserRepositoryCustom {
 
-  User getUser(Long userId);
+    User getUser(Long userId);
 
-  UserPublicInfoResponseDto getUserEmail(Long userId);
+    UserPublicInfoResponseDto getUserEmail(Long userId);
 
-  Page<UserPublicInfoResponseDto> getPageUsers(Pageable pageable);
+    Page<UserPublicInfoResponseDto> getPageUsers(Pageable pageable);
 }

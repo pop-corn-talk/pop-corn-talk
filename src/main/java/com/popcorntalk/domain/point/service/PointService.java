@@ -7,7 +7,7 @@ public interface PointService {
     /**
      * 상품 구매시 포인트 차감 메서드
      *
-     * @param userId 포인트 차감할 유저 Id
+     * @param userId         포인트 차감할 유저 Id
      * @param purchaseAmount 상품 금액
      */
     void deductPointForPurchase(Long userId, int purchaseAmount);
@@ -24,7 +24,7 @@ public interface PointService {
      * 리워드 달성 시 포인트 적립 메서드
      *
      * @param userId 포인트 적립할 유저 Id
-     * @param point 적립 될 포인트
+     * @param point  적립 될 포인트
      */
     void earnPoint(Long userId, int point);
 

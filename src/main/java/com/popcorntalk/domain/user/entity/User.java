@@ -44,13 +44,17 @@ public class User {
         this.id = userId;
         this.email = email;
     }
-    private User(String email,String password,DeletionStatus deletionStatus,UserRoleEnum userRoleEnum){
+
+    private User(String email, String password, DeletionStatus deletionStatus,
+        UserRoleEnum userRoleEnum) {
         this.email = email;
         this.password = password;
         this.deletionStatus = deletionStatus;
         this.role = userRoleEnum;
     }
-    public static User createOf(String email,String password,DeletionStatus deletionStatus,UserRoleEnum userRoleEnum){
-        return new User(email,password,deletionStatus,userRoleEnum);
+
+    public static User createOf(String email, String password, DeletionStatus deletionStatus,
+        UserRoleEnum userRoleEnum) {
+        return new User(email, password, deletionStatus, userRoleEnum);
     }
 }

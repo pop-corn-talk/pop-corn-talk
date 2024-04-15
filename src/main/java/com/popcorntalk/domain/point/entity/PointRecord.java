@@ -6,7 +6,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -38,7 +37,8 @@ public class PointRecord {
         this.createdAt = LocalDateTime.now();
     }
 
-    public static PointRecord createOf(Long pointId, int previousPoint, int amount, int finalPoint) {
+    public static PointRecord createOf(Long pointId, int previousPoint, int amount,
+        int finalPoint) {
         return new PointRecord(pointId, previousPoint, amount, finalPoint);
     }
 }
