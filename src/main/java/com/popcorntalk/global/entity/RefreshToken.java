@@ -1,6 +1,7 @@
 package com.popcorntalk.global.entity;
 
 import jakarta.persistence.Column;
+import java.io.Serializable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,7 +13,7 @@ import org.springframework.data.redis.core.RedisHash;
 @RedisHash
 @NoArgsConstructor
 @AllArgsConstructor
-public class RefreshToken {
+public class RefreshToken implements Serializable {
 
     @Column
     private String refreshToken;
