@@ -40,6 +40,7 @@ public class ExchangeServiceImpl implements ExchangeService {
     }
 
     @Override
+    @Transactional
     public void createExchange(Long userId, Long productId) {
         Product product = productService.getProduct(productId);
         pointService.deductPointForPurchase(userId, product.getPrice());
