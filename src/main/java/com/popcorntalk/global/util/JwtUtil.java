@@ -58,29 +58,29 @@ public class JwtUtil {
         String redisKeys = "UserID : " + userId;
 
         if (redisUtil.hasKey(redisKeys)) {
-            return UpdateValidRefreshToken(userId,email,redisKeys);
+            return CheckAndUpdateTokens(userId,email,redisKeys);
         } else {
             log.info("새로운 refresh 토큰 생성");
             return SaveNewRefreshToken(date, userId, email, redisKeys);
         }
     }
 
-    private String UpdateValidRefreshToken(Long userId,String email, String redisKeys)
+    private String CheckAndUpdateTokens(Long userId,String email, String redisKeys)
         throws JsonProcessingException {
 
-            RefreshToken refreshToken = redisUtil.get(redisKeys);
-            String accessToken = refreshToken.getPreviousAccessToken();
+        RefreshToken refreshToken = redisUtil.get(redisKeys);
+        String accessToken = refreshToken.getPreviousAccessToken();
 
-            if(!validateToken(accessToken)){
-                accessToken = createAccessToken(userId, email);
-                log.info("새로운 access 토큰 으로 진행");
-                refreshToken.update(accessToken);
-            }
+        if(!validateToken(accessToken)){
+            accessToken = createAccessToken(userId, email);
+            log.info("새로운 access 토큰 으로 진행");
+            refreshToken.update(accessToken);
+        }
 
-            redisUtil.set(redisKeys, refreshToken, (int) REFRESH_TOKEN_TIME);
-            log.info("기존 refresh 토큰 으로 진행");
+        redisUtil.set(redisKeys, refreshToken, (int) REFRESH_TOKEN_TIME);
+        log.info("기존 refresh 토큰 으로 진행");
 
-            return accessToken;
+        return accessToken;
     }
 
     private String SaveNewRefreshToken(Date date, Long userId, String email,
