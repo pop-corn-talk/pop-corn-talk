@@ -1,4 +1,4 @@
-package com.popcorntalk.post.point;
+package com.popcorntalk.point;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -14,8 +14,8 @@ import com.popcorntalk.domain.point.service.PointRecordService;
 import com.popcorntalk.domain.point.service.PointServiceImpl;
 import com.popcorntalk.global.exception.customException.InsufficientPointException;
 import com.popcorntalk.global.exception.customException.NotFoundException;
+import com.popcorntalk.mockData.MockData;
 import java.util.Optional;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -25,35 +25,14 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class PointServiceImplTest {
+public class PointServiceImplTest extends MockData {
 
     @InjectMocks
     private PointServiceImpl pointService;
-
     @Mock
     private PointRepository pointRepository;
-
     @Mock
     private PointRecordService pointRecordService;
-
-    private Point TEST_POINT;
-    private Long TEST_USER_ID;
-    private Long TEST_POINT_ID;
-    private int POINT;
-
-    @BeforeEach
-    void setUp() {
-
-        TEST_POINT_ID = 1L;
-        TEST_USER_ID = 1L;
-        POINT = 5000;
-
-        TEST_POINT = Point.builder()
-            .id(TEST_POINT_ID)
-            .userId(TEST_USER_ID)
-            .point(POINT)
-            .build();
-    }
 
     @Nested
     @DisplayName("포인트 차감 테스트")
@@ -77,7 +56,7 @@ public class PointServiceImplTest {
         void insufficientPointsDeductionSuccess() {
 
             int TEST_PRICE = 4000;
-            int expectedPoint = POINT - TEST_PRICE;
+            int expectedPoint = USER_POINT - TEST_PRICE;
 
             given(pointRepository.findByUserId(anyLong())).willReturn(Optional.of(TEST_POINT));
 
@@ -97,7 +76,7 @@ public class PointServiceImplTest {
         void earnPointSuccess() {
 
             int ADD_POINT = 1000;
-            int expectedPoint = POINT + ADD_POINT;
+            int expectedPoint = USER_POINT + ADD_POINT;
 
             given(pointRepository.findByUserId(anyLong())).willReturn(Optional.of(TEST_POINT));
             pointService.earnPoint(TEST_USER_ID, ADD_POINT);
