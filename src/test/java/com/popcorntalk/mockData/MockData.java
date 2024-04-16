@@ -6,6 +6,7 @@ import com.popcorntalk.domain.post.dto.PostGetResponseDto;
 import com.popcorntalk.domain.post.dto.PostUpdateRequestDto;
 import com.popcorntalk.domain.post.entity.Post;
 import com.popcorntalk.domain.post.entity.PostEnum;
+import com.popcorntalk.domain.user.dto.UserPublicInfoResponseDto;
 import com.popcorntalk.domain.user.entity.User;
 import com.popcorntalk.domain.user.entity.UserRoleEnum;
 import com.popcorntalk.global.entity.DeletionStatus;
@@ -65,6 +66,9 @@ public class MockData {
         .modifiedAt(MODIFIED_AT)
         .build();
 
+    public UserPublicInfoResponseDto TEST_GET_USER_RESPONSE_DTO = UserPublicInfoResponseDto.builder()
+        .email(EMAIL)
+        .build();
 
     //생성 DTO
     public PostCreateRequestDto TEST_CREATE_REQUEST_DTO = PostCreateRequestDto.builder()

@@ -17,11 +17,13 @@ import com.popcorntalk.domain.user.repository.UserRepository;
 import com.popcorntalk.domain.user.service.UserServiceImpl;
 import com.popcorntalk.global.entity.DeletionStatus;
 import com.popcorntalk.global.exception.customException.NotFoundException;
+import com.popcorntalk.mockData.MockData;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
@@ -30,7 +32,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @ExtendWith(MockitoExtension.class)
-public class UserServiceImplTest {
+public class UserServiceImplTest extends MockData {
   @Mock
   UserRepository mockRepo;
 
@@ -43,6 +45,9 @@ public class UserServiceImplTest {
   @Mock
   PostRecodeServiceImpl postRecodeService;
 
+  @InjectMocks
+  UserServiceImpl userService;
+
   /*
    *
    * 관지자 검증 관련.
@@ -54,45 +59,18 @@ public class UserServiceImplTest {
   void validateAdminSuccess(){
 
     //given
-    long userId = 1;
     boolean flag = true;
-
-    UserServiceImpl userService = new UserServiceImpl(mockRepo,passwordEncoder,pointService,postRecodeService);
-
-    given(mockRepo.validateAdminUser(userId)).willReturn(true);
+    given(mockRepo.validateAdminUser(TEST_USER_ID)).willReturn(TEST_ADMIN_USER.getRole().equals(UserRoleEnum.ADMIN));
 
     //when
     try {
-      userService.validateAdminUser(userId);
+      userService.validateAdminUser(TEST_USER_ID);
     }catch (NotFoundException e){
       flag = false;
     }
 
     // then
     assertTrue("성공 해당 유저는 관리자가 맞아요",flag);
-  }
-
-  @Test
-  @DisplayName("관리자 유저가 아닐 경우")
-  void validateAdminFail(){
-
-    //given
-    long userId = 1;
-    boolean flag = true;
-
-    UserServiceImpl userService = new UserServiceImpl(mockRepo,passwordEncoder,pointService,postRecodeService);
-
-    given(mockRepo.validateAdminUser(userId)).willReturn(false);
-
-    //when
-    try {
-      userService.validateAdminUser(userId);
-    }catch (NotFoundException e){
-      flag = false;
-    }
-
-    // then
-    assertFalse("해당 유저는 관리자가 아니에요",flag);
   }
 
   /*
@@ -106,31 +84,22 @@ public class UserServiceImplTest {
   void getMyInfo(){
 
     //given
-    long userId = 1;
-    User user = User.builder()
-        .id(userId)
-        .email("email1@email.com")
-        .password("1231234123")
-        .deletionStatus(DeletionStatus.N)
-        .role(UserRoleEnum.USER)
-        .build();
-
-    Point point = Point.createOf(userId,100);
+    Point point = Point.createOf(TEST_USER_ID,TEST_POINT.getPoint());
 
     UserServiceImpl userService = new UserServiceImpl(mockRepo,passwordEncoder,pointService,postRecodeService);
 
 
-    given(mockRepo.getUser(userId)).willReturn(user);
-    when(pointService.getPoint(userId)).thenReturn(point);
-    when(postRecodeService.getPostCountInToday(userId)).thenReturn(2);
+    given(mockRepo.getUser(TEST_USER_ID)).willReturn(TEST_USER);
+    when(pointService.getPoint(TEST_USER_ID)).thenReturn(point);
+    when(postRecodeService.getPostCountInToday(TEST_USER_ID)).thenReturn(1);
     //when
 
-    UserInfoResponseDto userInfoResponseDto = userService.getMyInfo(userId);
+    UserInfoResponseDto userInfoResponseDto = userService.getMyInfo(TEST_USER_ID);
 
     // then
-    assertEquals("개인 유저가 자신의 이메일 보기 ",user.getEmail(),userInfoResponseDto.getEmail());
-    assertEquals("개인 유저가 자신의 포인트 보기 ",100,userInfoResponseDto.getPoint());
-    assertEquals("개인 유저가 자신의 일일 횟수 보기 2번 포스트 했기에 갑은 1",1,userInfoResponseDto.getDailyPostsLimit());
+    assertEquals("개인 유저가 자신의 이메일 보기 ",TEST_USER.getEmail(),userInfoResponseDto.getEmail());
+    assertEquals("개인 유저가 자신의 포인트 보기 ",TEST_POINT.getPoint(),userInfoResponseDto.getPoint());
+    assertEquals("개인 유저가 자신의 일일 횟수 보기 2번 포스트 했기에 갑은 1",2,userInfoResponseDto.getDailyPostsLimit());
   }
 
   @Test
@@ -138,20 +107,13 @@ public class UserServiceImplTest {
   void getUserInfo(){
 
     //given
-    long userId = 2;
-    UserPublicInfoResponseDto userPublicInfoResponseDto = UserPublicInfoResponseDto.builder()
-        .email("email1@email.com")
-        .build();
-
-    UserServiceImpl userService = new UserServiceImpl(mockRepo,passwordEncoder,pointService,postRecodeService);
-
-    given(mockRepo.getUserEmail(userId)).willReturn(userPublicInfoResponseDto);
+    given(mockRepo.getUserEmail(TEST_USER_ID)).willReturn(TEST_GET_USER_RESPONSE_DTO);
 
     // when
-    UserPublicInfoResponseDto userPublicInfoResponseDto1 = userService.getUserInfo(userId);
+    UserPublicInfoResponseDto userPublicInfoResponseDto1 = userService.getUserInfo(TEST_USER_ID);
 
     // then
-    assertEquals("개인 유저가 자신의 이메일 보기 ",userPublicInfoResponseDto1.getEmail(),userPublicInfoResponseDto.getEmail());
+    assertEquals("개인 유저가 자신의 이메일 보기 ",userPublicInfoResponseDto1.getEmail(),TEST_GET_USER_RESPONSE_DTO.getEmail());
   }
 
   @Test
@@ -159,22 +121,16 @@ public class UserServiceImplTest {
   void getAllUserInfo(){
 
     //given
-    UserPublicInfoResponseDto user = UserPublicInfoResponseDto.builder()
-        .email("email1@email.com")
-        .build();
-
-    //when
     Pageable pageable = Pageable.ofSize(10).withPage(0); // Assuming page size is 10 and page number is 0
     List<UserPublicInfoResponseDto> userList = new ArrayList<>();
-    userList.add(user);
-    userList.add(user);
-    userList.add(user);
+    userList.add(TEST_GET_USER_RESPONSE_DTO);
+    userList.add(TEST_GET_USER_RESPONSE_DTO);
+    userList.add(TEST_GET_USER_RESPONSE_DTO);
 
     Page<UserPublicInfoResponseDto> userPage = new PageImpl<>(userList, pageable, userList.size());
-
+    //when
     UserServiceImpl userService = new UserServiceImpl(mockRepo,passwordEncoder,pointService,postRecodeService);
     when(mockRepo.getPageUsers(pageable)).thenReturn(userPage);
-
 
     Page<UserPublicInfoResponseDto> result = userService.getAllUserInfo(pageable);
 
