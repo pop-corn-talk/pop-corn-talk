@@ -58,14 +58,14 @@ public class JwtUtil {
         String redisKeys = "UserID : " + userId;
 
         if (redisUtil.hasKey(redisKeys)) {
-            return CheckAndUpdateTokens(userId,email,redisKeys);
+            return UpdateAccessTokens(userId,email,redisKeys);
         } else {
             log.info("새로운 refresh 토큰 생성");
             return SaveNewRefreshToken(date, userId, email, redisKeys);
         }
     }
 
-    private String CheckAndUpdateTokens(Long userId,String email, String redisKeys)
+    private String UpdateAccessTokens(Long userId,String email, String redisKeys)
         throws JsonProcessingException {
 
         RefreshToken refreshToken = redisUtil.get(redisKeys);
