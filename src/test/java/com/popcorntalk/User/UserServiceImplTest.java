@@ -96,10 +96,10 @@ public class UserServiceImplTest {
   }
 
   /*
-  *
-  * 유저 정보 가져조기 관련
-  *
-  */
+   *
+   * 유저 정보 가져조기 관련
+   *
+   */
 
   @Test
   @DisplayName("개인 유저가 자신의 정보 보기")
