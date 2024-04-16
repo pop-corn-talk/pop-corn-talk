@@ -29,6 +29,7 @@ public class MockData {
     public Long TEST_POST_ID = 1L;
     public Long TEST_NOTICE_POST_ID = 2L;
     public Long TEST_DELETE_POST_ID = 3L;
+    public Long TEST_POST_RECODE_ID = 1L;
     public Long TEST_USER_ID = 1L;
     public Long TEST_ANOTHER_USER_ID = 2L;
     public Long TEST_ADMIN_USER_ID = 3L;
@@ -157,4 +158,12 @@ public class MockData {
         .userId(TEST_USER_ID)
         .point(USER_POINT)
         .build();
+
+    public PostRecode TEST_POSTRECODE = PostRecode.builder()
+        .id(TEST_POST_RECODE_ID)
+        .userId(TEST_USER_ID)
+        .postId(TEST_POST_ID)
+        .createdAt(CREATE_AT)
+        .build();
+
 }
