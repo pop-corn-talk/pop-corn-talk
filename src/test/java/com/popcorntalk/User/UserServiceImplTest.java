@@ -99,7 +99,7 @@ public class UserServiceImplTest extends MockData {
     // then
     assertEquals("개인 유저가 자신의 이메일 보기 ",TEST_USER.getEmail(),userInfoResponseDto.getEmail());
     assertEquals("개인 유저가 자신의 포인트 보기 ",TEST_POINT.getPoint(),userInfoResponseDto.getPoint());
-    assertEquals("개인 유저가 자신의 일일 횟수 보기 2번 포스트 했기에 갑은 1",2,userInfoResponseDto.getDailyPostsLimit());
+    assertEquals("개인 유저가 자신의 일일 횟수 보기 1번 포스트 했기에 갑은 2",2,userInfoResponseDto.getDailyPostsLimit());
   }
 
   @Test
