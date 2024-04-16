@@ -1,5 +1,6 @@
 package com.popcorntalk.global.util;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.popcorntalk.domain.user.entity.UserRoleEnum;
 import com.popcorntalk.global.entity.RefreshToken;
 import io.jsonwebtoken.Claims;
@@ -51,32 +52,41 @@ public class JwtUtil {
     }
 
     // 로그인시 토큰 생성
-    public String createToken(Long userId, String email) {
+    public String createToken(Long userId, String email) throws JsonProcessingException {
         Date date = new Date();
-        String accessToken = createAccessToken(userId, email);
 
-        String redisKeys = "UserId : " + userId;
+        String redisKeys = "UserID : " + userId;
 
         if (redisUtil.hasKey(redisKeys)) {
-            UpdateValidRefreshToken(accessToken, redisKeys);
+            return UpdateValidRefreshToken(userId,email,redisKeys);
         } else {
             log.info("새로운 refresh 토큰 생성");
-            SaveNewRefreshToken(date, accessToken, userId, email, redisKeys);
+            return SaveNewRefreshToken(date, userId, email, redisKeys);
         }
-        return accessToken;
     }
 
-    private void UpdateValidRefreshToken(String accessToken, String redisKeys) {
+    private String UpdateValidRefreshToken(Long userId,String email, String redisKeys)
+        throws JsonProcessingException {
 
-        RefreshToken refreshToken = (RefreshToken) redisUtil.get(redisKeys);
-        refreshToken.update(accessToken);
+            RefreshToken refreshToken = redisUtil.get(redisKeys);
+            String accessToken = refreshToken.getPreviousAccessToken();
 
-        redisUtil.set(redisKeys, refreshToken, (int) REFRESH_TOKEN_TIME);
-        log.info("기존 refresh 토큰 으로 생성");
+            if(!validateToken(accessToken)){
+                accessToken = createAccessToken(userId, email);
+                log.info("새로운 access 토큰 으로 진행");
+                refreshToken.update(accessToken);
+            }
+
+            redisUtil.set(redisKeys, refreshToken, (int) REFRESH_TOKEN_TIME);
+            log.info("기존 refresh 토큰 으로 진행");
+
+            return accessToken;
     }
 
-    private void SaveNewRefreshToken(Date date, String accessToken, Long userId, String email,
-        String redisKeys) {
+    private String SaveNewRefreshToken(Date date, Long userId, String email,
+        String redisKeys) throws JsonProcessingException {
+
+        String accessToken = createAccessToken(userId, email);
 
         String refreshToken = BEARER_PREFIX +
             Jwts.builder()
@@ -96,6 +106,8 @@ public class JwtUtil {
             .build();
 
         redisUtil.set(redisKeys, token, (int) REFRESH_TOKEN_TIME);
+
+        return accessToken;
     }
 
     // header 에서 JWT 가져오기
@@ -117,17 +129,18 @@ public class JwtUtil {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;
-        } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
+        } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException | ExpiredJwtException e) {
             log.error("토큰검증오류");
             return false;
         }
     }
 
-    public String validateRefreshToken(Long userId, String previousJwt) {
-        String redisKeys = "UserId : " + userId;
+    public String validateRefreshToken(Long userId, String previousJwt)
+        throws JsonProcessingException {
+        String redisKeys = "UserID : " + userId;
         RefreshToken refreshToken = new RefreshToken();
         if (redisUtil.hasKey(redisKeys)) {
-            refreshToken = (RefreshToken) redisUtil.get(redisKeys);
+            refreshToken = redisUtil.get(redisKeys);
         }
 
         if (!refreshToken.getPreviousAccessToken().equals(previousJwt)) {
