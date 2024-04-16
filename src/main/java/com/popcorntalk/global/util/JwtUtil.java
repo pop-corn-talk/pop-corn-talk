@@ -76,6 +76,9 @@ public class JwtUtil {
             log.info("새로운 access 토큰 으로 진행");
             refreshToken.update(accessToken);
         }
+        else {
+            accessToken = BEARER_PREFIX + accessToken;
+        }
 
         redisUtil.set(redisKeys, refreshToken, (int) REFRESH_TOKEN_TIME);
         log.info("기존 refresh 토큰 으로 진행");
