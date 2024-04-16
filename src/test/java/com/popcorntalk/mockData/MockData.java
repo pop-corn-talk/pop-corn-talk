@@ -6,6 +6,7 @@ import com.popcorntalk.domain.post.dto.PostGetResponseDto;
 import com.popcorntalk.domain.post.dto.PostUpdateRequestDto;
 import com.popcorntalk.domain.post.entity.Post;
 import com.popcorntalk.domain.post.entity.PostEnum;
+import com.popcorntalk.domain.post.entity.PostRecode;
 import com.popcorntalk.domain.user.entity.User;
 import com.popcorntalk.domain.user.entity.UserRoleEnum;
 import com.popcorntalk.global.entity.DeletionStatus;
@@ -61,6 +62,15 @@ public class MockData {
         .content(DELETE_PREFIX + POST_CONTENT)
         .image(DELETE_PREFIX + POST_IMAGE)
         .email(EMAIL)
+        .createdAt(CREATE_AT)
+        .modifiedAt(MODIFIED_AT)
+        .build();
+
+    public PostGetResponseDto TEST_GET_NOTICE_RESPONSE_DTO = PostGetResponseDto.builder()
+        .name(ADMIN_PREFIX + POST_NAME)
+        .content(ADMIN_PREFIX + POST_CONTENT)
+        .image(ADMIN_PREFIX + POST_IMAGE)
+        .email(ADMIN_PREFIX + EMAIL)
         .createdAt(CREATE_AT)
         .modifiedAt(MODIFIED_AT)
         .build();
@@ -148,4 +158,3 @@ public class MockData {
         .point(USER_POINT)
         .build();
 }
-
