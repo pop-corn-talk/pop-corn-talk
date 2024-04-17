@@ -13,6 +13,12 @@ public interface PointService {
     void deductPointForPurchase(Long userId, int purchaseAmount);
 
     /**
+     * @param userId 포인트 조회할 유저 Id
+     * @param price  구매할 상품의 가격
+     */
+    void checkUserPoint(Long userId, int price);
+
+    /**
      * 회원가입 시 최초 포인트 지급 메서드
      *
      * @param userId 포인트 지급할 유저 Id
