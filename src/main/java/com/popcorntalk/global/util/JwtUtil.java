@@ -75,6 +75,8 @@ public class JwtUtil {
             accessToken = createAccessToken(userId, email);
             log.info("새로운 access 토큰 으로 진행");
             refreshToken.update(accessToken);
+        } else {
+            accessToken = BEARER_PREFIX + accessToken;
         }
 
         redisUtil.set(redisKeys, refreshToken, (int) REFRESH_TOKEN_TIME);
