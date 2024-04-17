@@ -9,12 +9,10 @@ import com.popcorntalk.domain.notification.service.NotificationService;
 import com.popcorntalk.domain.point.service.PointService;
 import com.popcorntalk.domain.product.entity.Product;
 import com.popcorntalk.domain.product.service.ProductService;
+import com.popcorntalk.global.annotation.DistributedLock;
 import jakarta.annotation.PostConstruct;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
-import org.redisson.api.RLock;
-import org.redisson.api.RedissonClient;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -30,7 +28,6 @@ public class ExchangeServiceImpl implements ExchangeService {
     private final ProductService productService;
     private final ExchangeRepository exchangeRepository;
     private final NotificationService notificationService;
-    private final RedissonClient redissonClient;
     private final RedisTemplate<String, String> redisTemplate;
     HashOperations<String, String, String> hashOperations;
 
@@ -40,13 +37,16 @@ public class ExchangeServiceImpl implements ExchangeService {
     }
 
     @Override
-    @Transactional
+    @DistributedLock(lockName = "product", identifier = "productId", waitTime = 60, leaseTime = 4)
     public void createExchange(Long userId, Long productId) {
         Product product = productService.getProduct(productId);
+        pointService.checkUserPoint(userId, product.getPrice());
+
+        productAmount(product);
+
         pointService.deductPointForPurchase(userId, product.getPrice());
-        Exchange exchange = Exchange.createOf(userId, productId, product.getVoucherImage());
+        Exchange exchange = Exchange.createOf(userId, product.getId(), product.getVoucherImage());
         exchangeRepository.save(exchange);
-        lockProductAmount(product);
 
         notificationService.notifyPurchase(userId, ADMIN_EMAIL, product.getVoucherImage());
     }
@@ -57,36 +57,19 @@ public class ExchangeServiceImpl implements ExchangeService {
         return exchangeRepository.getExchanges(userId);
     }
 
-    private void lockProductAmount(Product product) {
-        String lockKey = "product_lock";
-        RLock lock = redissonClient.getLock(lockKey);
-        try {
-            boolean lockAcquired = lock.tryLock(3, 5, TimeUnit.SECONDS);
-            if (lockAcquired) {
-                long incrementCount = hashOperations.increment(HASH_KEY,
-                    String.valueOf(product.getId()), -1);
-                hashOperations.get(HASH_KEY, String.valueOf(product.getId()));
+    private void productAmount(Product product) {
 
-                if (incrementCount == 0) {
-                    hashOperations.delete(HASH_KEY, String.valueOf(product.getId()));
-                    product.updateAmount(0);
-                    product.softDelete();
-                }
-                if (incrementCount < 0) {
-                    hashOperations.delete(HASH_KEY, String.valueOf(product.getId()));
-                    throw new IllegalArgumentException("상품의 수량이 없습니다.");
-                }
-            } else {
-                throw new RuntimeException("다시 시도해주세요.");
-            }
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        } finally {
-            if (lock.isHeldByCurrentThread()) {
-                lock.unlock();
-            }
+        if (!hashOperations.hasKey(HASH_KEY, String.valueOf(product.getId()))) {
+            throw new IllegalArgumentException("재고가 소진되었습니다.");
+        }
+
+        long incrementCount = hashOperations.increment(HASH_KEY,
+            String.valueOf(product.getId()), -1);
+
+        if (incrementCount == 0) {
+            hashOperations.delete(HASH_KEY, String.valueOf(product.getId()));
+            product.updateAmount(0);
+            product.softDelete();
         }
     }
 }
-
-
