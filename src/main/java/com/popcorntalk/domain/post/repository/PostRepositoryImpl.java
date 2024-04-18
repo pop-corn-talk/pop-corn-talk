@@ -47,7 +47,8 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                 qPost.image,
                 qUser.email,
                 qPost.createdAt,
-                qPost.modifiedAt))
+                qPost.modifiedAt,
+                qPost.type))
             .from(qPost)
             .leftJoin(qUser).on(qPost.userId.eq(qUser.id))
             .where(qPost.deletionStatus.eq(DeletionStatus.valueOf("N")),
@@ -70,7 +71,8 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                 qPost.image,
                 qUser.email,
                 qPost.createdAt,
-                qPost.modifiedAt))
+                qPost.modifiedAt,
+                qPost.type))
             .from(qPost)
             .leftJoin(qUser).on(qPost.userId.eq(qUser.id))
             .where(predicate)
