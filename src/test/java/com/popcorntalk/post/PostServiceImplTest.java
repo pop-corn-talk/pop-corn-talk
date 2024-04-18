@@ -1,5 +1,8 @@
 package com.popcorntalk.post;
 
+import static com.popcorntalk.domain.post.entity.PostEnum.NOTICED;
+import static com.popcorntalk.domain.post.entity.PostEnum.POSTED;
+import static com.popcorntalk.global.entity.DeletionStatus.Y;
 import static com.popcorntalk.global.exception.ErrorCode.DELETE_POST_FOUND;
 import static com.popcorntalk.global.exception.ErrorCode.PERMISSION_DENIED;
 import static com.popcorntalk.global.exception.ErrorCode.POST_NOT_FOUND;
@@ -19,7 +22,6 @@ import com.popcorntalk.domain.post.repository.PostRepository;
 import com.popcorntalk.domain.post.service.PostRecodeService;
 import com.popcorntalk.domain.post.service.PostServiceImpl;
 import com.popcorntalk.domain.user.service.UserService;
-import com.popcorntalk.global.entity.DeletionStatus;
 import com.popcorntalk.global.exception.customException.NotFoundException;
 import com.popcorntalk.global.exception.customException.PermissionDeniedException;
 import com.popcorntalk.mockData.MockData;
@@ -110,6 +112,7 @@ class PostServiceImplTest extends MockData {
         assertEquals(responsesSlice.get().count(), returnResponses.get().count());
         assertEquals(responsesSlice.getContent().get(0), returnResponses.getContent().get(0));
         assertEquals(responsesSlice.getContent().get(1), returnResponses.getContent().get(1));
+        assertTrue(returnResponses.get().allMatch(i -> i.getType().equals(POSTED)));
     }
 
     @Test
@@ -155,6 +158,7 @@ class PostServiceImplTest extends MockData {
         //then
         assertEquals(responsesSlice.get().count(), returnResponses.get().count());
         assertEquals(keyword, returnResponses.get().findAny().get().getEmail());
+        assertTrue(returnResponses.get().allMatch(i -> i.getType().equals(POSTED)));
     }
 
     @Test
@@ -200,7 +204,8 @@ class PostServiceImplTest extends MockData {
 
         //then
         assertEquals(responsesSlice.get().count(), returnResponses.get().count());
-        assertTrue(returnResponses.get().anyMatch(i -> i.getName().contains(POST_NAME)));
+        assertTrue(returnResponses.get().allMatch(i -> i.getName().contains(POST_NAME)));
+        assertTrue(returnResponses.get().allMatch(i -> i.getType().equals(POSTED)));
     }
 
     @Test
@@ -276,6 +281,7 @@ class PostServiceImplTest extends MockData {
         //then
         assertEquals(responsesSlice.get().count(), returnResponses.get().count());
         assertEquals(responsesSlice.getContent().get(0), returnResponses.getContent().get(0));
+        assertTrue(returnResponses.get().allMatch(i -> i.getType().equals(NOTICED)));
     }
 
     @Test
@@ -433,7 +439,7 @@ class PostServiceImplTest extends MockData {
         postService.deletePost(TEST_USER, TEST_POST_ID);
 
         //then
-        assertEquals(DeletionStatus.Y, TEST_POST.getDeletionStatus());
+        assertEquals(Y, TEST_POST.getDeletionStatus());
     }
 
     @Test

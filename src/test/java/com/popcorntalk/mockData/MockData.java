@@ -48,6 +48,7 @@ public class MockData {
         .email(EMAIL)
         .createdAt(CREATE_AT)
         .modifiedAt(MODIFIED_AT)
+        .type(PostEnum.POSTED)
         .build();
 
     public PostGetResponseDto TEST_ANOTHER_GET_RESPONSE_DTO = PostGetResponseDto.builder()
@@ -57,6 +58,7 @@ public class MockData {
         .email(ANOTHER_PREFIX + EMAIL)
         .createdAt(CREATE_AT_PLUS_1HOUR)
         .modifiedAt(MODIFIED_AT)
+        .type(PostEnum.POSTED)
         .build();
 
     public PostGetResponseDto TEST_GET_DELETE_RESPONSE_DTO = PostGetResponseDto.builder()
@@ -66,6 +68,7 @@ public class MockData {
         .email(EMAIL)
         .createdAt(CREATE_AT)
         .modifiedAt(MODIFIED_AT)
+        .type(PostEnum.POSTED)
         .build();
 
     public PostGetResponseDto TEST_GET_NOTICE_RESPONSE_DTO = PostGetResponseDto.builder()
@@ -75,6 +78,7 @@ public class MockData {
         .email(ADMIN_PREFIX + EMAIL)
         .createdAt(CREATE_AT)
         .modifiedAt(MODIFIED_AT)
+        .type(PostEnum.NOTICED)
         .build();
 
     public UserPublicInfoResponseDto TEST_GET_USER_RESPONSE_DTO = UserPublicInfoResponseDto.builder()
