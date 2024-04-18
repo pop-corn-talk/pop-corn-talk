@@ -157,6 +157,7 @@ public class JwtUtil {
         String token = createAccessToken(refreshToken.getUserId(),
             info.get("email", String.class));
         refreshToken.update(token);
+        log.info("만료된 access, Refresh 토큰 검즘 완료 ,새로운 access 토큰 발급");
         redisUtil.set(redisKeys, refreshToken, (int) REFRESH_TOKEN_TIME);
         return token;
     }
