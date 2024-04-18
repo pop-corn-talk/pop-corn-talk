@@ -16,7 +16,7 @@
 
     <RollingFile name ="RollingFileAppender">
       <FileName>${LOG_PATH}/logs.log</FileName>
-      <FilePattern>${LOG_PATH}/log4j2.%d{yyyy-MM-dd-hh-mm}.%i.log.gz</FilePattern>
+      <FilePattern>${LOG_PATH}/log.%d{yyyy-MM-dd-hh-mm}.%i.log.gz</FilePattern>
       <PatternLayout>
         <Pattern>${DEFAULT_PATTERN}</Pattern>
       </PatternLayout>
@@ -34,7 +34,7 @@
 
     <RollingFile name ="RollingFileErrorAppender">
       <FileName>${LOG_PATH}/log_error.log</FileName>
-      <FilePattern>${LOG_PATH}/log4j2_error.%d{yyyy-MM-dd-hh-mm}.%i.log.gz</FilePattern>
+      <FilePattern>${LOG_PATH}/log_error.%d{yyyy-MM-dd-hh-mm}.%i.log.gz</FilePattern>
       <PatternLayout>
         <Pattern>${DEFAULT_PATTERN}</Pattern>
       </PatternLayout>
