@@ -6,6 +6,9 @@ import com.popcorntalk.domain.post.dto.PostGetResponseDto;
 import com.popcorntalk.domain.post.dto.PostUpdateRequestDto;
 import com.popcorntalk.domain.post.entity.Post;
 import com.popcorntalk.domain.post.entity.PostEnum;
+import com.popcorntalk.domain.product.dto.ProductCreateRequestDto;
+import com.popcorntalk.domain.product.dto.ProductUpdateRequestDto;
+import com.popcorntalk.domain.product.entity.Product;
 import com.popcorntalk.domain.user.entity.User;
 import com.popcorntalk.domain.user.entity.UserRoleEnum;
 import com.popcorntalk.global.entity.DeletionStatus;
@@ -36,7 +39,15 @@ public class MockData {
     public Long ANOTHER_USER_POINT = 3_000L;
     public Long MAX_DAILY_POSTS_LIMIT = 3L;
     public Long TEST_POINT_ID = 1L;
-
+    public Long TEST_PRODUCT_ID = 1L;
+    public String PRODUCT_NAME = "상품";
+    public int PRODUCT_PRICE = 10000;
+    public int UPDATE_PRODUCT_PRICE = 15000;
+    public  int UPDATE_PRODUCT_AMOUNT = 5;
+    public int PRODUCT_AMOUNT = 10;
+    public String PRODUCT_VOUCHERIMAGE = "voucherImage.png";
+    public String PRODUCT_DESCRIPTION = "상품의 대한 설명";
+    public String PRODUCT_IMAGE = "image.png";
     //조회 DTO
     public PostGetResponseDto TEST_GET_RESPONSE_DTO = PostGetResponseDto.builder()
         .name(POST_NAME)
@@ -146,6 +157,34 @@ public class MockData {
         .id(TEST_POINT_ID)
         .userId(TEST_USER_ID)
         .point(USER_POINT)
+        .build();
+
+    public Product TEST_PRODUCT = Product.builder()
+        .id(TEST_PRODUCT_ID)
+        .name(PRODUCT_NAME)
+        .image(PRODUCT_IMAGE)
+        .description(PRODUCT_DESCRIPTION)
+        .price(PRODUCT_PRICE)
+        .amount(PRODUCT_AMOUNT)
+        .voucherImage(PRODUCT_VOUCHERIMAGE)
+        .build();
+
+    public ProductUpdateRequestDto TEST_PRODUCT_UPDATE_REQUEST_DTO = ProductUpdateRequestDto.builder()
+        .name(UPDATE_PREFIX + PRODUCT_NAME)
+        .image(UPDATE_PREFIX + PRODUCT_IMAGE)
+        .description(UPDATE_PREFIX + PRODUCT_DESCRIPTION)
+        .price(UPDATE_PRODUCT_PRICE)
+        .amount(UPDATE_PRODUCT_AMOUNT)
+        .voucherImage(UPDATE_PREFIX + PRODUCT_VOUCHERIMAGE)
+        .build();
+
+    public ProductCreateRequestDto TEST_PRODUCT_CREATE_REQUEST_DTO = ProductCreateRequestDto.builder()
+        .name(PRODUCT_NAME)
+        .image(PRODUCT_IMAGE)
+        .description(PRODUCT_DESCRIPTION)
+        .price(PRODUCT_PRICE)
+        .amount(PRODUCT_AMOUNT)
+        .voucherImage(PRODUCT_VOUCHERIMAGE)
         .build();
 }
 
