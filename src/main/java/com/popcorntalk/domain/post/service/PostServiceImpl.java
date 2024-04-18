@@ -46,7 +46,8 @@ public class PostServiceImpl implements PostService {
 
 
     @Override
-    @Cacheable(value = "Post", key = "#postId", unless = "#result == null", cacheManager = "postCacheManager")
+    @Cacheable(value = "Post", key = "#postId", cacheManager = "postCacheManager",
+        unless = "#result == null or #result.type != T(com.popcorntalk.domain.post.entity.PostEnum).NOTICED")
     @Transactional(readOnly = true)
     public PostGetResponseDto getPostById(Long postId) {
         return postRepository.findPost(postId);
