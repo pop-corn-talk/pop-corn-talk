@@ -6,9 +6,11 @@ import com.popcorntalk.domain.post.dto.PostGetResponseDto;
 import com.popcorntalk.domain.post.dto.PostUpdateRequestDto;
 import com.popcorntalk.domain.post.entity.Post;
 import com.popcorntalk.domain.post.entity.PostEnum;
+import com.popcorntalk.domain.post.entity.PostRecode;
 import com.popcorntalk.domain.product.dto.ProductCreateRequestDto;
 import com.popcorntalk.domain.product.dto.ProductUpdateRequestDto;
 import com.popcorntalk.domain.product.entity.Product;
+import com.popcorntalk.domain.user.dto.UserPublicInfoResponseDto;
 import com.popcorntalk.domain.user.entity.User;
 import com.popcorntalk.domain.user.entity.UserRoleEnum;
 import com.popcorntalk.global.entity.DeletionStatus;
@@ -31,6 +33,7 @@ public class MockData {
     public Long TEST_POST_ID = 1L;
     public Long TEST_NOTICE_POST_ID = 2L;
     public Long TEST_DELETE_POST_ID = 3L;
+    public Long TEST_POST_RECODE_ID = 1L;
     public Long TEST_USER_ID = 1L;
     public Long TEST_ANOTHER_USER_ID = 2L;
     public Long TEST_ADMIN_USER_ID = 3L;
@@ -43,7 +46,7 @@ public class MockData {
     public String PRODUCT_NAME = "상품";
     public int PRODUCT_PRICE = 10000;
     public int UPDATE_PRODUCT_PRICE = 15000;
-    public  int UPDATE_PRODUCT_AMOUNT = 5;
+    public int UPDATE_PRODUCT_AMOUNT = 5;
     public int PRODUCT_AMOUNT = 10;
     public String PRODUCT_VOUCHERIMAGE = "voucherImage.png";
     public String PRODUCT_DESCRIPTION = "상품의 대한 설명";
@@ -76,6 +79,18 @@ public class MockData {
         .modifiedAt(MODIFIED_AT)
         .build();
 
+    public PostGetResponseDto TEST_GET_NOTICE_RESPONSE_DTO = PostGetResponseDto.builder()
+        .name(ADMIN_PREFIX + POST_NAME)
+        .content(ADMIN_PREFIX + POST_CONTENT)
+        .image(ADMIN_PREFIX + POST_IMAGE)
+        .email(ADMIN_PREFIX + EMAIL)
+        .createdAt(CREATE_AT)
+        .modifiedAt(MODIFIED_AT)
+        .build();
+
+    public UserPublicInfoResponseDto TEST_GET_USER_RESPONSE_DTO = UserPublicInfoResponseDto.builder()
+        .email(EMAIL)
+        .build();
 
     //생성 DTO
     public PostCreateRequestDto TEST_CREATE_REQUEST_DTO = PostCreateRequestDto.builder()
@@ -186,5 +201,11 @@ public class MockData {
         .amount(PRODUCT_AMOUNT)
         .voucherImage(PRODUCT_VOUCHERIMAGE)
         .build();
-}
 
+    public PostRecode TEST_POSTRECODE = PostRecode.builder()
+        .id(TEST_POST_RECODE_ID)
+        .userId(TEST_USER_ID)
+        .postId(TEST_POST_ID)
+        .createdAt(CREATE_AT)
+        .build();
+}

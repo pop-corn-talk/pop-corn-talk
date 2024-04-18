@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 
-import com.popcorntalk.domain.product.entity.Product;
 import com.popcorntalk.domain.product.repository.ProductRepository;
 import com.popcorntalk.domain.product.service.ProductServiceImpl;
 import com.popcorntalk.domain.user.service.UserService;
@@ -55,11 +54,12 @@ public class ProductServiceImplTest extends MockData {
     void updateProduct() {
         //given
         ReflectionTestUtils.setField(productService, "hashOperations", hashOperations);
-        BDDMockito.given(productRepository.findById(any(Long.class))).willReturn(
-            Optional.ofNullable(TEST_PRODUCT));
+        BDDMockito.given(productRepository.findById(any(Long.class)))
+            .willReturn(Optional.ofNullable(TEST_PRODUCT));
 
         //when
-        productService.updateProduct(TEST_PRODUCT_ID, TEST_PRODUCT_UPDATE_REQUEST_DTO, TEST_USER_ID);
+        productService.updateProduct(TEST_PRODUCT_ID, TEST_PRODUCT_UPDATE_REQUEST_DTO,
+            TEST_USER_ID);
 
         //then
         BDDMockito.then(hashOperations).should().delete(any(), any());
@@ -68,9 +68,11 @@ public class ProductServiceImplTest extends MockData {
         assertEquals(TEST_PRODUCT_UPDATE_REQUEST_DTO.getAmount(), TEST_PRODUCT.getAmount());
         assertEquals(TEST_PRODUCT_UPDATE_REQUEST_DTO.getImage(), TEST_PRODUCT.getImage());
         assertEquals(TEST_PRODUCT_UPDATE_REQUEST_DTO.getPrice(), TEST_PRODUCT.getPrice());
-        assertEquals(TEST_PRODUCT_UPDATE_REQUEST_DTO.getVoucherImage(), TEST_PRODUCT.getVoucherImage());
+        assertEquals(TEST_PRODUCT_UPDATE_REQUEST_DTO.getVoucherImage(),
+            TEST_PRODUCT.getVoucherImage());
         assertEquals(TEST_PRODUCT_UPDATE_REQUEST_DTO.getAmount(), TEST_PRODUCT.getAmount());
-        assertEquals(TEST_PRODUCT_UPDATE_REQUEST_DTO.getDescription(), TEST_PRODUCT.getDescription());
+        assertEquals(TEST_PRODUCT_UPDATE_REQUEST_DTO.getDescription(),
+            TEST_PRODUCT.getDescription());
     }
 
     @Test
