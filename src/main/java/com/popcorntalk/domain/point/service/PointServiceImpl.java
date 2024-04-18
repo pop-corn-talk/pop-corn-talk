@@ -24,15 +24,20 @@ public class PointServiceImpl implements PointService {
 
         Point userPoint = getPoint(userId);
         int previousPoint = userPoint.getPoint();
+        int newPointBalance = userPoint.getPoint() - price;
+        userPoint.update(newPointBalance);
 
-        if (userPoint.getPoint() >= price) {
-            int newPointBalance = userPoint.getPoint() - price;
-            userPoint.update(newPointBalance);
+        pointRecordService.createPointRecord(
+            userPoint.getId(), previousPoint, -price, userPoint.getPoint()
+        );
+    }
 
-            pointRecordService.createPointRecord(
-                userPoint.getId(), previousPoint, -price, userPoint.getPoint()
-            );
-        } else {
+    @Override
+    public void checkUserPoint(Long userId, int price) {
+
+        Point userPoint = getPoint(userId);
+
+        if (userPoint.getPoint() < price) {
             throw new InsufficientPointException(ErrorCode.INSUFFICIENT_POINT);
         }
     }

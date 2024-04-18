@@ -2,6 +2,7 @@ package com.popcorntalk.point;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
@@ -35,36 +36,50 @@ public class PointServiceImplTest extends MockData {
     private PointRecordService pointRecordService;
 
     @Nested
-    @DisplayName("포인트 차감 테스트")
+    @DisplayName("포인트 조회 테스트")
     class DeductPoint {
 
         @Test
-        @DisplayName("유저가 보유한 포인트가 상품의 포인트보다 적은 경우 포인트 차감 실패 테스트")
-        void insufficientPointsDeductionFailure() {
+        @DisplayName("구매할 상품의 금액보다 많은 경우 포인트 조회 성공 테스트")
+        void checkPointsSuccess() {
+
+            int TEST_PRICE = 3000;
+            given(pointRepository.findByUserId(anyLong())).willReturn(Optional.of(TEST_POINT));
+
+            pointService.checkUserPoint(TEST_USER_ID, TEST_PRICE);
+
+            assertTrue(USER_POINT > TEST_PRICE);
+        }
+
+
+        @Test
+        @DisplayName("유저가 보유한 포인트가 상품의 포인트보다 적은 경우 포인트 조회 실패 테스트")
+        void checkPointsFailure() {
 
             int TEST_PRICE = 6000;
 
             given(pointRepository.findByUserId(anyLong())).willReturn(Optional.of(TEST_POINT));
 
             assertThrows(InsufficientPointException.class, () -> {
-                pointService.deductPointForPurchase(TEST_USER_ID, TEST_PRICE);
+                pointService.checkUserPoint(TEST_USER_ID, TEST_PRICE);
             });
         }
 
-        @Test
-        @DisplayName("상품 구매시 유저 포인트 차감 성공 테스트")
-        void insufficientPointsDeductionSuccess() {
+    }
 
-            int TEST_PRICE = 4000;
-            int expectedPoint = USER_POINT - TEST_PRICE;
+    @Test
+    @DisplayName("상품 구매시 유저 포인트 차감 성공 테스트")
+    void insufficientPointsDeductionSuccess() {
 
-            given(pointRepository.findByUserId(anyLong())).willReturn(Optional.of(TEST_POINT));
+        int TEST_PRICE = 4000;
+        int expectedPoint = USER_POINT - TEST_PRICE;
 
-            pointService.deductPointForPurchase(TEST_USER_ID, TEST_PRICE);
-            int resultPoint = TEST_POINT.getPoint();
+        given(pointRepository.findByUserId(anyLong())).willReturn(Optional.of(TEST_POINT));
 
-            assertEquals(expectedPoint, resultPoint);
-        }
+        pointService.deductPointForPurchase(TEST_USER_ID, TEST_PRICE);
+        int resultPoint = TEST_POINT.getPoint();
+
+        assertEquals(expectedPoint, resultPoint);
     }
 
     @Nested
