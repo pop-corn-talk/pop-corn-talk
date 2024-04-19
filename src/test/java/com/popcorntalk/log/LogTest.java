@@ -18,11 +18,13 @@ public class LogTest extends TimeManager{
     @Test
     @DisplayName("로그테스트 테스트 번호 : 1")
     void defaultLogTest(){
-        testLogService.testLogger();
+        // ci test 하면 실행되서 임시 주석
+        // testLogService.testLogger();
     }
     @Test
     @DisplayName("로그 파일 가져오기/  로그 bucket 에 올리기")
     void getFiles(){
-        LogService.uploadLogs();
+        // ci test 하면 실행되서 임시 주석
+        // LogService.uploadLogs();
     }
 }
