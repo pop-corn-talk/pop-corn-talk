@@ -14,7 +14,7 @@
       <PatternLayout pattern="${COLOR_PATTERN}"/>
     </Console>
 
-    <RollingFile name ="AsyncRollingFile" >
+    <RollingFile name ="RollingFile" >
       <FileName>${LOG_PATH}/logs.log</FileName>
       <FilePattern>${LOG_PATH}/log.%d{yyyy-MM-dd-hh-mm}.%i.log.gz</FilePattern>
       <PatternLayout>
@@ -32,7 +32,7 @@
       </DefaultRolloverStrategy>
     </RollingFile>
 
-    <RollingFile name ="AsyncRollingErrorFile" >
+    <RollingFile name ="RollingErrorFile" >
       <FileName>${LOG_PATH}/log_error.log</FileName>
       <FilePattern>${LOG_PATH}/log_error.%d{yyyy-MM-dd-hh-mm}.%i.log.gz</FilePattern>
       <PatternLayout>
@@ -50,45 +50,45 @@
     <!-- Root : 일반적인 로그 정책, 반드시 하나 정의해야함 -->
     <Root level="INFO" additivity="false">
       <AppenderRef ref="ConsoleAppender"/>
-      <AppenderRef ref="AsyncRollingFile"/>
-      <AppenderRef ref="AsyncRollingErrorFile" level="ERROR" />
+      <AppenderRef ref="RollingFile"/>
+      <AppenderRef ref="RollingErrorFile" level="ERROR" />
     </Root>
 
     <!-- springframework logger -->
     <Logger name="org.springframework" level="INFO" additivity="false">
-      <AppenderRef ref="AsyncConsole" />
-      <AppenderRef ref="SpringframeworkLogger"/>
+      <AppenderRef ref="ConsoleAppender" />
+      <AppenderRef ref="RollingFile"/>
     </Logger>
 
     <!-- jdbc logger -->
     <Logger name="jdbc.sqlonly" level="OFF" additivity="false">
-      <AppenderRef ref="AsyncConsole"/>
-      <AppenderRef ref="AsyncRollingFile"/>
+      <AppenderRef ref="ConsoleAppender"/>
+      <AppenderRef ref="RollingFile"/>
     </Logger>
 
     <Logger name="jdbc.sqltiming" level="INFO" additivity="false">
-      <AppenderRef ref="AsyncConsole"/>
-      <AppenderRef ref="AsyncRollingFile"/>
+      <AppenderRef ref="ConsoleAppender"/>
+      <AppenderRef ref="RollingFile"/>
     </Logger>
 
     <Logger name="jdbc.resultsettable" level="INFO" additivity="false">
-      <AppenderRef ref="AsyncConsole"/>
-      <AppenderRef ref="AsyncRollingFile"/>
+      <AppenderRef ref="ConsoleAppender"/>
+      <AppenderRef ref="RollingFile"/>
     </Logger>
 
     <Logger name="jdbc.audit" level="OFF" additivity="false">
-      <AppenderRef ref="AsyncConsole"/>
-      <AppenderRef ref="AsyncRollingFile"/>
+      <AppenderRef ref="ConsoleAppender"/>
+      <AppenderRef ref="RollingFile"/>
     </Logger>
 
     <Logger name="jdbc.resultset" level="OFF" additivity="false">
-      <AppenderRef ref="AsyncConsole"/>
-      <AppenderRef ref="AsyncRollingFile"/>
+      <AppenderRef ref="ConsoleAppender"/>
+      <AppenderRef ref="RollingFile"/>
     </Logger>
 
     <Logger name="jdbc.connection" level="OFF" additivity="false">
-      <AppenderRef ref="AsyncConsole"/>
-      <AppenderRef ref="AsyncRollingFile"/>
+      <AppenderRef ref="ConsoleAppender"/>
+      <AppenderRef ref="RollingFile"/>
     </Logger>
   </Loggers>
 </Configuration>
