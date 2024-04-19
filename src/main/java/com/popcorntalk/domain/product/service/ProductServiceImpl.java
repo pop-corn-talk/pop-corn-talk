@@ -59,6 +59,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
+    @DistributedLock(lockName = HASH_KEY, identifier = "productId", waitTime = 60, leaseTime = 4)
     public void deleteProduct(Long productId,
         Long userId) {
         userService.validateAdminUser(userId);
@@ -70,6 +71,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
+    @DistributedLock(lockName = HASH_KEY, identifier = "productId", waitTime = 60, leaseTime = 4)
     public void updateProduct(Long productId, ProductUpdateRequestDto productUpdateRequestDto,
         Long userId) {
         userService.validateAdminUser(userId);
