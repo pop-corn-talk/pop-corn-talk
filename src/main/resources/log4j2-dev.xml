@@ -9,19 +9,19 @@
   </Properties>
 
   <!-- CONSOLE에 로그 출력 세팅 -->
-  <Appenders>
+  <Appenders >
     <Console name="ConsoleAppender" target="SYSTEM_OUT" follow="true">
       <PatternLayout pattern="${COLOR_PATTERN}"/>
     </Console>
 
-    <RollingFile name ="RollingFileAppender">
+    <RollingFile name ="AsyncRollingFile" >
       <FileName>${LOG_PATH}/logs.log</FileName>
       <FilePattern>${LOG_PATH}/log.%d{yyyy-MM-dd-hh-mm}.%i.log.gz</FilePattern>
       <PatternLayout>
         <Pattern>${DEFAULT_PATTERN}</Pattern>
       </PatternLayout>
       <Policies>
-        <SizeBasedTriggeringPolicy size="500KB"/>
+        <SizeBasedTriggeringPolicy size="1MB"/>
         <!--                <TimeBasedTriggeringPolicy interval = "1" modulate = "true"/>-->
       </Policies>
       <DefaultRolloverStrategy>
@@ -32,7 +32,7 @@
       </DefaultRolloverStrategy>
     </RollingFile>
 
-    <RollingFile name ="RollingFileErrorAppender">
+    <RollingFile name ="AsyncRollingErrorFile" >
       <FileName>${LOG_PATH}/log_error.log</FileName>
       <FilePattern>${LOG_PATH}/log_error.%d{yyyy-MM-dd-hh-mm}.%i.log.gz</FilePattern>
       <PatternLayout>
@@ -51,19 +51,19 @@
     <Root level="INFO" additivity="false">
       <AppenderRef ref="ConsoleAppender"/>
       <AppenderRef ref="AsyncRollingFile"/>
-      <AppenderRef ref="AsyncRollingFileError" level="ERROR" />
+      <AppenderRef ref="AsyncRollingErrorFile" level="ERROR" />
     </Root>
 
     <!-- springframework logger -->
     <Logger name="org.springframework" level="INFO" additivity="false">
       <AppenderRef ref="AsyncConsole" />
-      <AppenderRef ref="RollingFileAppender"/>
+      <AppenderRef ref="SpringframeworkLogger"/>
     </Logger>
 
     <!-- jdbc logger -->
     <Logger name="jdbc.sqlonly" level="OFF" additivity="false">
       <AppenderRef ref="AsyncConsole"/>
-      <AppenderRef ref="RollingFileAppender"/>
+      <AppenderRef ref="AsyncRollingFile"/>
     </Logger>
 
     <Logger name="jdbc.sqltiming" level="INFO" additivity="false">
