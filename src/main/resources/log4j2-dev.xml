@@ -39,7 +39,7 @@
         <Pattern>${DEFAULT_PATTERN}</Pattern>
       </PatternLayout>
       <Policies>
-        <SizeBasedTriggeringPolicy size="500KB"/>
+        <SizeBasedTriggeringPolicy size="1MB"/>
         <!--                <TimeBasedTriggeringPolicy interval = "1" modulate = "true"/>-->
       </Policies>
     </RollingFile>
