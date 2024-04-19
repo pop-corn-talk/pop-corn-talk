@@ -1,13 +1,16 @@
 package com.popcorntalk.product;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
+import static org.springframework.test.util.AssertionErrors.*;
 
 import com.popcorntalk.domain.product.repository.ProductRepository;
 import com.popcorntalk.domain.product.service.ProductServiceImpl;
 import com.popcorntalk.domain.user.service.UserService;
 import com.popcorntalk.global.entity.DeletionStatus;
+import com.popcorntalk.global.exception.customException.NotFoundException;
 import com.popcorntalk.mockData.MockData;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
@@ -19,6 +22,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.test.util.AssertionErrors;
 import org.springframework.test.util.ReflectionTestUtils;
 
 @ExtendWith(MockitoExtension.class)
@@ -39,12 +43,18 @@ public class ProductServiceImplTest extends MockData {
     @DisplayName("상품 등록")
     void createProduct() {
         //given
+        boolean flag = true;
         ReflectionTestUtils.setField(productService, "hashOperations", hashOperations);
         BDDMockito.given(productRepository.save(any())).willReturn(TEST_PRODUCT);
 
         //when
-        productService.createProduct(TEST_PRODUCT_CREATE_REQUEST_DTO, TEST_USER_ID);
+        try {
+            productService.createProduct(TEST_PRODUCT_CREATE_REQUEST_DTO, TEST_USER_ID);
+        } catch (NotFoundException e) {
+            flag = false;
+        }
         //then
+        AssertionErrors.assertTrue("성공 해당 유저는 관리자가 맞아요", flag);
         BDDMockito.then(hashOperations).should().put(any(), any(), any());
         BDDMockito.then(productRepository).should(times(1)).save(any());
     }
