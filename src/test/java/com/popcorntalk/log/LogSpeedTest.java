@@ -24,25 +24,9 @@ public class LogSpeedTest extends TimeManager{
 
     private TestLogService testLogService = new TestLogService();
     @Test
-    @DisplayName("defaultLogTest 테스트 번호 : 1")
+    @DisplayName("로그테스트 테스트 번호 : 1")
     void defaultLogTest(){
         testLogService.testNormalLogger();
     }
 
-    @Test
-    @DisplayName("defaultLogTest 테스트 번호 : 1")
-    void log4jLogTest(){
-        testLogService.testlog4jLogger();
-    }
-
-    @Test
-    @DisplayName("defaultLogTest 테스트 번호 : 2")
-    void defaultLogTest2(){
-        testLogService.testNormalLogger();
-    }
-    @Test
-    @DisplayName("defaultLogTest 테스트 번호 : 2")
-    void log4jLogTest2(){
-        testLogService.testlog4jLogger();
-    }
 }
