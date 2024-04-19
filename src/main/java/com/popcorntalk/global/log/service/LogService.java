@@ -26,7 +26,7 @@ public class LogService {
     private String bucket;
 
     // 하루에 한번 작동 합니다.
-    @Scheduled(cron = "0 0 0 * * *")
+    @Scheduled(cron = "1 0 0 * * *")
     public void uploadLogs() {
         File folder = new File("logs");
         String date = String.valueOf(LocalDate.now().minusDays(1));
