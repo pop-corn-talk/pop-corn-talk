@@ -50,45 +50,45 @@
     <!-- Root : 일반적인 로그 정책, 반드시 하나 정의해야함 -->
     <Root level="INFO" additivity="false">
       <AppenderRef ref="ConsoleAppender"/>
-      <AppenderRef ref="RollingFileAppender"/>
-      <AppenderRef ref="RollingFileErrorAppender" level="ERROR" />
+      <AppenderRef ref="AsyncRollingFile"/>
+      <AppenderRef ref="AsyncRollingFileError" level="ERROR" />
     </Root>
 
     <!-- springframework logger -->
     <Logger name="org.springframework" level="INFO" additivity="false">
-      <AppenderRef ref="ConsoleAppender" />
+      <AppenderRef ref="AsyncConsole" />
       <AppenderRef ref="RollingFileAppender"/>
     </Logger>
 
     <!-- jdbc logger -->
     <Logger name="jdbc.sqlonly" level="OFF" additivity="false">
-      <AppenderRef ref="ConsoleAppender"/>
+      <AppenderRef ref="AsyncConsole"/>
       <AppenderRef ref="RollingFileAppender"/>
     </Logger>
 
     <Logger name="jdbc.sqltiming" level="INFO" additivity="false">
-      <AppenderRef ref="ConsoleAppender"/>
-      <AppenderRef ref="RollingFileAppender"/>
+      <AppenderRef ref="AsyncConsole"/>
+      <AppenderRef ref="AsyncRollingFile"/>
     </Logger>
 
     <Logger name="jdbc.resultsettable" level="INFO" additivity="false">
-      <AppenderRef ref="ConsoleAppender"/>
-      <AppenderRef ref="RollingFileAppender"/>
+      <AppenderRef ref="AsyncConsole"/>
+      <AppenderRef ref="AsyncRollingFile"/>
     </Logger>
 
     <Logger name="jdbc.audit" level="OFF" additivity="false">
-      <AppenderRef ref="ConsoleAppender"/>
-      <AppenderRef ref="RollingFileAppender"/>
+      <AppenderRef ref="AsyncConsole"/>
+      <AppenderRef ref="AsyncRollingFile"/>
     </Logger>
 
     <Logger name="jdbc.resultset" level="OFF" additivity="false">
-      <AppenderRef ref="ConsoleAppender"/>
-      <AppenderRef ref="RollingFileAppender"/>
+      <AppenderRef ref="AsyncConsole"/>
+      <AppenderRef ref="AsyncRollingFile"/>
     </Logger>
 
     <Logger name="jdbc.connection" level="OFF" additivity="false">
-      <AppenderRef ref="ConsoleAppender"/>
-      <AppenderRef ref="RollingFileAppender"/>
+      <AppenderRef ref="AsyncConsole"/>
+      <AppenderRef ref="AsyncRollingFile"/>
     </Logger>
   </Loggers>
 </Configuration>
