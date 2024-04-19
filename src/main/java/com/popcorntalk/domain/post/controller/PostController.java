@@ -6,6 +6,7 @@ import com.popcorntalk.domain.post.dto.PostGetResponseDto;
 import com.popcorntalk.domain.post.dto.PostUpdateRequestDto;
 import com.popcorntalk.domain.post.service.PostService;
 import com.popcorntalk.global.dto.CommonResponseDto;
+import com.popcorntalk.global.dto.FunctionGetKeyRequestDto;
 import com.popcorntalk.global.security.UserDetailsImpl;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -138,5 +139,13 @@ public class PostController {
             postId
         );
         return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    //전날 댓글이 가장 많이 달린 게시글 작성자 3명에게 포인트 지급
+    @PostMapping("/compensation")
+    public void compensationPostsOwners(
+        @Valid @RequestBody FunctionGetKeyRequestDto requestDto
+    ) {
+        postService.compensationPostsOwners(requestDto.getValue());
     }
 }

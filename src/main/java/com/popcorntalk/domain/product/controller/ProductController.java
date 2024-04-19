@@ -1,11 +1,14 @@
 package com.popcorntalk.domain.product.controller;
 
+import com.popcorntalk.global.dto.FunctionGetKeyRequestDto;
 import com.popcorntalk.domain.product.dto.ProductCreateRequestDto;
 import com.popcorntalk.domain.product.dto.ProductGetResponseDto;
 import com.popcorntalk.domain.product.dto.ProductUpdateRequestDto;
 import com.popcorntalk.domain.product.service.ProductService;
 import com.popcorntalk.global.dto.CommonResponseDto;
 import com.popcorntalk.global.security.UserDetailsImpl;
+import jakarta.validation.Valid;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -70,5 +73,16 @@ public class ProductController {
     ) {
         return ResponseEntity.status(HttpStatus.OK).body(
             CommonResponseDto.success(productService.getProducts(pageable)));
+    }
+
+    @PostMapping("/update")
+    public void amountUpdateByDB(
+        @Valid @RequestBody FunctionGetKeyRequestDto requestDto
+    ) {
+        if (!Objects.isNull(productService.getProductIdsByCache(requestDto.getValue()))) {
+            for (Long productIds : productService.getProductIdsByCache(requestDto.getValue())) {
+                productService.updateAmount(productIds);
+            }
+        }
     }
 }
