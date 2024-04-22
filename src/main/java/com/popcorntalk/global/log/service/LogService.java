@@ -5,6 +5,7 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.popcorntalk.global.exception.ErrorCode;
 import com.popcorntalk.global.exception.customException.NotFoundException;
 import java.io.File;
+import java.net.Inet4Address;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 public class LogService {
 
     private final AmazonS3 s3Client;
+    private static Inet4Address inet4Address; // 서버가 여러대라 구분할 것이 필요함
 
     @Value("${cloud.aws.log-bucket.name}")
     private String bucket;
@@ -30,6 +32,7 @@ public class LogService {
     public void uploadLogs() {
         File folder = new File("logs");
         String date = String.valueOf(LocalDate.now().minusDays(1));
+        String address = inet4Address.getHostAddress();
 
         // 폴더 존재 하는지 확인
         if (!(folder.exists() && folder.isDirectory())) {
@@ -47,10 +50,12 @@ public class LogService {
 
             // 파일을 병렬로 S3에 업로드
             files.parallelStream().forEach(file -> {
-                String key = file.getName(); // 이름을 키로 해서 중복이 없게끔.
+                String key = address+file.getName(); // HostAddress + 이름을 키로 해서 중복이 없게끔.
                 s3Client.putObject(new PutObjectRequest(bucket, key, file));
                 log.info(key + " : s3 에 올리는중");
             });
+            //
+
         }
     }
 }
