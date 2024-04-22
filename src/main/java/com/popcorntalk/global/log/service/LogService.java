@@ -48,7 +48,7 @@ public class LogService {
             // 파일을 리스트에 추가
             List<File> files = new ArrayList<>(Arrays.asList(fileList));
 
-            // 파일을 병렬로 S3에 업로드
+            // 파일을 병렬로 S3에 업로드 후 제거
             files.parallelStream().forEach(file -> {
                 String key = address + "_" + file.getName(); // HostAddress + 이름을 키로 해서 중복이 없게끔.
                 s3Client.putObject(new PutObjectRequest(bucket, key, file));
