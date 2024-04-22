@@ -22,13 +22,11 @@ public interface CommentService {
     /**
      * 댓글 전체조회
      *
-     * @param userId   유저의 존재여부를 확인하기위한 유저의 번호
      * @param postId   게시글의 존재여부를 확인하기 위한 게시글의 번호
      * @param pageable 페이징 처리(size=10,page=0)
      * @return Page<CommentGetResponseDto>
      */
-    Page<CommentGetResponseDto> getComments(Long userId, Long postId, Pageable pageable);
-
+    Page<CommentGetResponseDto> getComments(Long postId, Pageable pageable);
     /**
      * 댓글 수정
      *
