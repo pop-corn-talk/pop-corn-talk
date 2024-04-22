@@ -65,7 +65,6 @@ jobs:
 
       - name: Make application.yml # Application.yml 생성
         run: |
-          mkdir ./src/main/resources
           mkdir ./src/test/resources
           touch ./src/main/resources/application.yml
           touch ./src/test/resources/application.yml
