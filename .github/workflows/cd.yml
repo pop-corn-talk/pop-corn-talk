@@ -67,10 +67,8 @@ jobs:
         run: |
           mkdir ./src/test/resources
           touch ./src/main/resources/application.yml
-          touch ./src/test/resources/application.yml
           
           echo "${{ secrets.APPLICATION_PROPERTIES }}" > ./src/main/resources/application.yml
-          echo "${{ secrets.APPLICATION_PROPERTIES_TEST }}" > ./src/test/resources/application.yml
 
       - name: Grant execute permission for gradlew # gradlew 실행 권한 부여
         run: chmod +x gradlew
