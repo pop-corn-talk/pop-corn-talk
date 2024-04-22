@@ -1,0 +1,29 @@
+# 서비스 설정
+services:
+  prometheus: # Prometheus 서비스 설정
+    image: prom/prometheus # Prometheus Docker 이미지
+    container_name: prometheus # 컨테이너 이름 설정
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    ports:
+      - 9090:9090 # 호스트와 컨테이너 포트 매핑
+    restart: unless-stopped # 컨테이너가 중지되지 않는 한 항상 다시 시작
+    volumes:
+      - ./prometheus:/etc/prometheus # 호스트와 컨테이너 디렉토리를 볼륨으로 연결
+      - prom_data:/prometheus # 호스트와 컨테이너 디렉토리를 볼륨으로 연결
+
+  grafana: # Grafana 서비스 설정
+    image: grafana/grafana # Grafana Docker 이미지
+    container_name: grafana # 컨테이너 이름 설정
+    ports:
+      - 3000:3000 # 호스트와 컨테이너 포트 매핑
+    restart: unless-stopped # 컨테이너가 중지되지 않는 한 항상 다시 시작
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin # Grafana 관리자 사용자 이름 설정
+      - GF_SECURITY_ADMIN_PASSWORD=grafana # Grafana 관리자 비밀번호 설정
+    volumes:
+      - ./grafana:/etc/grafana/provisioning/datasources # 호스트와 컨테이너 디렉토리를 볼륨으로 연결
+
+# 볼륨 설정
+volumes:
+  prom_data: # Prometheus 데이터 볼륨
