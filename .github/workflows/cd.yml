@@ -63,7 +63,7 @@ jobs:
           java-version: '17'
           distribution: "adopt"
 
-      - name: Make application.yml # Application.yml 생성
+      - name: Make application.yml # Application.yml  생성
         run: |
           mkdir ./src/test/resources
           touch ./src/main/resources/application.yml
