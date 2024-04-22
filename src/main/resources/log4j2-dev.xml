@@ -14,24 +14,24 @@
       <PatternLayout pattern="${COLOR_PATTERN}"/>
     </Console>
 
-    <RollingFile name ="RollingFile" >
-      <FileName>${LOG_PATH}/logs.log</FileName>
-      <FilePattern>${LOG_PATH}/log.%d{yyyy-MM-dd-hh-mm}.%i.log.gz</FilePattern>
-      <PatternLayout>
-        <Pattern>${DEFAULT_PATTERN}</Pattern>
-      </PatternLayout>
-      <Policies>
-        <SizeBasedTriggeringPolicy size="1MB"/>
-        <!-- 시간 설정 하려면-->
-        <!--                <TimeBasedTriggeringPolicy interval = "1" modulate = "true"/>-->
-      </Policies>
-      <DefaultRolloverStrategy>
-        <!-- 삭제에 대한 설정 -->
-        <Delete basePath="logs" maxDepth="1">
-          <IfAccumulatedFileCount exceeds="10"/>
-        </Delete>
-      </DefaultRolloverStrategy>
-    </RollingFile>
+<!--    <RollingFile name ="RollingFile" >-->
+<!--      <FileName>${LOG_PATH}/logs.log</FileName>-->
+<!--      <FilePattern>${LOG_PATH}/log.%d{yyyy-MM-dd-hh-mm}.%i.log.gz</FilePattern>-->
+<!--      <PatternLayout>-->
+<!--        <Pattern>${DEFAULT_PATTERN}</Pattern>-->
+<!--      </PatternLayout>-->
+<!--      <Policies>-->
+<!--        <SizeBasedTriggeringPolicy size="1MB"/>-->
+<!--        &lt;!&ndash; 시간 설정 하려면&ndash;&gt;-->
+<!--        &lt;!&ndash;                <TimeBasedTriggeringPolicy interval = "1" modulate = "true"/>&ndash;&gt;-->
+<!--      </Policies>-->
+<!--      <DefaultRolloverStrategy>-->
+<!--        &lt;!&ndash; 삭제에 대한 설정 &ndash;&gt;-->
+<!--        <Delete basePath="logs" maxDepth="1">-->
+<!--          <IfAccumulatedFileCount exceeds="10"/>-->
+<!--        </Delete>-->
+<!--      </DefaultRolloverStrategy>-->
+<!--    </RollingFile>-->
 
     <RollingFile name ="RollingErrorFile" >
       <FileName>${LOG_PATH}/log_error.log</FileName>
@@ -41,7 +41,8 @@
       </PatternLayout>
       <Policies>
         <SizeBasedTriggeringPolicy size="1MB"/>
-        <!--                <TimeBasedTriggeringPolicy interval = "1" modulate = "true"/>-->
+        <!--   시간 설정 하려면 -->
+        <!--   <TimeBasedTriggeringPolicy interval = "1" modulate = "true"/>-->
       </Policies>
     </RollingFile>
   </Appenders>
@@ -51,45 +52,38 @@
     <!-- Root : 일반적인 로그 정책, 반드시 하나 정의해야함 -->
     <Root level="INFO" additivity="false">
       <AppenderRef ref="ConsoleAppender"/>
-      <AppenderRef ref="RollingFile"/>
+<!--      <AppenderRef ref="RollingFile"/>-->
       <AppenderRef ref="RollingErrorFile" level="ERROR" />
     </Root>
 
     <!-- springframework logger -->
     <Logger name="org.springframework" level="INFO" additivity="false">
       <AppenderRef ref="ConsoleAppender" />
-      <AppenderRef ref="RollingFile"/>
     </Logger>
 
     <!-- jdbc logger -->
     <Logger name="jdbc.sqlonly" level="OFF" additivity="false">
       <AppenderRef ref="ConsoleAppender"/>
-      <AppenderRef ref="RollingFile"/>
     </Logger>
 
     <Logger name="jdbc.sqltiming" level="INFO" additivity="false">
       <AppenderRef ref="ConsoleAppender"/>
-      <AppenderRef ref="RollingFile"/>
     </Logger>
 
     <Logger name="jdbc.resultsettable" level="INFO" additivity="false">
       <AppenderRef ref="ConsoleAppender"/>
-      <AppenderRef ref="RollingFile"/>
     </Logger>
 
     <Logger name="jdbc.audit" level="OFF" additivity="false">
       <AppenderRef ref="ConsoleAppender"/>
-      <AppenderRef ref="RollingFile"/>
     </Logger>
 
     <Logger name="jdbc.resultset" level="OFF" additivity="false">
       <AppenderRef ref="ConsoleAppender"/>
-      <AppenderRef ref="RollingFile"/>
     </Logger>
 
     <Logger name="jdbc.connection" level="OFF" additivity="false">
       <AppenderRef ref="ConsoleAppender"/>
-      <AppenderRef ref="RollingFile"/>
     </Logger>
   </Loggers>
 </Configuration>
