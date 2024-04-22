@@ -43,10 +43,11 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<CommentGetResponseDto> getComments(Long userId, Long postId, Pageable pageable) {
+    public Page<CommentGetResponseDto> getComments(Long postId, Pageable pageable) {
         postService.getPost(postId);
         return commentRepository.findComments(postId, pageable);
     }
+
 
     @Override
     @Transactional

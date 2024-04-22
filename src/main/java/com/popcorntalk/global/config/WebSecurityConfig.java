@@ -66,9 +66,13 @@ public class WebSecurityConfig implements WebMvcConfigurer {
                 .permitAll() // resources 접근 허용 설정
                 .requestMatchers("/").permitAll() // 메인 페이지 요청 허가
                 .requestMatchers("/users/**").permitAll() // '/api/user/'로 시작하는 요청 모두 접근 허가
+                .requestMatchers(HttpMethod.GET,"/posts").permitAll() // 게시글 전체조회
+                .requestMatchers(HttpMethod.GET,"/posts/{postId}").permitAll() // 게시글 단일 조회
+                .requestMatchers(HttpMethod.GET,"/posts/{postId}/comments").permitAll() // 게시글에 달린 댓글조회
+                .requestMatchers("/posts/best").permitAll()
+                .requestMatchers("/posts/notice").permitAll()
+                .requestMatchers("/notification/subscribe").permitAll()
                 .requestMatchers("/actuator/**").permitAll()
-                .requestMatchers(HttpMethod.POST, "/posts/compensation").permitAll()
-                .requestMatchers(HttpMethod.POST, "/products/update").permitAll()
                 .anyRequest().authenticated() // 그 외 모든 요청 인증처리
         );
 
@@ -81,12 +85,15 @@ public class WebSecurityConfig implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
+        String[] allowedOrigins = {"http://52.79.44.5:3000","http://localhost:3000"};
         registry.addMapping("/**") // 요청을 받을 엔드포인트를 지정합니다.
-            .allowedOriginPatterns("*") // 허용할 origin을 설정합니다.
-            .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // 허용할 HTTP 메서드를 설정합니다.
+            .allowedOriginPatterns(allowedOrigins) // 허용할 origin을 설정합니다.
+            .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH","OPTIONS") // 허용할 HTTP 메서드를 설정합니다.
             .allowCredentials(true)
             .allowedHeaders("Content-Type", "Authorization",
                 "Access-Control-Allow-Origin", "Access-Control-Expose-Headers") // 허용할 헤더를 설정합니다.
             .exposedHeaders("Authorization");
     }
+
+
 }

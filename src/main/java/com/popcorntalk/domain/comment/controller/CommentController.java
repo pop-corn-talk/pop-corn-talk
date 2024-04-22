@@ -45,17 +45,17 @@ public class CommentController {
 
     @GetMapping
     public ResponseEntity<CommonResponseDto<Page<CommentGetResponseDto>>> getComments(
-        @AuthenticationPrincipal UserDetailsImpl userDetails,
+
         @PathVariable Long postId,
         @PageableDefault Pageable pageable
     ) {
         Page<CommentGetResponseDto> responseDtoList = commentService.getComments(
-            userDetails.getUser().getId(),
             postId,
             pageable
         );
         return ResponseEntity.ok(CommonResponseDto.success(responseDtoList));
     }
+
 
     @PutMapping("/{commentId}")
     public ResponseEntity<CommonResponseDto<Void>> updateComment(
