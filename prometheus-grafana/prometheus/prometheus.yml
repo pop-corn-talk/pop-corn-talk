@@ -1,0 +1,36 @@
+# 전역 설정
+global:
+  # 스크레이핑 간격을 15초로 설정합니다. 기본값은 1분입니다.
+  scrape_interval: 15s
+  # 규칙을 매 15초마다 평가합니다. 기본값은 1분입니다.
+  evaluation_interval: 15s
+  # 스크레이핑 타임아웃은 전역 기본값(10초)으로 설정됩니다.
+
+# 알람 관리자 설정
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+
+# 규칙 파일을 한 번 로드하고 전역 'evaluation_interval'에 따라 주기적으로 평가합니다.
+rule_files:
+# - "first_rules.yml"
+# - "second_rules.yml"
+
+# 스크레이핑할 엔드포인트가 정확히 하나 포함된 스크레이핑 구성:
+# 여기서는 프로메테우스 자체입니다.
+scrape_configs:
+  # 작업 이름은 이 구성에서 스크레이핑된 모든 시계열에 레이블 `job=<job_name>`으로 추가됩니다.
+  - job_name: "prometheus"
+
+    # metrics_path는 기본값으로 '/metrics'입니다.
+    # scheme는 기본값으로 'http'입니다.
+    static_configs:
+      - targets: ["localhost:9090"]
+
+  # 메트릭 데이터 URL 경로를 지정합니다
+  - job_name: "spring-actuator"
+    metrics_path: '/actuator/prometheus'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['host.docker.internal:8080']
