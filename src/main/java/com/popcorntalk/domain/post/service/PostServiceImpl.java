@@ -23,12 +23,13 @@ import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,9 +45,12 @@ public class PostServiceImpl implements PostService {
     private final int POST_CREATE_REWORD = 100;
     private final int POST_REWARD = 500;
 
+    @Value("${lambda.key}")
+    private String functionKey;
 
     @Override
-    @Cacheable(value = "Post", key = "#postId", unless = "#result == null", cacheManager = "postCacheManager")
+    @Cacheable(value = "Post", key = "#postId", cacheManager = "postCacheManager",
+        unless = "#result == null or #result.type != T(com.popcorntalk.domain.post.entity.PostEnum).NOTICED")
     @Transactional(readOnly = true)
     public PostGetResponseDto getPostById(Long postId) {
         return postRepository.findPost(postId);
@@ -165,11 +169,14 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    @Scheduled(cron = "0 0 9 * * *")
     @Transactional
-    public void awardPopularPostsOwners() {
-        for (Long userId : getDailyTop3PostsUserIds()) {
-            pointService.earnPoint(userId, POST_REWARD);
+    public void compensationPostsOwners(String value) {
+        if (functionKey.equals(value)) {
+            if (!Objects.isNull(getDailyTop3PostsUserIds())) {
+                for (Long userId : getDailyTop3PostsUserIds()) {
+                    pointService.earnPoint(userId, POST_REWARD);
+                }
+            }
         }
     }
 

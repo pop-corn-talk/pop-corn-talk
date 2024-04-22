@@ -1,5 +1,6 @@
 package com.popcorntalk.domain.post.dto;
 
+import com.popcorntalk.domain.post.entity.PostEnum;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,4 +20,5 @@ public class PostGetResponseDto {
     private String email;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
+    private PostEnum type;
 }

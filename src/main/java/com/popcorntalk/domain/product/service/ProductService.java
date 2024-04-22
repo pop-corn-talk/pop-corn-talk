@@ -4,6 +4,7 @@ import com.popcorntalk.domain.product.dto.ProductCreateRequestDto;
 import com.popcorntalk.domain.product.dto.ProductGetResponseDto;
 import com.popcorntalk.domain.product.dto.ProductUpdateRequestDto;
 import com.popcorntalk.domain.product.entity.Product;
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -45,8 +46,25 @@ public interface ProductService {
     Page<ProductGetResponseDto> getProducts(Pageable pageable);
 
     /**
+     * Product Entity 조회
+     *
      * @param productId 상품의 번호
      * @return Product
      */
     Product getProduct(Long productId);
+
+    /**
+     * 캐시에 등록되어있는 상품 번호 조회
+     *
+     * @param value 메소드 실행 검증 키
+     * @return List<Long>
+     */
+    List<Long> getProductIdsByCache(String value);
+
+    /**
+     * 캐시에 등록된 수량을 실제 DB에 업데이트
+     *
+     * @param productId 캐시에 등록되어있는 상품번호
+     */
+    void updateAmount(Long productId);
 }

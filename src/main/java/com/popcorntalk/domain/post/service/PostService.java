@@ -88,9 +88,11 @@ public interface PostService {
     void deletePost(User user, Long postId);
 
     /**
-     * [Cron 동작] 매일 9시에 전날 댓글이 가장 많은 게시물작성자에게 포인트 지급
+     * 매일 9시에 전날 댓글이 가장 많은 게시물작성자에게 포인트 지급
+     *
+     * @param value 메소드 실행 검증 키
      */
-    void awardPopularPostsOwners();
+    void compensationPostsOwners(String value);
 
     /**
      * Post Entity 조회
