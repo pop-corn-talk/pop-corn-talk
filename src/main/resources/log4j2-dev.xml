@@ -14,25 +14,6 @@
       <PatternLayout pattern="${COLOR_PATTERN}"/>
     </Console>
 
-<!--    <RollingFile name ="RollingFile" >-->
-<!--      <FileName>${LOG_PATH}/logs.log</FileName>-->
-<!--      <FilePattern>${LOG_PATH}/log.%d{yyyy-MM-dd-hh-mm}.%i.log.gz</FilePattern>-->
-<!--      <PatternLayout>-->
-<!--        <Pattern>${DEFAULT_PATTERN}</Pattern>-->
-<!--      </PatternLayout>-->
-<!--      <Policies>-->
-<!--        <SizeBasedTriggeringPolicy size="1MB"/>-->
-<!--        &lt;!&ndash; 시간 설정 하려면&ndash;&gt;-->
-<!--        &lt;!&ndash;                <TimeBasedTriggeringPolicy interval = "1" modulate = "true"/>&ndash;&gt;-->
-<!--      </Policies>-->
-<!--      <DefaultRolloverStrategy>-->
-<!--        &lt;!&ndash; 삭제에 대한 설정 &ndash;&gt;-->
-<!--        <Delete basePath="logs" maxDepth="1">-->
-<!--          <IfAccumulatedFileCount exceeds="10"/>-->
-<!--        </Delete>-->
-<!--      </DefaultRolloverStrategy>-->
-<!--    </RollingFile>-->
-
     <RollingFile name ="RollingErrorFile" >
       <FileName>${LOG_PATH}/log_error.log</FileName>
       <FilePattern>${LOG_PATH}/log_error.%d{yyyy-MM-dd-hh-mm}.%i.log.gz</FilePattern>
@@ -47,12 +28,10 @@
     </RollingFile>
   </Appenders>
 
-
   <Loggers>
     <!-- Root : 일반적인 로그 정책, 반드시 하나 정의해야함 -->
     <Root level="INFO" additivity="false">
       <AppenderRef ref="ConsoleAppender"/>
-<!--      <AppenderRef ref="RollingFile"/>-->
       <AppenderRef ref="RollingErrorFile" level="ERROR" />
     </Root>
 
