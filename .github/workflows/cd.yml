@@ -1,6 +1,7 @@
 name: CD
 
 on: # 발생 이벤트 타입
+  workflow_dispatch:
   pull_request: # main 브랜치 PR 발생시 실행
     branches:
       - main
