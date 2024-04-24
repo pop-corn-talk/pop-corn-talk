@@ -5,7 +5,6 @@ on:
     branches:
       - dev
 
-
 jobs:
   build: #BUILD
     runs-on: ubuntu-latest
