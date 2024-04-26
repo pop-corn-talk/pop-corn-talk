@@ -37,3 +37,7 @@ application.yml
 
 ### VS Code ###
 .vscode/
+
+
+### log ###
+logs/
