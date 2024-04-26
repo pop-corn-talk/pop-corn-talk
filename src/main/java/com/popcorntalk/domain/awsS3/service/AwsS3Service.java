@@ -1,4 +1,4 @@
-package com.popcorntalk.domain.AwsS3.service;
+package com.popcorntalk.domain.awsS3.service;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;

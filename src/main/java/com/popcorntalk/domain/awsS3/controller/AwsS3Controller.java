@@ -1,4 +1,4 @@
-package com.popcorntalk.domain.AwsS3.controller;
+package com.popcorntalk.domain.awsS3.controller;
 
 import com.popcorntalk.global.dto.CommonResponseDto;
 import com.popcorntalk.global.dto.StorageGetImageResponseDto;
