@@ -75,7 +75,7 @@ public class PostServiceImpl implements PostService {
                     if (keyword.trim().isEmpty()) {
                         throw new IllegalArgumentException("검색어를 입력해 주세요");
                     }
-                    Predicate titleLikePredicate = QPost.post.name.contains(keyword.trim());
+                    Predicate titleLikePredicate = QPost.post.name.startsWith(keyword.trim());
                     booleanBuilder.and(titleLikePredicate);
                     break;
                 default:
