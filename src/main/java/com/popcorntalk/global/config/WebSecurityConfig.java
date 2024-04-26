@@ -69,6 +69,8 @@ public class WebSecurityConfig implements WebMvcConfigurer {
                 .requestMatchers(HttpMethod.GET,"/posts").permitAll() // 게시글 전체조회
                 .requestMatchers(HttpMethod.GET,"/posts/{postId}").permitAll() // 게시글 단일 조회
                 .requestMatchers(HttpMethod.GET,"/posts/{postId}/comments").permitAll() // 게시글에 달린 댓글조회
+                .requestMatchers(HttpMethod.POST, "/posts/compensation").permitAll()
+                .requestMatchers(HttpMethod.POST, "/products/update").permitAll()
                 .requestMatchers("/posts/best").permitAll()
                 .requestMatchers("/posts/notice").permitAll()
                 .requestMatchers("/notification/subscribe").permitAll()
