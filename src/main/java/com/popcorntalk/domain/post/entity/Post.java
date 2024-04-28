@@ -10,6 +10,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,7 +23,9 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "posts")
+@Table(name = "posts", indexes = {
+    @Index(name = "idx_createdAt",columnList = "created_at"),
+    @Index(name = "idx_name", columnList = "name")})
 public class Post extends TimeStamped {
 
     @Id
